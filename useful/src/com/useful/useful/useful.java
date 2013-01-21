@@ -72,7 +72,7 @@ import com.useful.useful.utils.*;
 import lib.PatPeter.SQLibrary.*;
  
 public class useful extends JavaPlugin {
-	//The useful plugin!
+	//The useful plugin's code!
 	public static String pluginFolder;
     public SQLite sqlite;
 	public ListStore heros;
