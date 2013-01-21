@@ -1,0 +1,7 @@
+* Added changelog
+* Added colors to console
+* Improved various commands and listeners.
+* Added /enchant
+* Added /back
+* Changed how login/quit msg's work to use *name*
+* Colorised text in config. (&a, etc...)

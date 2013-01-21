@@ -1,0 +1,51 @@
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+# %%%       %%% %%%%%%%%% %%%%%%%%% %%%%%%%%% %%    %%  %%           #	
+# %%%       %%% %%        %%        %%        %%    %%  %%           #	
+# %%%       %%% %%%%%%%%% %%%%%%%%  %%%%%%%%% %%    %%  %%           #	
+# %%%       %%%        %% %%        %%        %%    %%  %%           #	
+# %%%%%%%%%%%%% %%%%%%%%% %%%%%%%%% %%        %%%%%%%%  %%%%%%%      #	
+#                                                                    #	
+# %%%%%%%%     %%        %%    %%  %%%%%%%%%  %%%%%%%%  %%%      %%  #	
+# %%%     %%   %%        %%    %%  %%            %%     %% %%    %%  #	
+# %%%%%%%%     %%        %%    %%  %%   %%%%     %%     %%   %%  %%  #	
+# %%%          %%        %%    %%  %%     %%     %%     %%     %%%%  #	
+# %%%          %%%%%%%   %%%%%%%%  %%%%%%%%%  %%%%%%%%  %%       %%  #		
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #
+# This is the useful plugin's configuration file. For more           #	
+# information visit                                                  #	
+# http://www.dev.bukkit.org/server-mods/useful/	                     #	
+# Plugin by storm345	                                             #	
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx #	
+
+# If you are viewing this on notepad then view it on a text editor designed for use with yaml files. Such as wordpad or notetab (Lite). 
+# Information on setting the config:
+
+# +----------------------------------------------------------------+ #	
+# |                                                                | #	
+# |                           -General-                            | #	
+# |                                                                | #	
+# +----------------------------------------------------------------+ #	
+# This section of the config has all the general settings. These are for you to customise and edit to your needs.
+# Look under commandname: 
+#                enable:      to disable the given command. This allows other plugins to use it instead or simply to remove
+# it from the plugin!
+# +----------------------------------------------------------------+ #	
+# |                                                                | #	
+# |                           -Signs-                              | #	
+# |                                                                | #	
+# +----------------------------------------------------------------+ #
+# This section controls all the sign related settings. This includes warp signs and many others.
+# The sign functionality allows for the enabled signs, when right clicked to perform
+# the given action. With the exception of the elevator signs, the sign action is described on the
+# top text line of the sign and any arguments or options on the second. On the elevator ones
+# the action is described on the second line.
+# +----------------------------------------------------------------+ #	
+# |                                                                | #	
+# |                           -Ranks-                              | #	
+# |                                                                | #	
+# +----------------------------------------------------------------+ #
+# This is the enabling and control of the ranks system. To setup ranks look in
+# the ranks.yml yaml configuration file in the same folder/directory as this file.
+# It is recommended not to edit the version information below as it controls the autoupdate.	
+
+# The settings:
