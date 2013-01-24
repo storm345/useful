@@ -325,7 +325,7 @@ commands:
       default: op
    useful:
       description: This is a command to check the plugin is working or reload the config.
-      usage: /<command> (reload)
+      usage: /<command> (reload/changelog)
       permission: useful.test
       permission-message: You don't have <permission> permission
       default: true

@@ -1,4 +1,4 @@
-* Added changelog
+* Added changelog on update
 * Added colors to console
 * Improved various commands and listeners.
 * Added /enchant
@@ -7,3 +7,4 @@
 * Colorised text in config. (&a, etc...)
 * Made /back save on death
 * Added option to remove worldgm for worlds
+* Added /useful changelog to view this :D

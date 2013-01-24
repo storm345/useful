@@ -1009,6 +1009,15 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 			sender.sendMessage("The useful plugin version " + config.getDouble("version.current") + " is working! - coded by storm345 - do /useful reload to reload the config.");
 			return true;
 			}
+			else if(args[0].equalsIgnoreCase("changelog")){
+				sender.sendMessage(plugin.colors.getTitle() + "Changelog:");
+				Object[] changes = plugin.changelog.values.toArray();
+				for(int i=0;i<changes.length;i++){
+					String change = (String) changes[i];
+					sender.sendMessage(ChatColor.BOLD + plugin.colors.getInfo() + change);
+				}
+				return true;
+			}
 			else if(args[0].equalsIgnoreCase("reload")){
 				try{
 					plugin.getServer().getPluginManager().getPlugin("useful").reloadConfig();

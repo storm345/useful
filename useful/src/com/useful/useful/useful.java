@@ -861,7 +861,7 @@ public void jailsConverter(){
 				config.set("general.welcome_message.# description", "If enabled, server players will be sent this msg when they join");
 				}
 	        if(!config.contains("general.welcome_message.msg")) {
-				config.set("general.welcome_message.msg", "&aWelcome to the server! Do /about for info and /rules for rules!");
+				config.set("general.welcome_message.msg", "&aWelcome to the server! Do /information for info and /rules for rules!");
 				}
 	        if(!config.contains("general.welcome_message.enable")) {
 				config.set("general.welcome_message.enable", true);
