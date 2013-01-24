@@ -948,6 +948,42 @@ public class UsefulListener implements Listener{
 		}
 		return;
 	}
+	@EventHandler
+	void backSaver(PlayerDeathEvent event){
+		//TODO make a way of saving players previous locations.
+		Player player = event.getEntity();
+		String pname = player.getName();
+		Location prev = player.getLocation();
+		String pluginFolder = plugin.getDataFolder().getAbsolutePath();
+		File pFile = new File(pluginFolder + File.separator + "player-data" + File.separator + pname + ".yml"); //Should create is doesn't exist?
+		FileConfiguration pData = new YamlConfiguration();
+		try {
+			pData.load(pFile);
+		} catch (FileNotFoundException e) {
+			try {
+				pFile.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			pFile.delete();
+			return;
+		}
+		pData.set("data.previous-location.world", prev.getWorld().getName());
+		pData.set("data.previous-location.x", prev.getX());
+		pData.set("data.previous-location.y", prev.getY());
+		pData.set("data.previous-location.z", prev.getZ());
+		pData.set("data.previous-location.yaw", prev.getYaw());
+		pData.set("data.previous-location.pitch", prev.getPitch());
+		try {
+			pData.save(pFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
+	}
 	@EventHandler(priority = EventPriority.NORMAL)
 	void tpaEvent(TpaEvent event){
 		Player teleportee = event.getSender();
