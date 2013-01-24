@@ -1487,6 +1487,7 @@ public void jailsConverter(){
         sqlite.close();
         authed.clear();
         System.gc();
+        colLogger.info(ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been disabled.");
 		getLogger().info("useful plugin v"+pluginVersion+" has been disabled.");
 	}
 	
