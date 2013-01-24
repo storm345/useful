@@ -454,7 +454,7 @@ commands:
       default: op
    worldgm:
       description: This sets the default gamemode of the world.
-      usage: /<command> [creative/survival/adventure]
+      usage: /<command> [creative/survival/adventure/none]
       permission: useful.worldgm
       permission-message: You don't have <permission> permission
       default: op

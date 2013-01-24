@@ -1784,6 +1784,22 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 			else if(args[0].equalsIgnoreCase("adventure")){
 				mode = "adventure";
 			}
+			else if(args[0].equalsIgnoreCase("none")){
+				//remove it from list
+				mode = "none";
+				String wname = player.getLocation().getWorld().getName();
+				String delquery = "DELETE FROM worldgm WHERE world='"+wname+"'";
+ 			   ResultSet delete = plugin.sqlite.query(delquery);
+ 			   try {
+					delete.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					sender.sendMessage(plugin.colors.getError() + "Error");
+					return true;
+				}
+ 			  sender.sendMessage(plugin.colors.getSuccess() + "Default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
+				return true;
+			}
 			else{
 				return false;
 			}

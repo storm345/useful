@@ -5,3 +5,5 @@
 * Added /back
 * Changed how login/quit msg's work to use *name*
 * Colorised text in config. (&a, etc...)
+* Made /back save on death
+* Added option to remove worldgm for worlds
