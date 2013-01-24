@@ -1797,7 +1797,7 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 					sender.sendMessage(plugin.colors.getError() + "Error");
 					return true;
 				}
- 			  sender.sendMessage(plugin.colors.getSuccess() + "Default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
+ 			  sender.sendMessage(plugin.colors.getSuccess() + "The default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
 				return true;
 			}
 			else{
@@ -1840,7 +1840,7 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				e.printStackTrace();
 				return true;
 			}
-			sender.sendMessage(plugin.colors.getSuccess() + "Default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
+			sender.sendMessage(plugin.colors.getSuccess() + "The default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("jailtime")){ // If the player typed /basic then do the following...
