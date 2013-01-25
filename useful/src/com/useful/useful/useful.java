@@ -836,6 +836,9 @@ public void jailsConverter(){
 	        if(!config.contains("general.broadcast.enable")) {
 				config.set("general.broadcast.enable", true);
 				}
+	        if(!config.contains("general.broadcast.delay(minutes)")) {
+				config.set("general.broadcast.delay(minutes)", 5);
+				}
 	        if(!config.contains("general.authentication.description")) {
 				config.set("general.authentication.description", "If enabled this will tell the plugin to use the authentication system!");
 				}
@@ -1019,7 +1022,10 @@ public void jailsConverter(){
 				
 	            
 	        }, 200, 200);
-			
+			double mins = config.getDouble("general.broadcast.delay(minutes)");
+    		double delaySecs = mins * 60;
+    		double delayMillis = delaySecs * 20;
+    		long delay = Math.round(delayMillis);
 			broadcaster = this.getServer().getScheduler().runTaskTimer(this, new Runnable() {
 
 	            @Override
@@ -1032,7 +1038,7 @@ public void jailsConverter(){
 
 				
 	            
-	        }, 6000, 6000);
+	        }, delay, delay);
 			backup = this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 
 	            @Override
