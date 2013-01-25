@@ -831,7 +831,7 @@ public void jailsConverter(){
 				config.set("general.adventurecommand.enable", true);
 				}
 	        if(!config.contains("general.broadcast.# description")) {
-				config.set("general.broadcast.# description", "If enabled this allows for the broadcast message to be sent every 5 minutes.");
+				config.set("general.broadcast.# description", "If enabled this allows for the broadcast message to be sent every [X(Set below)] minutes.");
 				}
 	        if(!config.contains("general.broadcast.enable")) {
 				config.set("general.broadcast.enable", true);
