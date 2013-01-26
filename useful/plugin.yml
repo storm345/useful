@@ -129,6 +129,12 @@ commands:
       permission: useful.firework
       permission-message: You don't have <permission> permission
       default: op
+   potion:
+      description: This gives the player a potion of the desired specification.
+      usage: /<command> [Type] [Level] [Splash (true/false)] [Amount]
+      permission: useful.potion
+      permission-message: You don't have <permission> permission
+      default: op
    information:
       description: This lists all server info.
       usage: /<command>

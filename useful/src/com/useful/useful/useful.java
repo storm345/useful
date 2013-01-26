@@ -524,6 +524,12 @@ public void jailsConverter(){
 			if(!config.contains("general.firework.enable")) {
 				config.set("general.firework.enable", true);
 				}
+			if(!config.contains("general.potion.# description")) {
+				config.set("general.potion.# description", "If enabled it will allow for /potion");
+				}
+			if(!config.contains("general.potion.enable")) {
+				config.set("general.potion.enable", true);
+				}
 			if(!config.contains("signs.warpSigns.enable")) {
 				config.set("signs.warpSigns.enable", true);
 				}
@@ -1299,6 +1305,7 @@ public void jailsConverter(){
         checkRegister("general.authentication.enable", "notneedauth");
         checkRegister("general.authentication.enable", "login");
         checkRegister("general.firework.enable", "firework");
+        checkRegister("general.potion.enable", "potion");
         checkRegister("general.worldgm.enable", "worldgm");
         checkRegister("general.compass.enable", "compass");
         checkRegister("general.back.enable", "back");

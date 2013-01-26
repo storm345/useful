@@ -73,6 +73,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import com.useful.useful.utils.*;
 
@@ -1016,6 +1018,63 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 					String change = (String) changes[i];
 					sender.sendMessage(ChatColor.BOLD + plugin.colors.getInfo() + change);
 				}
+				return true;
+			}
+			else if(cmd.getName().equalsIgnoreCase("potion")){
+				if(!(sender instanceof Player)){
+					sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+					return true;
+				}
+				if(args.length < 4){
+					return false;
+				}
+				Potions manager = new Potions(useful.plugin);
+				PotionType type = manager.potionTypeFromString(args[0]);
+				if(type == null){
+					sender.sendMessage(plugin.colors.getTitle() + "Valid potion types:");
+					sender.sendMessage(plugin.colors.getInfo() + "fire_resistance, instant_damage, instant_heal, invisibility, night_vision, poison, regen, slowness, speed, strength, water, weakness");
+					return true;
+				}
+				int level = 0;
+				try {
+					level = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+				if(level < 1){
+					sender.sendMessage(plugin.colors.getError() + "Level must be bigger than 0");
+					return true;
+				}
+				//type and level set
+				boolean splash = false;
+				if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("yes")){
+					splash = true;
+				}
+				//nearly...
+				int amount = 0;
+				try {
+					amount = Integer.parseInt(args[3]);
+				} catch (NumberFormatException e) {
+					return false;
+				}
+				if(amount < 1){
+					sender.sendMessage(plugin.colors.getError() + "Amount must be bigger than 0");
+					return true;
+				}
+				//All set!
+				Potion potion;
+				try {
+					potion = new Potion(type, level);
+				} catch (Exception e) {
+					sender.sendMessage(plugin.colors.getError() + "Potion is invalid");
+					return true;
+				}
+				if(splash){
+					potion.splash();
+				}
+				ItemStack potions = potion.toItemStack(amount);
+				player.getInventory().addItem(potions);
+				player.sendMessage(plugin.colors.getSuccess() + "Successfully created potion!");
 				return true;
 			}
 			else if(args[0].equalsIgnoreCase("reload")){
