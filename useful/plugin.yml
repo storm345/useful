@@ -190,6 +190,12 @@ commands:
       permission: useful.canfly
       permission-message: You don't have <permission> permission
       default: op
+   rename:
+      description: This renames an item.
+      usage: /<command> [Name]
+      permission: useful.rename
+      permission-message: You don't have <permission> permission
+      default: op
    jail:
       description: This jails the person.
       usage: /<command> [Jailname] [Name] [Time(minutes)] [Reason]

@@ -1021,6 +1021,26 @@ else if(cmd.getName().equalsIgnoreCase("canfly")){
 	}
 	return true;
 }
+else if(cmd.getName().equalsIgnoreCase("rename")){
+	if(!(sender instanceof Player)){
+		sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+		return true;
+	}
+	if(args.length<1){
+		return false;
+	}
+	String newName = args[0];
+	newName = useful.colorise(newName);
+	ItemStack toName = player.getItemInHand();
+	if(toName.getTypeId() == 0){
+		sender.sendMessage(plugin.colors.getError() + "Cannot rename air!");
+		return true;
+	}
+	ItemRename manager = new ItemRename(plugin);
+	manager.rename(toName, newName);
+	sender.sendMessage(plugin.colors.getSuccess() + "Successfully renamed the item in hand to " + newName);
+	return true;
+}
 		else if(cmd.getName().equalsIgnoreCase("useful")){ // If the player typed /basic then do the following...
 			if (args.length < 1){
 			sender.sendMessage("The useful plugin version " + config.getDouble("version.current") + " is working! - coded by storm345 - do /useful reload to reload the config.");

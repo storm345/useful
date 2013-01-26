@@ -815,6 +815,12 @@ public void jailsConverter(){
 	        if(!config.contains("general.canfly.enable")) {
 				config.set("general.canfly.enable", true);
 				}
+	        if(!config.contains("general.rename.# description")) {
+				config.set("general.rename.# description", "If enabled this allows for /rename");
+				}
+	        if(!config.contains("general.rename.enable")) {
+				config.set("general.rename.enable", true);
+				}
 	        if(!config.contains("general.invsee.# description")) {
 				config.set("general.invsee.# description", "If enabled this allows for /invsee and if allow_edit: is true the player can edit the others inventory");
 				}
@@ -1317,6 +1323,7 @@ public void jailsConverter(){
         checkRegister("general.back.enable", "back");
         checkRegister("general.enchant.enable", "enchant");
         checkRegister("general.canfly.enable", "canfly");
+        checkRegister("general.rename.enable", "rename");
        String discmds = config.getString("general.blocked_commands(separated_by_commas_)");
         	   String[] cmds = discmds.split(",");
         	   for(int x=0 ; x<cmds.length ; x++) {
