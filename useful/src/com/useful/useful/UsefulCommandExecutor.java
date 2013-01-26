@@ -74,7 +74,6 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.potion.Potion;
-import org.bukkit.potion.Potion.Tier;
 import org.bukkit.potion.PotionType;
 
 import com.useful.useful.utils.*;
@@ -1005,6 +1004,21 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 		}
 	});
 	
+	return true;
+}
+else if(cmd.getName().equalsIgnoreCase("canfly")){
+	if(!(sender instanceof Player)){
+		sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+		return true;
+	}
+	if(player.getAllowFlight()){
+		player.setAllowFlight(false);
+		player.sendMessage(plugin.colors.getSuccess() + "Fly mode disabled!");
+	}
+	else if(!player.getAllowFlight()){
+		player.setAllowFlight(true);
+		player.sendMessage(plugin.colors.getSuccess() + "Fly mode enabled!");
+	}
 	return true;
 }
 		else if(cmd.getName().equalsIgnoreCase("useful")){ // If the player typed /basic then do the following...
@@ -3866,7 +3880,7 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				sender.sendMessage(plugin.colors.getError() + "Cannot enchant air!");
 			}
 			try {
-				item.addEnchantment(toEnchant, enchantmentLvl);
+				item.addUnsafeEnchantment(toEnchant, enchantmentLvl);
 			} catch (Exception e) {
 				sender.sendMessage(plugin.colors.getError() + "Enchantment invalid! (Level is too high/item is invalid for that enchantment)");
 				return true;

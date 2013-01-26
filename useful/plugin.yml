@@ -184,6 +184,12 @@ commands:
       permission: useful.showtime
       permission-message: You don't have <permission> permission
       default: true
+   canfly:
+      description: This toggles the ability to fly.
+      usage: /<command>
+      permission: useful.canfly
+      permission-message: You don't have <permission> permission
+      default: op
    jail:
       description: This jails the person.
       usage: /<command> [Jailname] [Name] [Time(minutes)] [Reason]
