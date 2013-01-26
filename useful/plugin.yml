@@ -131,7 +131,7 @@ commands:
       default: op
    potion:
       description: This gives the player a potion of the desired specification.
-      usage: /<command> [Type] [Level] [Splash (true/false)] [Amount]
+      usage: /<command> [Type] [Level] [Splash (true/false)] [Amount] (duration extended (true/false) - only if valid)
       permission: useful.potion
       permission-message: You don't have <permission> permission
       default: op
