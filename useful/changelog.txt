@@ -4,3 +4,4 @@
 * Improved jailing
 * Improved broadcasting
 * Improved enchanting
+* Added /rename
