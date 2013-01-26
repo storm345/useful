@@ -845,7 +845,7 @@ public void jailsConverter(){
 	        if(!config.contains("general.broadcast.delay(minutes)")) {
 				config.set("general.broadcast.delay(minutes)", 5);
 				}
-	        if(!config.contains("general.authentication.description")) {
+	        if(!config.contains("general.authentication.# description")) {
 				config.set("general.authentication.description", "If enabled this will tell the plugin to use the authentication system!");
 				}
 	        if(!config.contains("general.authentication.enable")) {
