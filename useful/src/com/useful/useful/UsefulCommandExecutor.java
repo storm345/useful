@@ -4059,7 +4059,73 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				getServer().getPluginManager().disablePlugin(thepl);
 				return true;
 			}
-			return true;
+			else if(args[0].equalsIgnoreCase("config")){
+				if(args.length < 5){
+					// 1 = this, 2 = plugin, 3 = node, 4 = setting
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]]");
+				return true;
+				}
+				String action = args[1];
+				String pname = args[2];
+				Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+				boolean found = false;
+				Plugin tPlugin = null;
+				for(int i = 0;i<plugins.length;i++){
+					Plugin test = plugins[i];
+				    if(test.getName().equalsIgnoreCase(pname)){
+				    	tPlugin = test;
+				    	found = true;
+				    }
+				}
+				if(plugin == null || found == false){
+					sender.sendMessage(plugin.colors.getError() + "Plugin not found! Do /plugins for a list!");
+					return true;
+				}
+				String type = "unknown";
+				FileConfiguration config = tPlugin.getConfig();
+				String node = args[3];
+				String setting = args[4];
+				float num = 0;
+				try {
+					num = Float.parseFloat(setting);
+					type = "number";
+				} catch (NumberFormatException e) {
+					type = "unknown";
+				}
+				boolean bool = false;
+				if(setting.equalsIgnoreCase("true")){
+					bool = true;
+					type = "boolean";
+				}
+				else if(setting.equalsIgnoreCase("false")){
+					bool = false;
+					type = "boolean";
+				}
+				if(type == "unknown"){
+					//It is a string
+					config.set(node, setting);
+				}
+				else if(type == "number"){
+					//It is a number
+					config.set(node, num);
+				}
+				else if(type == "boolean"){
+					//It is a boolean
+					config.set(node, bool);
+				}
+				File folder = tPlugin.getDataFolder();
+				File configFile = new File(folder + File.separator + "config.yml");
+				if(!(configFile.exists()) || configFile.length() < 1){
+					sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
+					return true;
+				}
+			sender.sendMessage(plugin.colors.getSuccess() + "Successfully created/set the node: " + node + " to " + setting + " in " + tPlugin.getName());
+				//TODO
+				return true;
+			}
+			else{
+				return false;
+			}
 	}	
 		//If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
 		return false; 
