@@ -1481,6 +1481,9 @@ public void jailsConverter(){
         	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
         	   System.gc();
         	   //getLogger().info("useful plugin v"+pluginVersion+" has been enabled!");
+        	   //TODO register custom crafting from config settings
+        	   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Registering recipes...");
+        	   new CustomRecipes().Register();
         	   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been enabled!");
 	}
  
