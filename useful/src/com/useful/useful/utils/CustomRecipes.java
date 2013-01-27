@@ -65,18 +65,34 @@ public CustomRecipes(){
 }
 public void Register(){
 	//TODO
+	if(useful.config.getBoolean("customCrafting.doubleSlab.enable")){
 	useful.plugin.getServer().addRecipe(dblSlab);
 	useful.plugin.getServer().addRecipe(dlbSlab2Single);
-	useful.plugin.getServer().addRecipe(waterSource);
-	useful.plugin.getServer().addRecipe(waterBucket);
-	useful.plugin.getServer().addRecipe(lavaSource);
-	useful.plugin.getServer().addRecipe(lavaBucket);
+	}
+	if(useful.config.getBoolean("customCrafting.waterSource.enable")){
+		useful.plugin.getServer().addRecipe(waterSource);
+		useful.plugin.getServer().addRecipe(waterBucket);	
+	}
+	if(useful.config.getBoolean("customCrafting.lavaSource.enable")){
+		useful.plugin.getServer().addRecipe(lavaSource);
+		useful.plugin.getServer().addRecipe(lavaBucket);	
+	}
+	if(useful.config.getBoolean("customCrafting.mobSpawner.enable")){
 	useful.plugin.getServer().addRecipe(mobSpawner);
+	}
+	if(useful.config.getBoolean("customCrafting.cmdBlock.enable")){
 	useful.plugin.getServer().addRecipe(cmdBlock);
+	}
+	if(useful.config.getBoolean("customCrafting.snowBlock.enable")){
 	useful.plugin.getServer().addRecipe(snowBlock);
-	useful.plugin.getServer().addRecipe(ice);
-	useful.plugin.getServer().addRecipe(fire);
 	useful.plugin.getServer().addRecipe(snowBall);
+	}
+	if(useful.config.getBoolean("customCrafting.iceBlock.enable")){
+	useful.plugin.getServer().addRecipe(ice);
+	}
+	if(useful.config.getBoolean("customCrafting.fire.enable")){
+	useful.plugin.getServer().addRecipe(fire);
+	}
 	return;
 }
 }

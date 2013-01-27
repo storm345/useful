@@ -1029,7 +1029,11 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 	if(args.length<1){
 		return false;
 	}
-	String newName = ChatColor.RESET + args[0];
+	String raw = args[0];
+	for(int i=1;i<args.length;i++){
+		raw = raw + " " + args[i];
+	}
+	String newName = ChatColor.RESET + raw;
 	newName = useful.colorise(newName);
 	ItemStack toName = player.getItemInHand();
 	if(toName.getTypeId() == 0){

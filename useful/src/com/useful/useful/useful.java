@@ -74,7 +74,7 @@ public class useful extends JavaPlugin {
 	static File ranksFile;
 	static FileConfiguration ranks;
 	//static FileConfiguration config;
-	static FileConfiguration config;
+	public static FileConfiguration config;
 	boolean idleRunning = false;
 	public ColoredLogger colLogger;
 
@@ -958,6 +958,54 @@ public void jailsConverter(){
 	        if(!config.contains("colorScheme.tp")) {
 				config.set("colorScheme.tp", "&5");
 				}
+	        if(!config.contains("customCrafting.doubleSlab.# description")){
+	        	config.set("customCrafting.doubleSlab.# description", "This allows for the crafting of a double slab.");
+	        }
+	        if(!config.contains("customCrafting.doubleSlab.enable")){
+	        	config.set("customCrafting.doubleSlab.enable", true);
+	        }
+	        if(!config.contains("customCrafting.waterSource.# description")){
+	        	config.set("customCrafting.waterSource.# description", "This allows for the crafting of a water source block (can be used to craft ice).");
+	        }
+	        if(!config.contains("customCrafting.waterSource.enable")){
+	        	config.set("customCrafting.waterSource.enable", true);
+	        }
+	        if(!config.contains("customCrafting.lavaSource.# description")){
+	        	config.set("customCrafting.lavaSource.# description", "This allows for the crafting of a lava source block.");
+	        }
+	        if(!config.contains("customCrafting.lavaSource.enable")){
+	        	config.set("customCrafting.lavaSource.enable", true);
+	        }
+	        if(!config.contains("customCrafting.mobSpawner.# description")){
+	        	config.set("customCrafting.mobSpawner.# description", "This allows for the crafting of a mob spawner.");
+	        }
+	        if(!config.contains("customCrafting.mobSpawner.enable")){
+	        	config.set("customCrafting.mobSpawner.enable", true);
+	        }
+	        if(!config.contains("customCrafting.cmdBlock.# description")){
+	        	config.set("customCrafting.cmdBlock.# description", "This allows for the crafting of a command block.");
+	        }
+	        if(!config.contains("customCrafting.cmdBlock.enable")){
+	        	config.set("customCrafting.cmdBlock.enable", true);
+	        }
+	        if(!config.contains("customCrafting.snowBlock.# description")){
+	        	config.set("customCrafting.snowBlock.# description", "This allows for the crafting of a snow block.");
+	        }
+	        if(!config.contains("customCrafting.snowBlock.enable")){
+	        	config.set("customCrafting.snowBlock.enable", true);
+	        }
+	        if(!config.contains("customCrafting.iceBlock.# description")){
+	        	config.set("customCrafting.iceBlock.# description", "This allows for the crafting of an ice block.");
+	        }
+	        if(!config.contains("customCrafting.iceBlock.enable")){
+	        	config.set("customCrafting.iceBlock.enable", true);
+	        }
+	        if(!config.contains("customCrafting.fire.# description")){
+	        	config.set("customCrafting.fire.# description", "This allows for the crafting fire!!.");
+	        }
+	        if(!config.contains("customCrafting.fire.enable")){
+	        	config.set("customCrafting.fire.enable", true);
+	        }
 			saveConfig();
 			pluginFolder = this.getDataFolder().getAbsolutePath();
 			(new File(pluginFolder)).mkdirs();
