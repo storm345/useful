@@ -4340,7 +4340,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					FileConfiguration config = tPlugin.getConfig();
 					String node = args[3];
 					Object result = config.get(node);
-					sender.sendMessage(plugin.colors.getSuccess() + "Value of " + node + " in " + tPlugin.getName() + " is: " + result);
+					sender.sendMessage(plugin.colors.getSuccess() + "Value of " + node + " in " + tPlugin.getName() + " is: " + result);//
 					return true;
 				}
 				else{
