@@ -41,12 +41,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.SkullType;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.block.Skull;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -70,6 +72,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -1084,9 +1087,19 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		    if(args.length < 1){ //If they didnt mention a name
 		    	return false; //Show them the usage
 		    }
+		    if(!(sender instanceof Player)){ //If not a player
+		    	sender.sendMessage(plugin.colors.getError() + "Not a player!"); //Tell them
+		    	return true; //return
+		    }
 		    String playerName = args[0]; //Make a string of the inputted name!
 			//Put ur code here
-		    
+		    ItemStack itemStack = new ItemStack(Material.SKULL_ITEM);
+		    itemStack.setDurability((short) 3);
+		    SkullMeta data = (SkullMeta) itemStack.getItemMeta();
+		    data.setOwner(playerName);
+		    itemStack.setItemMeta(data);
+		    player.sendMessage(plugin.colors.getSuccess() + "Made a skull of " + playerName + "'s face (Place to see it!)!");
+		    player.getInventory().addItem(itemStack);
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("potion")){
