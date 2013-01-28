@@ -6,3 +6,4 @@
 * Improved enchanting
 * Added /rename
 * Added some extra crafting recipes (optional of course, same as everything else!)
+* Added /head
