@@ -482,6 +482,12 @@ public void jailsConverter(){
 			if(!config.contains("general.rules.enable")) {
 				config.set("general.rules.enable", true);
 				}
+			if(!config.contains("general.head.# description")) {
+				config.set("general.head.# description", "If enabled this will allow for /head.");
+				}
+			if(!config.contains("general.head.enable")) {
+				config.set("general.head.enable", true);
+				}
 			if(!config.contains("general.back.# description")) {
 				config.set("general.back.# description", "If enabled this will allow for /back.");
 				}
@@ -1372,6 +1378,7 @@ public void jailsConverter(){
         checkRegister("general.enchant.enable", "enchant");
         checkRegister("general.canfly.enable", "canfly");
         checkRegister("general.rename.enable", "rename");
+        checkRegister("general.head.enable", "head");
        String discmds = config.getString("general.blocked_commands(separated_by_commas_)");
         	   String[] cmds = discmds.split(",");
         	   for(int x=0 ; x<cmds.length ; x++) {

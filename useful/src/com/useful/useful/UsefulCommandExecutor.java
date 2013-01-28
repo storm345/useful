@@ -1079,6 +1079,16 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			}
 			return true;
 		}
+		else if(cmd.getName().equalsIgnoreCase("head")){
+			//TODO bartys /head command
+		    if(args.length < 1){ //If they didnt mention a name
+		    	return false; //Show them the usage
+		    }
+		    String playerName = args[0]; //Make a string of the inputted name!
+			//Put ur code here
+		    
+			return true;
+		}
 		else if(cmd.getName().equalsIgnoreCase("potion")){
 			if(!(sender instanceof Player)){
 				sender.sendMessage(plugin.colors.getError() + "This command is for players!");

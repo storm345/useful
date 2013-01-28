@@ -190,6 +190,12 @@ commands:
       permission: useful.canfly
       permission-message: You don't have <permission> permission
       default: op
+   head:
+      description: This gives you a head textured like that of [Name].
+      usage: /<command> [Name]
+      permission: useful.head
+      permission-message: You don't have <permission> permission
+      default: op
    rename:
       description: This renames an item.
       usage: /<command> [Name]
