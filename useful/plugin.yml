@@ -1,6 +1,6 @@
 name: useful
 main: com.useful.useful.useful
-version: 2.0
+version: 2.1
 commands:
    test:
       description: This tests the plugin is working.
@@ -129,6 +129,12 @@ commands:
       permission: useful.firework
       permission-message: You don't have <permission> permission
       default: op
+   potion:
+      description: This gives the player a potion of the desired specification.
+      usage: /<command> [Type] [Level] [Splash (true/false)] [Amount] (duration extended (true/false) - only if valid)
+      permission: useful.potion
+      permission-message: You don't have <permission> permission
+      default: op
    information:
       description: This lists all server info.
       usage: /<command>
@@ -167,7 +173,7 @@ commands:
       default: op
    uhost:
       description: Server hosting tool.
-      usage: /<command> [performance, stats, memory, gc, system, properties, logger, dplugin (name)]
+      usage: /<command> [performance, stats, memory, gc, system, properties, logger, dplugin (name), config]
       permission: useful.uhost
       permission-message: You don't have <permission> permission
       default: op
@@ -178,6 +184,18 @@ commands:
       permission: useful.showtime
       permission-message: You don't have <permission> permission
       default: true
+   canfly:
+      description: This toggles the ability to fly.
+      usage: /<command>
+      permission: useful.canfly
+      permission-message: You don't have <permission> permission
+      default: op
+   rename:
+      description: This renames an item.
+      usage: /<command> [Name]
+      permission: useful.rename
+      permission-message: You don't have <permission> permission
+      default: op
    jail:
       description: This jails the person.
       usage: /<command> [Jailname] [Name] [Time(minutes)] [Reason]
@@ -325,7 +343,7 @@ commands:
       default: op
    useful:
       description: This is a command to check the plugin is working or reload the config.
-      usage: /<command> (reload)
+      usage: /<command> (reload/changelog)
       permission: useful.test
       permission-message: You don't have <permission> permission
       default: true
@@ -454,7 +472,7 @@ commands:
       default: op
    worldgm:
       description: This sets the default gamemode of the world.
-      usage: /<command> [creative/survival/adventure]
+      usage: /<command> [creative/survival/adventure/none]
       permission: useful.worldgm
       permission-message: You don't have <permission> permission
       default: op

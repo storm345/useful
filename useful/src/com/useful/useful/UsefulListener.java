@@ -659,7 +659,7 @@ public class UsefulListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	void Auther(PlayerCommandPreprocessEvent event){
-		if(event.getMessage().startsWith("/login")){
+		if(event.getMessage().toLowerCase().startsWith("login", 1)){
 			return;
 		}
 		else{
@@ -672,6 +672,19 @@ public class UsefulListener implements Listener{
 				event.setCancelled(true);
 			}
 		}
+		}
+		boolean contains = useful.jailed.containsKey(event.getPlayer().getName());
+		if(contains){
+			String msg = event.getMessage().toLowerCase();
+			if(msg.startsWith("jailtime", 1) || msg.startsWith("gm", 1) || msg.startsWith("jailed", 1) || msg.startsWith("creative", 1) || msg.startsWith("adventure", 1) || msg.startsWith("survival", 1)){
+				//Command is allowed in jail
+				return;
+			}
+			else{
+				event.getPlayer().sendMessage(plugin.colors.getError() + "You are not allowed to perform this command whilst in jail!");
+				event.setCancelled(true);
+				return;
+			}
 		}
 		return;
 	}
@@ -712,8 +725,46 @@ public class UsefulListener implements Listener{
 				} catch (Exception e) {
 				return;
 				}
-			 player.teleport(jail);
-			 player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+			 //player.teleport(jail);
+				//TODO a better jail blocking method
+				Location loc = event.getTo();
+				double x = loc.getX();
+				double y = loc.getY();
+				double z = loc.getZ();
+				double jailX = jail.getX();
+				double jailY = jail.getY();
+				double jailZ = jail.getZ();
+				if(x > (jailX + 2)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+				if(x < (jailX - 2)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+				if(z > (jailZ + 2)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+				if(z < (jailZ - 2)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+				if(y > (jailY + 5)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+				if(y < (jailY - 5)){
+					player.teleport(jail);
+					player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
+					return;
+				}
+			 //player.sendMessage(plugin.colors.getError() + "Dont try to escape!");
 		 }
 	}
 
@@ -883,13 +934,10 @@ public class UsefulListener implements Listener{
 		Object[] blocked = useful.blockedCmds.toArray();
 		boolean allowed = true;
 		for(int i=0;i<blocked.length;i++){
-			String orig = ((String)blocked[i]).replaceFirst("/", "");
-			String[] args = ((String)orig).split(" ");
-			String theCmd = args[0];
-			String msg = event.getMessage().replaceFirst("/", "");
-			String[] tArgs = msg.split(" ");
-			String msgCmd = tArgs[0];
-		if(msgCmd.equalsIgnoreCase(theCmd)){
+			String theCmd = (String) blocked[i];
+			theCmd = theCmd.toLowerCase();
+			String msgCmd = event.getMessage().toLowerCase();
+		if(msgCmd.startsWith(theCmd, 1)){
 			event.getPlayer().sendMessage(plugin.colors.getError() + useful.config.getString("general.disabledmessage"));
 			allowed = false;
 		}
@@ -918,6 +966,42 @@ public class UsefulListener implements Listener{
 		Player player = event.getPlayer();
 		String pname = player.getName();
 		Location prev = event.getFrom();
+		String pluginFolder = plugin.getDataFolder().getAbsolutePath();
+		File pFile = new File(pluginFolder + File.separator + "player-data" + File.separator + pname + ".yml"); //Should create is doesn't exist?
+		FileConfiguration pData = new YamlConfiguration();
+		try {
+			pData.load(pFile);
+		} catch (FileNotFoundException e) {
+			try {
+				pFile.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			pFile.delete();
+			return;
+		}
+		pData.set("data.previous-location.world", prev.getWorld().getName());
+		pData.set("data.previous-location.x", prev.getX());
+		pData.set("data.previous-location.y", prev.getY());
+		pData.set("data.previous-location.z", prev.getZ());
+		pData.set("data.previous-location.yaw", prev.getYaw());
+		pData.set("data.previous-location.pitch", prev.getPitch());
+		try {
+			pData.save(pFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
+	}
+	@EventHandler
+	void backSaver(PlayerDeathEvent event){
+		//TODO make a way of saving players previous locations.
+		Player player = event.getEntity();
+		String pname = player.getName();
+		Location prev = player.getLocation();
 		String pluginFolder = plugin.getDataFolder().getAbsolutePath();
 		File pFile = new File(pluginFolder + File.separator + "player-data" + File.separator + pname + ".yml"); //Should create is doesn't exist?
 		FileConfiguration pData = new YamlConfiguration();

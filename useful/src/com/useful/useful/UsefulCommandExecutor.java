@@ -73,6 +73,8 @@ import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionType;
 
 import com.useful.useful.utils.*;
 
@@ -1004,10 +1006,58 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 	
 	return true;
 }
+else if(cmd.getName().equalsIgnoreCase("canfly")){
+	if(!(sender instanceof Player)){
+		sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+		return true;
+	}
+	if(player.getAllowFlight()){
+		player.setAllowFlight(false);
+		player.sendMessage(plugin.colors.getSuccess() + "Fly mode disabled!");
+	}
+	else if(!player.getAllowFlight()){
+		player.setAllowFlight(true);
+		player.sendMessage(plugin.colors.getSuccess() + "Fly mode enabled!");
+	}
+	return true;
+}
+else if(cmd.getName().equalsIgnoreCase("rename")){
+	if(!(sender instanceof Player)){
+		sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+		return true;
+	}
+	if(args.length<1){
+		return false;
+	}
+	String raw = args[0];
+	for(int i=1;i<args.length;i++){
+		raw = raw + " " + args[i];
+	}
+	String newName = ChatColor.RESET + raw;
+	newName = useful.colorise(newName);
+	ItemStack toName = player.getItemInHand();
+	if(toName.getTypeId() == 0){
+		sender.sendMessage(plugin.colors.getError() + "Cannot rename air!");
+		return true;
+	}
+	ItemRename manager = new ItemRename(plugin);
+	manager.rename(toName, newName);
+	sender.sendMessage(plugin.colors.getSuccess() + "Successfully renamed the item in hand to " + newName);
+	return true;
+}
 		else if(cmd.getName().equalsIgnoreCase("useful")){ // If the player typed /basic then do the following...
 			if (args.length < 1){
 			sender.sendMessage("The useful plugin version " + config.getDouble("version.current") + " is working! - coded by storm345 - do /useful reload to reload the config.");
 			return true;
+			}
+			else if(args[0].equalsIgnoreCase("changelog")){
+				sender.sendMessage(plugin.colors.getTitle() + "Changelog:");
+				Object[] changes = plugin.changelog.values.toArray();
+				for(int i=0;i<changes.length;i++){
+					String change = (String) changes[i];
+					sender.sendMessage(ChatColor.BOLD + plugin.colors.getInfo() + change);
+				}
+				return true;
 			}
 			else if(args[0].equalsIgnoreCase("reload")){
 				try{
@@ -1027,6 +1077,70 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				
 				
 			}
+			return true;
+		}
+		else if(cmd.getName().equalsIgnoreCase("potion")){
+			if(!(sender instanceof Player)){
+				sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+				return true;
+			}
+			if(args.length < 4){
+				return false;
+			}
+			Potions manager = new Potions(useful.plugin);
+			PotionType type = manager.potionTypeFromString(args[0]);
+			if(type == null){
+				sender.sendMessage(plugin.colors.getTitle() + "Valid potion types:");
+				sender.sendMessage(plugin.colors.getInfo() + "fire_resistance, instant_damage, instant_heal, invisibility, night_vision, poison, regen, slowness, speed, strength, water, weakness");
+				return true;
+			}
+			int level = 0;
+			try {
+				level = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			if(level < 1){
+				sender.sendMessage(plugin.colors.getError() + "Level must be bigger than 0");
+				return true;
+			}
+			//type and level set
+			boolean splash = false;
+			if(args[2].equalsIgnoreCase("true") || args[2].equalsIgnoreCase("yes")){
+				splash = true;
+			}
+			//nearly...
+			int amount = 0;
+			try {
+				amount = Integer.parseInt(args[3]);
+			} catch (NumberFormatException e) {
+				return false;
+			}
+			if(amount < 1){
+				sender.sendMessage(plugin.colors.getError() + "Amount must be bigger than 0");
+				return true;
+			}
+			//All set!
+			Potion potion;
+			try {
+				potion = new Potion(type, level);
+			} catch (Exception e) {
+				sender.sendMessage(plugin.colors.getError() + "Potion is invalid (Level too high?)");
+				return true;
+			}
+			if(splash){
+				potion.splash();
+			}
+			if(args.length == 5){
+				boolean extended = false;
+				if(args[4].equalsIgnoreCase("yes") || args[4].equalsIgnoreCase("true")){
+					extended = true;
+				}
+				potion.setHasExtendedDuration(extended);
+			}
+			ItemStack potions = potion.toItemStack(amount);
+			player.getInventory().addItem(potions);
+			player.sendMessage(plugin.colors.getSuccess() + "Successfully created potion!");
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("timeget")){ // If the player typed /basic then do the following...
@@ -1784,6 +1898,22 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 			else if(args[0].equalsIgnoreCase("adventure")){
 				mode = "adventure";
 			}
+			else if(args[0].equalsIgnoreCase("none")){
+				//remove it from list
+				mode = "none";
+				String wname = player.getLocation().getWorld().getName();
+				String delquery = "DELETE FROM worldgm WHERE world='"+wname+"'";
+ 			   ResultSet delete = plugin.sqlite.query(delquery);
+ 			   try {
+					delete.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+					sender.sendMessage(plugin.colors.getError() + "Error");
+					return true;
+				}
+ 			  sender.sendMessage(plugin.colors.getSuccess() + "The default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
+				return true;
+			}
 			else{
 				return false;
 			}
@@ -1824,7 +1954,7 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				e.printStackTrace();
 				return true;
 			}
-			sender.sendMessage(plugin.colors.getSuccess() + "Default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
+			sender.sendMessage(plugin.colors.getSuccess() + "The default gamemode for this world set to " + mode + " override with the permission: 'useful.worldgm.bypass'");
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("jailtime")){ // If the player typed /basic then do the following...
@@ -3774,7 +3904,7 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				sender.sendMessage(plugin.colors.getError() + "Cannot enchant air!");
 			}
 			try {
-				item.addEnchantment(toEnchant, enchantmentLvl);
+				item.addUnsafeEnchantment(toEnchant, enchantmentLvl);
 			} catch (Exception e) {
 				sender.sendMessage(plugin.colors.getError() + "Enchantment invalid! (Level is too high/item is invalid for that enchantment)");
 				return true;
@@ -3967,7 +4097,215 @@ else if(cmd.getName().equalsIgnoreCase("backup")){
 				getServer().getPluginManager().disablePlugin(thepl);
 				return true;
 			}
+			else if(args[0].equalsIgnoreCase("config")){
+				/*
+				if(args.length < 5){
+					// 1 = this, 2 = plugin, 3 = node, 4 = setting
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+				return true;
+				}
+				*/
+				if(args.length < 2){
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+					return true;
+				}
+				String action = args[1];
+				if(action.equalsIgnoreCase("set")){
+					if(args.length < 5){
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						return true;
+					}
+					String pname = args[2];
+					Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+					boolean found = false;
+					Plugin tPlugin = null;
+					for(int i = 0;i<plugins.length;i++){
+						Plugin test = plugins[i];
+					    if(test.getName().equalsIgnoreCase(pname)){
+					    	tPlugin = test;
+					    	found = true;
+					    }
+					}
+					if(plugin == null || found == false){
+						sender.sendMessage(plugin.colors.getError() + "Plugin not found! Do /plugins for a list!");
+						return true;
+					}
+					String type = "unknown";
+					FileConfiguration config = tPlugin.getConfig();
+					String node = args[3];
+					String setting = args[4];
+					float num = 0;
+					try {
+						num = Float.parseFloat(setting);
+						type = "number";
+					} catch (NumberFormatException e) {
+						type = "unknown";
+					}
+					boolean bool = false;
+					if(setting.equalsIgnoreCase("true")){
+						bool = true;
+						type = "boolean";
+					}
+					else if(setting.equalsIgnoreCase("false")){
+						bool = false;
+						type = "boolean";
+					}
+					if(type == "unknown"){
+						//It is a string
+						for(int i = 5; i< args.length;i++){
+							setting = setting + " " + args[i];
+						}
+						config.set(node, setting);
+					}
+					else if(type == "number"){
+						//It is a number
+						config.set(node, num);
+					}
+					else if(type == "boolean"){
+						//It is a boolean
+						config.set(node, bool);
+					}
+					File folder = tPlugin.getDataFolder();
+					File configFile = new File(folder + File.separator + "config.yml");
+					if(!(configFile.exists()) || configFile.length() < 1){
+						sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
+						return true;
+					}
+					try {
+						config.save(configFile);
+					} catch (IOException e) {
+						sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
+						return true;
+					}
+				sender.sendMessage(plugin.colors.getSuccess() + "Successfully created/set the node: " + node + " to " + setting + " in " + tPlugin.getName() + " reload for it to take effect!");
+					
+				return true;
+				}
+				else if(action.equalsIgnoreCase("unset")){
+					if(args.length < 4){
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						return true;
+					}
+				String pname = args[2];
+				String node = args[3];
+				Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+				boolean found = false;
+				Plugin tPlugin = null;
+				for(int i = 0;i<plugins.length;i++){
+					Plugin test = plugins[i];
+				    if(test.getName().equalsIgnoreCase(pname)){
+				    	tPlugin = test;
+				    	found = true;
+				    }
+				}
+				if(plugin == null || found == false){
+					sender.sendMessage(plugin.colors.getError() + "Plugin not found! Do /plugins for a list!");
+					return true;
+				}
+				//String type = "unknown";
+				FileConfiguration config = tPlugin.getConfig();
+				config.set(node, null);
+				File folder = tPlugin.getDataFolder();
+				File configFile = new File(folder + File.separator + "config.yml");
+				if(!(configFile.exists()) || configFile.length() < 1){
+					sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
+					return true;
+				}
+				try {
+					config.save(configFile);
+				} catch (IOException e) {
+					sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
+					return true;
+				}
+			sender.sendMessage(plugin.colors.getSuccess() + "Successfully removed the node: " + node + " in " + tPlugin.getName() + " reload for it to take effect!");
+				
 			return true;
+				}
+				else if(action.equalsIgnoreCase("list")){
+					if(args.length < 4){
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						return true;
+					}
+					String pname = args[2];
+					String page = args[3];
+					int pnum = 0;
+					try {
+						pnum = Integer.parseInt(page);
+					} catch (NumberFormatException e) {
+						sender.sendMessage(plugin.colors.getError() + "Page number is incorrect!");
+						return true;
+					}
+					Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+					boolean found = false;
+					Plugin tPlugin = null;
+					for(int i = 0;i<plugins.length;i++){
+						Plugin test = plugins[i];
+					    if(test.getName().equalsIgnoreCase(pname)){
+					    	tPlugin = test;
+					    	found = true;
+					    }
+					}
+					if(plugin == null || found == false){
+						sender.sendMessage(plugin.colors.getError() + "Plugin not found! Do /plugins for a list!");
+						return true;
+					}
+					//String type = "unknown";
+					FileConfiguration config = tPlugin.getConfig();
+					Set<String> keys = config.getKeys(true);
+					Object[] nodes = keys.toArray();
+					List<String> listNodes = new ArrayList<String>();
+					if(tPlugin.getName().equalsIgnoreCase("useful")){
+					for(int i=0;i<nodes.length;i++){
+						listNodes.add((String) nodes[i]);
+					}
+					for(int i=0;i<listNodes.size();i++){
+						String node = listNodes.get(i);
+						if((node).contains("description") && tPlugin.getName().equalsIgnoreCase("useful")){
+							listNodes.remove(node);
+						}
+					}
+					nodes = listNodes.toArray();
+					}
+					int totalPages = nodes.length / 15;
+					totalPages += 1;
+					sender.sendMessage(plugin.colors.getTitle() + "Valid nodes for " + tPlugin.getName() + ":" + plugin.colors.getInfo() + "(Page: " + pnum + "/"+totalPages+")");
+					int displayed = 0;
+					int start = pnum - 1;
+					start = start * 15;
+					for(int i = start;i<nodes.length && displayed < 15;i++){
+						String v = (String) nodes[i];
+						if(!(v.contains("."))){
+							sender.sendMessage(plugin.colors.getTitle() + v);
+						}
+						else{
+							String[] nodeParts = v.split("\\.");
+							if(nodeParts.length < 3 && nodeParts.length > 1){
+								nodeParts[0] = ChatColor.RED + nodeParts[0];
+								nodeParts[1] = ChatColor.YELLOW + nodeParts[1];
+								v = nodeParts[0] + "." + nodeParts[1];
+							}
+							if(nodeParts.length > 2){
+								nodeParts[0] = ChatColor.RED + nodeParts[0];
+								nodeParts[1] = ChatColor.YELLOW + nodeParts[1];
+								v = nodeParts[0] + "." + nodeParts[1];
+								for(int o=2;o<nodeParts.length;o++){
+									v = v + "." + ChatColor.BLUE + nodeParts[o];
+								}
+							}
+						sender.sendMessage(plugin.colors.getInfo() + v);
+						}
+						displayed++;
+					}
+				}
+				else{
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+					return true;
+				}
+				return true;
+			}
+			else{
+				return false;
+			}
 	}	
 		//If this has happened the function will break and return true. if this hasn't happened the a value of false will be returned.
 		return false; 

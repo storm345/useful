@@ -5,12 +5,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.useful.useful.useful;
 
 public class Performance {
 		static useful plugin;
-		public static int gc;
+		public static BukkitTask gc;
 			
 			public ListStore heros;
 			
@@ -22,10 +23,19 @@ public class Performance {
 			public static void performanceMode(Boolean enable){
 			if(enable == false){
 				//disable everything setup below
-				Bukkit.getScheduler().cancelTask(gc);
+				gc = Bukkit.getScheduler().runTaskTimerAsynchronously(useful.plugin, new Runnable() {
+
+		            @Override
+		            public void run() {
+		            	//nothing
+		            }
+
+					}, 2000, 2000);
+				gc.cancel();
+				
 			return;
 			}
-			gc = Bukkit.getScheduler().scheduleAsyncRepeatingTask(useful.plugin, new Runnable() {
+			gc = Bukkit.getScheduler().runTaskTimerAsynchronously(useful.plugin, new Runnable() {
 
 	            @Override
 	            public void run() {
