@@ -4129,13 +4129,13 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				}
 				*/
 				if(args.length < 2){
-					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
 					return true;
 				}
 				String action = args[1];
 				if(action.equalsIgnoreCase("set")){
 					if(args.length < 5){
-						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
 						return true;
 					}
 					String pname = args[2];
@@ -4206,7 +4206,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				}
 				else if(action.equalsIgnoreCase("unset")){
 					if(args.length < 4){
-						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
 						return true;
 					}
 				String pname = args[2];
@@ -4246,7 +4246,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				}
 				else if(action.equalsIgnoreCase("list")){
 					if(args.length < 4){
-						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+						sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
 						return true;
 					}
 					String pname = args[2];
@@ -4320,8 +4320,31 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						displayed++;
 					}
 				}
+				else if(action.equalsIgnoreCase("view")){
+					//TODO
+					String pname = args[2];
+					Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+					boolean found = false;
+					Plugin tPlugin = null;
+					for(int i = 0;i<plugins.length;i++){
+						Plugin test = plugins[i];
+					    if(test.getName().equalsIgnoreCase(pname)){
+					    	tPlugin = test;
+					    	found = true;
+					    }
+					}
+					if(plugin == null || found == false){
+						sender.sendMessage(plugin.colors.getError() + "Plugin not found! Do /plugins for a list!");
+						return true;
+					}
+					FileConfiguration config = tPlugin.getConfig();
+					String node = args[3];
+					Object result = config.get(node);
+					sender.sendMessage(plugin.colors.getSuccess() + "Value of " + node + " in " + tPlugin.getName() + " is: " + result);
+					return true;
+				}
 				else{
-					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]]");
+					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
 					return true;
 				}
 				return true;
