@@ -111,7 +111,7 @@ public class UsefulListener implements Listener{
 	
 	private useful plugin;
 	
-	public ListStore heros;// trst
+	public ListStore heros;
 	
 	public UsefulListener(useful plugin){
 		this.plugin = useful.plugin;
