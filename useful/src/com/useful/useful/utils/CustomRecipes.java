@@ -21,7 +21,10 @@ public class CustomRecipes {
     ShapedRecipe mobSpawner = null;
     ShapedRecipe cmdBlock = null;
 public CustomRecipes(){
-	dblSlab = new ShapelessRecipe(new ItemStack(Material.DOUBLE_STEP));
+	ItemRename manager = new ItemRename(useful.plugin);
+	ItemStack doubleStep = new ItemStack(Material.DOUBLE_STEP);
+	manager.rename(doubleStep, "Double step");
+	dblSlab = new ShapelessRecipe(doubleStep);
 	dblSlab.addIngredient(2, Material.STEP);
 	ItemStack singleSlabs = new ItemStack(Material.STEP);
 	singleSlabs.setAmount(2);
