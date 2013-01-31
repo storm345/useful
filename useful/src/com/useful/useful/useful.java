@@ -73,6 +73,8 @@ public class useful extends JavaPlugin {
 	public double pluginVersion = 0;
 	static File ranksFile;
 	static FileConfiguration ranks;
+	static File upermsFile;
+	static FileConfiguration uperms;
 	//static FileConfiguration config;
 	public static FileConfiguration config;
 	boolean idleRunning = false;
@@ -242,6 +244,9 @@ public void saveYamls() {
 public void loadYamls() {
     try {
         ranks.load(ranksFile);
+        uperms.options().pathSeparator('/');
+        uperms.load(upermsFile);
+        uperms.options().pathSeparator('/');
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -410,6 +415,15 @@ public void jailsConverter(){
 		        ranksFile.createNewFile();
 		    }
 			ranks = new YamlConfiguration();
+			upermsFile = new File(this.getDataFolder().getAbsolutePath() + File.separator + "uperms.yml");
+			//File useful = new File(getDataFolder() + "config.yml");
+			//useful.mkdir();
+			if(!upermsFile.exists()){
+		        upermsFile.getParentFile().mkdirs();
+		        upermsFile.createNewFile();
+		    }
+			uperms = new YamlConfiguration();
+			uperms.options().pathSeparator('/');
 			loadYamls();
 			if(!config.contains("general.burn.enable")){
 				copy(getResource("config.yml"), new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml"));
@@ -425,6 +439,14 @@ public void jailsConverter(){
 			} catch (Exception e2) {
 				getLogger().log(Level.SEVERE, "ERROR: Error retrieving version! Autoupdate will not work!");
 			}
+			uperms.options().pathSeparator('/');
+			if(upermsFile.length() < 1){
+				uperms.options().pathSeparator('/');
+				uperms.set("groups/default/permissions/example.PermissionNode", true);
+				uperms.set("users/playerName/permissions/example.PermissionNode", true);
+			}
+			uperms.options().pathSeparator('/');
+			uperms.save(upermsFile);
 			if(!config.contains("version.autoupdate.# description")) {
 				config.set("version.autoupdate.# description", "If enabled this will check for updates at an interval of roughly once every hour and if it finds one it will automatically install it.");
 				}
