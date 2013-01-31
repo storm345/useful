@@ -76,6 +76,7 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerInventoryEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -1368,6 +1369,16 @@ public class UsefulListener implements Listener{
 	}
 	*/
 	@EventHandler
+	public void registerLoginPerms(PlayerLoginEvent event){
+		if(!(useful.config.getBoolean("uperms.enable"))){
+			return;
+		}
+		String name = event.getPlayer().getName();
+		plugin.permManager.checkPerms(name);
+	    plugin.permManager.ReRegisterPerms(name);
+		return;
+	}
+	@EventHandler(priority = EventPriority.HIGH)
 	public void dispenseEvent(BlockDispenseEvent event){
 		if(!useful.config.getBoolean("general.infiniteDispenserSign.enable")){
 			return;

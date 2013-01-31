@@ -12,12 +12,14 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class useful extends JavaPlugin {
 	public ListStore warnsplayer;
 	public ListStore auths;
 	public ListStore changelog;
+	public uPerms permManager = null;
 	public int number;
 	public int numberorig;
 	public static HashMap<String, ArrayList<String>> jailed = new HashMap<String, ArrayList<String>>();
@@ -444,6 +447,9 @@ public void jailsConverter(){
 				uperms.options().pathSeparator('/');
 				uperms.set("groups/default/permissions/example.PermissionNode", true);
 				uperms.set("users/playerName/permissions/example.PermissionNode", true);
+				uperms.set("users/playerName/groups", Arrays.asList("default"));
+				uperms.set("groups/Admin/permissions/example.perm", true);
+				uperms.set("groups/Admin/inheritance", Arrays.asList("default"));
 			}
 			uperms.options().pathSeparator('/');
 			uperms.save(upermsFile);
@@ -985,6 +991,9 @@ public void jailsConverter(){
 				}
 	        if(!config.contains("colorScheme.tp")) {
 				config.set("colorScheme.tp", "&5");
+				}
+	        if(!config.contains("uperms.enable")) {
+				config.set("uperms.enable", true);
 				}
 	        if(!config.contains("customCrafting.doubleSlab.# description")){
 	        	config.set("customCrafting.doubleSlab.# description", "This allows for the crafting of a double slab.");
@@ -1556,6 +1565,16 @@ public void jailsConverter(){
         		   authed.put(pname, false);
         	   }
         	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
+        	   if(config.getBoolean("uperms.enable")){
+        		   //TODO setup uperms for use
+        		   permManager=new uPerms(this);
+        		   Player[] player = getServer().getOnlinePlayers();
+        		   for(int i=0;i<player.length;i++){
+        			   String name = player[i].getName();
+        			   permManager.checkPerms(name);
+        			   permManager.ReRegisterPerms(name);
+        		   }
+        	   }
         	   System.gc();
         	   //getLogger().info("useful plugin v"+pluginVersion+" has been enabled!");
         	   //TODO register custom crafting from config settings
