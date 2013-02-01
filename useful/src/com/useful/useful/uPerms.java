@@ -22,15 +22,8 @@ public class uPerms {
 	}
 	private FileConfiguration file = useful.uperms;
 	//TODO
-	public void checkPerms(String playername){
-		Player player = plugin.getServer().getPlayer(playername);
-		if(player == null){
-			return;
-		}
+	public void checkPerms(Player player){
 		String name = player.getName();
-		if(permMap.containsKey(name)){
-			permMap.remove(name);
-		}
 		PermissionAttachment attach = new PermissionAttachment(plugin, player);
 		if(permMap.containsKey(name)){
 			attach = permMap.get(name);
@@ -70,15 +63,11 @@ public class uPerms {
 				file.save(useful.upermsFile);
 			} catch (IOException e) {
 			}
-			checkPerms(name);
+			checkPerms(player);
 		}
 		return;
 	}
-	public void ReRegisterPerms(String playername){
-		Player player = plugin.getServer().getPlayer(playername);
-		if(player == null){
-			return;
-		}
+	public void ReRegisterPerms(Player player){
 		String name = player.getName();
 		if(!(permMap.containsKey(name))){
 			return;
@@ -156,8 +145,8 @@ public class uPerms {
 		}
 		PermissionAttachment attacher = player.addAttachment(plugin);
 		permMap.put(playername, attacher);
-		checkPerms(playername);
-		ReRegisterPerms(playername);
+		checkPerms(player);
+		ReRegisterPerms(player);
 		player.recalculatePermissions();
 		return;
 	}
@@ -165,8 +154,8 @@ public class uPerms {
 		String playername = player.getName();
 		PermissionAttachment attacher = player.addAttachment(plugin);
 		permMap.put(playername, attacher);
-		checkPerms(playername);
-		ReRegisterPerms(playername);
+		checkPerms(player);
+		ReRegisterPerms(player);
 		player.recalculatePermissions();
 		return;
 	}

@@ -4188,15 +4188,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						//It is a boolean
 						config.set(node, bool);
 					}
-					File folder = tPlugin.getDataFolder();
-					File configFile = new File(folder + File.separator + "config.yml");
-					if(!(configFile.exists()) || configFile.length() < 1){
-						sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
-						return true;
-					}
 					try {
-						config.save(configFile);
-					} catch (IOException e) {
+						tPlugin.saveConfig();
+					} catch (Exception e) {
 						sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
 						return true;
 					}
@@ -4228,15 +4222,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				//String type = "unknown";
 				FileConfiguration config = tPlugin.getConfig();
 				config.set(node, null);
-				File folder = tPlugin.getDataFolder();
-				File configFile = new File(folder + File.separator + "config.yml");
-				if(!(configFile.exists()) || configFile.length() < 1){
-					sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
-					return true;
-				}
 				try {
-					config.save(configFile);
-				} catch (IOException e) {
+					tPlugin.saveConfig();
+				} catch (Exception e) {
 					sender.sendMessage(plugin.colors.getError() + "Unable to find config file for the plugin " + tPlugin.getName());
 					return true;
 				}

@@ -1,9 +1,3 @@
-* Added /canfly
-* Added ingame configuration to uhost
-* Added /potion
-* Improved jailing
-* Improved broadcasting
-* Improved enchanting
-* Added /rename
-* Added some extra crafting recipes (optional of course, same as everything else!)
-* Added /head
+* Improved /uhost config slightly
+* Added an inbuilt permission system
+* Fixed console chat dupe bug

@@ -1168,9 +1168,11 @@ public class UsefulListener implements Listener{
 			    Set<Player> recievers = event.getRecipients();
 			    Object[] array = recievers.toArray();
 			    for(int i = 0; i < array.length; i++){
-			    	((Player) array[i]).sendMessage("<" + prefix + ChatColor.WHITE + "> " + msg);
-			    	plugin.getServer().getConsoleSender().sendMessage("<" + prefix + ChatColor.WHITE + "> " + msg);
+			    	if(!(array[i] == plugin.getServer().getConsoleSender())){
+			    		((Player) array[i]).sendMessage("<" + prefix + ChatColor.WHITE + "> " + msg);
+			    	}
 			    }
+			    plugin.getServer().getConsoleSender().sendMessage("<" + prefix + ChatColor.WHITE + "> " + msg);
 	    event.setCancelled(true);
 		}
 		else return;

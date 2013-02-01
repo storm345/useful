@@ -1600,6 +1600,11 @@ public void jailsConverter(){
 		
 	}
 	public void onDisable(){
+		Player[] players = getServer().getOnlinePlayers();
+		for(int i=0;i<players.length;i++){
+			String name = players[i].getName();
+			plugin.permManager.unLoadPerms(name);
+		}
 		saveYamls();
 		auths.save();
 		broadcaster.cancel();
