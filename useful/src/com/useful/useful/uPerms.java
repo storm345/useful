@@ -1,15 +1,18 @@
 package com.useful.useful;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 public class uPerms {
 	private useful plugin;
@@ -29,6 +32,9 @@ public class uPerms {
 			permMap.remove(name);
 		}
 		PermissionAttachment attach = new PermissionAttachment(plugin, player);
+		if(permMap.containsKey(name)){
+			attach = permMap.get(name);
+		}
 		ConfigurationSection users = file.getConfigurationSection("users");
 		if(users.getKeys(false).contains(name)){
 			List<String> groups = users.getStringList(name + "/groups");
@@ -58,7 +64,13 @@ public class uPerms {
 			permMap.put(name, attach);
 		}
 		else{
-			users.set(name + "/groups", Arrays.asList("default"));
+			users.createSection(name+"/permissions");
+			file.set("users/"+name+"/groups", Arrays.asList("default"));
+			try {
+				file.save(useful.upermsFile);
+			} catch (IOException e) {
+			}
+			checkPerms(name);
 		}
 		return;
 	}
@@ -71,6 +83,7 @@ public class uPerms {
 		if(!(permMap.containsKey(name))){
 			return;
 		}
+		player.recalculatePermissions();
 		PermissionAttachment attach = permMap.get(name);
 		Map<String,Boolean> perms = attach.getPermissions();
 		Set<String> keys = perms.keySet();
@@ -87,13 +100,6 @@ public class uPerms {
 	Set<String> tGroups = groups.getKeys(false);
 	for(String v:tGroups){
 		if(v.equalsIgnoreCase(groupname)){
-			groupname = v;
-			ConfigurationSection perms = groups.getConfigurationSection(groupname + "/permissions");
-			Set<String> tPerms = perms.getKeys(false);
-			for(String perm:tPerms){
-				boolean value = perms.getBoolean(perm);
-					returnedPerms.setPermission(perm, value);
-			}
 			ConfigurationSection groupSect = groups.getConfigurationSection(groupname);
 			if(groupSect.contains("/inheritance")){
 				List<String> inherited = groupSect.getStringList("/inheritance");
@@ -106,9 +112,76 @@ public class uPerms {
 					}
 				}
 			}
+			groupname = v;
+			ConfigurationSection perms = groups.getConfigurationSection(groupname + "/permissions");
+			Set<String> tPerms = perms.getKeys(false);
+			for(String perm:tPerms){
+				boolean value = perms.getBoolean(perm);
+					returnedPerms.setPermission(perm, value);
+			}
 		}
 	}
 		return returnedPerms;
 	}
-
+	public void refreshPerms(Player player){
+		String playername = player.getName();
+		if(!player.isOnline()){
+			return;
+		}
+		Set<PermissionAttachmentInfo> current = player.getEffectivePermissions();
+		Object[] currentPerms = current.toArray();
+		PermissionAttachment oldperms = new PermissionAttachment(plugin, player);
+		for(int i=0;i<currentPerms.length;i++){
+			PermissionAttachmentInfo info = (PermissionAttachmentInfo) currentPerms[i];
+			PermissionAttachment old = info.getAttachment();
+			Map<String, Boolean> map = null;
+			try {
+				map = old.getPermissions();
+				if(map != null){
+					Set<String> keys = map.keySet();
+					for(String v:keys){
+						oldperms.setPermission(v, map.get(v));
+					}
+				}
+			} catch (Exception e) {
+			}	
+		}
+		oldperms.remove();
+		if(permMap.containsKey(playername)){
+			try {
+				player.removeAttachment(permMap.get(playername));
+			} catch (Exception e) {
+			}
+			permMap.remove(playername);
+		}
+		PermissionAttachment attacher = player.addAttachment(plugin);
+		permMap.put(playername, attacher);
+		checkPerms(playername);
+		ReRegisterPerms(playername);
+		player.recalculatePermissions();
+		return;
+	}
+	public void loadPerms(Player player){
+		String playername = player.getName();
+		PermissionAttachment attacher = player.addAttachment(plugin);
+		permMap.put(playername, attacher);
+		checkPerms(playername);
+		ReRegisterPerms(playername);
+		player.recalculatePermissions();
+		return;
+	}
+    public void unLoadPerms(String playername){
+    	//TODO
+    	Player player = plugin.getServer().getPlayer(playername);
+    	if(permMap.containsKey(playername)){
+			try {
+				player.removeAttachment(permMap.get(playername));
+			} catch (Exception e) {
+				//Did not have it set!
+			}
+			permMap.remove(playername);
+		}
+    	player.recalculatePermissions();
+    	return;
+    }
 }

@@ -1443,8 +1443,7 @@ public void jailsConverter(){
 				
 			}
    			try{
-   				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-   				
+   				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
    				String line;
    				while((line = reader.readLine()) != null){
    					double latest = 0;
@@ -1570,9 +1569,7 @@ public void jailsConverter(){
         		   permManager=new uPerms(this);
         		   Player[] player = getServer().getOnlinePlayers();
         		   for(int i=0;i<player.length;i++){
-        			   String name = player[i].getName();
-        			   permManager.checkPerms(name);
-        			   permManager.ReRegisterPerms(name);
+        			   permManager.refreshPerms(player[i]);
         		   }
         	   }
         	   System.gc();

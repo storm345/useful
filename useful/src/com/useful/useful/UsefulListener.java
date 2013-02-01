@@ -76,6 +76,7 @@ import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerInventoryEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -1368,15 +1369,27 @@ public class UsefulListener implements Listener{
 		return;
 	}
 	*/
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void registerLoginPerms(PlayerLoginEvent event){
 		if(!(useful.config.getBoolean("uperms.enable"))){
 			return;
 		}
-		String name = event.getPlayer().getName();
-		plugin.permManager.checkPerms(name);
-	    plugin.permManager.ReRegisterPerms(name);
+		plugin.permManager.loadPerms(event.getPlayer());
+		plugin.permManager.refreshPerms(event.getPlayer());
+		event.getPlayer().recalculatePermissions();
 		return;
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void unRegisterQuitPerms(PlayerQuitEvent event){
+		String name = event.getPlayer().getName();
+		plugin.permManager.unLoadPerms(name);
+	return;
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void unRegisterKickPerms(PlayerKickEvent event){
+		String name = event.getPlayer().getName();
+		plugin.permManager.unLoadPerms(name);
+	return;
 	}
 	@EventHandler(priority = EventPriority.HIGH)
 	public void dispenseEvent(BlockDispenseEvent event){
