@@ -173,4 +173,76 @@ public class uPerms {
     	player.recalculatePermissions();
     	return;
     }
+    public void setGroups(String playername, List<String> groups){
+    	String name = playername;
+    	ConfigurationSection users = file.getConfigurationSection("users");
+    	if(users.getKeys(false).contains(name)){
+    		Object[] names = users.getKeys(false).toArray();
+    		for(int i=0;i<names.length;i++){
+    			if(((String)names[i]).equalsIgnoreCase(name)){
+    				name = (String) names[i];
+    			}
+    		}
+    	}
+    	users.set(name+"/groups", groups);
+    	try {
+			file.save(useful.upermsFile);
+		} catch (IOException e) {
+		}
+    	return;
+    }
+    public void setPerm(String path, String perm, Object value){
+    	file.set(path, value);
+    	try {
+			file.save(useful.upermsFile);
+		} catch (IOException e) {
+		}
+    	return;
+    }
+    public void unSetPerm(String path, String perm){
+    	file.set(path, null);
+    	try {
+			file.save(useful.upermsFile);
+		} catch (IOException e) {
+		}
+    	return;
+    }
+    public void createGroup(String name, Map<String, Boolean> perms, List<String> inheritance){
+    	ConfigurationSection group = file.getConfigurationSection("").createSection("groups/" + name);
+    	ConfigurationSection permSect = group.createSection("/permissions");
+    	Set<String> permList = perms.keySet();
+    	for(String perm:permList){
+    		permSect.set("/" + perm, perms.get(perm));
+    	}
+    		group.set("/inheritance", inheritance);
+    		try {
+    			file.save(useful.upermsFile);
+    		} catch (IOException e) {
+    		}
+    	return;
+    }
+    public void removeGroup(String name){
+    	file.set("groups/"+name, null);
+    	try {
+			file.save(useful.upermsFile);
+		} catch (IOException e) {
+		}
+    	return;
+    }
+    public void unRegisterPlayer(String name){
+    	ConfigurationSection users = file.getConfigurationSection("").createSection("users/");
+    	Boolean contains = false;
+    	Map<String, Object> vals = users.getValues(false);
+    	Set<String> names = vals.keySet();
+    	for(String tname:names){
+    		if(tname.equalsIgnoreCase(name)){
+    			contains = true;
+    			name = tname;
+    		}
+    	}
+    	if(contains){
+    		users.set(name, null);
+    	}
+    	return;
+    }
 }
