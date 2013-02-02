@@ -12,8 +12,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 
 public class uPerms {
 	private useful plugin;
@@ -43,8 +45,23 @@ public class uPerms {
 					Map<String, Boolean> map = thePerms.getPermissions();
 					Set<String> keys = map.keySet();
 					for(String t:keys){
+						if(t.equalsIgnoreCase("useful.*") && map.get(t)){
+							attach.setPermission("useful.*", map.get(t));
+							Map<String, Map<String, Object>> cmds = plugin.getDescription().getCommands();
+							  Set<String> ikeys = cmds.keySet();
+							  Object[] commandsavailable = ikeys.toArray();
+							  for(int y=0;y<cmds.size();y++){
+								  String v = commandsavailable[i].toString();
+								  cmds.get(v);
+								  Map<String, Object> vmap = cmds.get(v);
+								  String perm = vmap.get("permission").toString();
+								  attach.setPermission(perm, true);
+							  }
+						}
+						else{
 						attach.setPermission(t, map.get(t));
-					}
+						}
+						}
 					}
 				}
 			}
@@ -135,7 +152,7 @@ public class uPerms {
 					Set<String> keys = map.keySet();
 					for(String v:keys){
 						oldperms.setPermission(v, map.get(v));
-					}
+						}
 				}
 			} catch (Exception e) {
 			}	

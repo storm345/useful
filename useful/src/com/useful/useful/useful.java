@@ -993,7 +993,7 @@ public void jailsConverter(){
 				config.set("colorScheme.tp", "&5");
 				}
 	        if(!config.contains("uperms.enable")) {
-				config.set("uperms.enable", true);
+				config.set("uperms.enable", false);
 				}
 	        if(!config.contains("customCrafting.doubleSlab.# description")){
 	        	config.set("customCrafting.doubleSlab.# description", "This allows for the crafting of a double slab.");
