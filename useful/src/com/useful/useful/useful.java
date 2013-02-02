@@ -1565,6 +1565,7 @@ public void jailsConverter(){
         	   }
         	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
         	   if(config.getBoolean("uperms.enable")){
+        		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Setting up uhost's perm system...");
         		   //TODO setup uperms for use
         		   permManager=new uPerms(this);
         		   Player[] player = getServer().getOnlinePlayers();
@@ -1600,10 +1601,12 @@ public void jailsConverter(){
 		
 	}
 	public void onDisable(){
+		if(config.getBoolean("uperms.enable")){
 		Player[] players = getServer().getOnlinePlayers();
 		for(int i=0;i<players.length;i++){
 			String name = players[i].getName();
 			plugin.permManager.unLoadPerms(name);
+		}
 		}
 		saveYamls();
 		auths.save();
@@ -1614,6 +1617,7 @@ public void jailsConverter(){
 		this.getServer().getScheduler().cancelTasks(getServer().getPluginManager().getPlugin("useful"));
         sqlite.close();
         authed.clear();
+        System.gc();
         System.gc();
         colLogger.info(ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been disabled.");
 		getLogger().info("useful plugin v"+pluginVersion+" has been disabled.");

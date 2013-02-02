@@ -173,7 +173,7 @@ commands:
       default: op
    uhost:
       description: Server hosting tool.
-      usage: /<command> [performance, stats, memory, gc, system, properties, logger, dplugin (name), config]
+      usage: /<command> [performance, stats, memory, gc, system, properties, logger, dplugin (name), config, perms]
       permission: useful.uhost
       permission-message: You don't have <permission> permission
       default: op

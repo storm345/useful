@@ -78,6 +78,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
+import org.bukkit.util.ChatPaginator;
 
 import com.useful.useful.utils.*;
 
@@ -4333,6 +4334,211 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				}
 				else{
 					sender.sendMessage("Usage: /" + cmdname + " config [Set [Plugin] [Node] [Setting]] [Unset [Plugin] [Node]] [List [Plugin] [Page number]] [View [Plugin] [Node]]");
+					return true;
+				}
+				return true;
+			}
+			else if(args[0].equalsIgnoreCase("perms")){
+				if(!(useful.config.getBoolean("uperms.enable"))){
+					sender.sendMessage(plugin.colors.getError() + "Uperms is not enabled in the config!");
+					return true;
+				}
+				//TODO ingame perms
+				if(args.length < 2){
+					sender.sendMessage("Usage: /" + cmdname + " perms [Group/Player/Reload]");
+				    return true;	
+				}
+				if(args[1].equalsIgnoreCase("reload")){
+					useful.uperms = new YamlConfiguration();
+					useful.uperms.options().pathSeparator('/');
+					plugin.loadYamls();
+					Player[] onlineP = plugin.getServer().getOnlinePlayers();
+					for(int i=0;i<onlineP.length;i++){
+						plugin.permManager.unLoadPerms(onlineP[i].getName());
+						plugin.permManager.refreshPerms(onlineP[i]);
+					}
+					sender.sendMessage(plugin.colors.getSuccess() + "Successfully refreshed server permissions to match currently loaded file!");
+					return true;
+				}
+				if(args[1].equalsIgnoreCase("group")){
+					if(args.length < 3){
+						sender.sendMessage("Usage: /" + cmdname + " <Perms> <Group> [<SetPerm> <Name> <Perm> <Value>], [<UnsetPerm> <Name> <Perm>], [<Create> <Name> <Inheritance>], [<Delete> <Name>], [<List>], [<View> <Group> <Page>]");
+					    return true;
+					}
+					String action = args[2];
+					boolean valid = true;
+					if(action.equalsIgnoreCase("setperm")){
+						String gname = "";
+						if(args.length < 6){
+							valid = false;
+						}
+						if(valid){
+						gname = args[3];
+						String gperm = args[4];
+						String gval = args[5];
+						Object Val;
+						try {
+							Val = Boolean.parseBoolean(gval);
+						} catch (Exception e) {
+							sender.sendMessage(plugin.colors.getError() + "Value must be true or false!");
+							return true;
+						}
+						gname = plugin.permManager.groupExists(gname);
+						if(gname == "^^error^^"){
+							sender.sendMessage(plugin.colors.getError() + "Group doesn't exist!");
+							return true;
+						}
+						String path = "groups/"+gname+"/permissions";
+						plugin.permManager.setPerm(path, gperm, Val);
+						}
+						if(valid){
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully set perm for "+gname+"!");
+						}
+					}
+					else if(action.equalsIgnoreCase("unsetperm")){
+						String gname = "";
+						if(args.length < 5){
+							valid = false;
+						}
+						if(valid){
+						gname = args[3];
+						String gperm = args[4];
+						gname = plugin.permManager.groupExists(gname);
+						if(gname == "^^error^^"){
+							sender.sendMessage(plugin.colors.getError() + "Group doesn't exist!");
+							return true;
+						}
+						String path = "groups/"+gname+"/permissions";
+						plugin.permManager.setPerm(path, gperm, null);
+						}
+						if(valid){
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully unset perm for "+gname+"!");
+						}
+					}
+					else if(action.equalsIgnoreCase("create")){
+						if(args.length < 5){
+							valid = false;
+						}
+						if(valid){
+						String gname = args[3];
+						List<String> inherited = new ArrayList<String>();
+						for(int i=4;i<args.length;i++){
+							inherited.add(args[i]);
+						}
+						plugin.permManager.createGroup(gname, inherited);
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully created the group " + gname);
+						}
+					}
+					else if(action.equalsIgnoreCase("delete")){
+						if(args.length < 4){
+							valid = false;
+						}
+						String gname = args[3];
+						gname = plugin.permManager.groupExists(gname);
+						if(gname == "^^error^^"){
+							sender.sendMessage(plugin.colors.getError() + "Group doesn't exist!");
+							return true;
+						}
+						plugin.permManager.removeGroup(gname);
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted the group " + gname);
+					}
+					else if(action.equalsIgnoreCase("list")){
+						List<String> groups = plugin.permManager.listGroups();
+						Object[] array = groups.toArray();
+						String result = "**start**";
+						for(int i=0;i<array.length;i++){
+							if(result == "**start**"){
+								result = (String) array[i];
+							}
+							else{
+							result = result + "," + array[i];
+							}
+						}
+						sender.sendMessage(plugin.colors.getTitle() + "Groups: " + plugin.colors.getInfo() + result);
+					}
+					else if(action.equalsIgnoreCase("view")){
+					      if(args.length < 5){
+					    	  valid = false;
+					      }
+					      if(valid){
+						String gname = args[3];
+						gname = plugin.permManager.groupExists(gname);
+						if(gname == "^^error^^"){
+							sender.sendMessage(plugin.colors.getError() + "Group doesn't exist!");
+							return true;
+						}
+						int page = 1;
+						try {
+							page = Integer.parseInt(args[4]);
+						} catch (NumberFormatException e) {
+							sender.sendMessage(plugin.colors.getError() + "Page number incorrect");
+							return true;
+						}
+						Map<String, Object> perms = plugin.permManager.viewPerms("groups/"+gname);
+						Set<String> keys = perms.keySet();
+						String result = "";
+						for(String v:keys){
+							result = result + v + ":" + perms.get(v) + ",  ";
+						}
+						String msg = result;
+						ChatPaginator.ChatPage tpage = ChatPaginator.paginate(msg, page);
+						int total = tpage.getTotalPages();
+						int current = tpage.getPageNumber();
+						String[] lines = tpage.getLines();
+						sender.sendMessage(plugin.colors.getTp()+"Page number: [" +current+"/"+total+"]");
+						sender.sendMessage(plugin.colors.getTitle() + "Permissions for " + gname + " = ");
+						for(int i=0;i<lines.length;i++){
+							sender.sendMessage(plugin.colors.getInfo() + ChatColor.stripColor(lines[i]));
+						}
+					      }
+					}
+					else{
+						valid = false;
+					}
+					if(!valid){
+						sender.sendMessage("Usage: /" + cmdname + " <Perms> <Group> [<SetPerm> <Name> <Perm> <Value>], [<UnsetPerm> <Name> <Perm>], [<Create> <Name> <Inheritance>], [<Delete> <Name>], [<List>], [<View> <Group> <Page>]");
+						return true;
+					}
+				}
+				else if(args[1].equalsIgnoreCase("player")){
+					//TODO player perms management
+					String usage = "Usage: /" + cmdname + " <Perms> <Player> [<Setgroups> <Player> <Groups>]";
+					if(args.length < 3){
+						sender.sendMessage(usage);
+						return true;
+					}
+					String action = args[2];
+					if(action.equalsIgnoreCase("setgroups")){
+						if(args.length < 5){
+							sender.sendMessage(usage);
+							return true;
+						}
+						List<String> groups = new ArrayList<String>();
+						for(int i=4;i<args.length;i++){
+							groups.add(args[i]);
+						}
+						String playerName = args[3];
+						if(plugin.getServer().getOfflinePlayer(playerName)!= null){
+							playerName = plugin.getServer().getOfflinePlayer(playerName).getName();
+						}
+						for(int i=0;i<groups.size();i++){
+							String Group = groups.get(i);
+							Group = plugin.permManager.groupExists(Group);
+							if(Group == "^^error^^"){
+								sender.sendMessage(plugin.colors.getError() + "Group "+groups.get(i)+" doesn't exist!");
+								return true;
+							}
+						}
+						plugin.permManager.setGroups(playerName, groups);
+						sender.sendMessage(plugin.colors.getSuccess() + playerName + " is now in groups "+ groups);
+					}
+					else{
+						sender.sendMessage(usage);
+						return true;
+					}
+				}
+				else{
+					sender.sendMessage("Usage: /" + cmdname + " perms [Group/Player]");
 					return true;
 				}
 				return true;

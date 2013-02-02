@@ -1,6 +1,7 @@
 package com.useful.useful;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +86,10 @@ public class uPerms {
 	}
 	public PermissionAttachment loadGroupPerms(String groupname, Player player){
 		PermissionAttachment returnedPerms = new PermissionAttachment(plugin, player);
+		groupname = this.groupExists(groupname);
+		if(groupname == "^^error^^"){
+			return returnedPerms;
+		}
 	ConfigurationSection groups = file.getConfigurationSection("groups");
 	Set<String> tGroups = groups.getKeys(false);
 	for(String v:tGroups){
@@ -93,12 +98,12 @@ public class uPerms {
 			if(groupSect.contains("/inheritance")){
 				List<String> inherited = groupSect.getStringList("/inheritance");
 				for(int i=0;i<inherited.size();i++){
-					PermissionAttachment inheritedPerms = loadGroupPerms(inherited.get(i), player);
-					Map<String, Boolean> map = inheritedPerms.getPermissions();
-					Set<String> set = map.keySet();
-					for(String u: set){
-						returnedPerms.setPermission(u, map.get(u));
-					}
+						PermissionAttachment inheritedPerms = loadGroupPerms(inherited.get(i), player);
+						Map<String, Boolean> map = inheritedPerms.getPermissions();
+						Set<String> set = map.keySet();
+						for(String u: set){
+							returnedPerms.setPermission(u, map.get(u));
+						}
 				}
 			}
 			groupname = v;
@@ -192,7 +197,7 @@ public class uPerms {
     	return;
     }
     public void setPerm(String path, String perm, Object value){
-    	file.set(path, value);
+    	file.set(path + "/" + perm, value);
     	try {
 			file.save(useful.upermsFile);
 		} catch (IOException e) {
@@ -207,13 +212,8 @@ public class uPerms {
 		}
     	return;
     }
-    public void createGroup(String name, Map<String, Boolean> perms, List<String> inheritance){
+    public void createGroup(String name, List<String> inheritance){
     	ConfigurationSection group = file.getConfigurationSection("").createSection("groups/" + name);
-    	ConfigurationSection permSect = group.createSection("/permissions");
-    	Set<String> permList = perms.keySet();
-    	for(String perm:permList){
-    		permSect.set("/" + perm, perms.get(perm));
-    	}
     		group.set("/inheritance", inheritance);
     		try {
     			file.save(useful.upermsFile);
@@ -244,5 +244,45 @@ public class uPerms {
     		users.set(name, null);
     	}
     	return;
+    }
+    public String groupExists(String gname){
+    	Map<String, Object> groups = file.getConfigurationSection("groups/").getValues(false);
+    	Set<String> groupnames = groups.keySet();
+    	for(String g : groupnames){
+    		if(g.equalsIgnoreCase(gname)){
+    			return g;
+    		}
+    	}
+    	String error = "^^error^^";
+    	return error;
+    }
+    public List<String> listGroups(){
+    	List<String> groups = new ArrayList<String>();
+    	Set<String> keys = file.getConfigurationSection("groups/").getKeys(false);
+    	Object[] array = keys.toArray();
+    	for(int i=0;i<array.length;i++){
+    		groups.add((String) array[i]);
+    	}
+    	return groups;
+    }
+    public Map<String, Object> viewPerms(String path){
+    	Map<String, Object> result = new HashMap<String, Object>();
+    	List<String> inherited = file.getStringList(path + "/inheritance");
+    	if(!inherited.isEmpty()){
+    		for(int i=0;i<inherited.size();i++){
+    			Map<String, Object> inherit = viewPerms("groups/"+inherited.get(i));
+    			Set<String> iKeys = inherit.keySet();
+    			for(String perm:iKeys){
+    				result.put(perm, inherit.get(perm));
+    			}
+    		}
+    	}
+    	ConfigurationSection area = file.getConfigurationSection(path + "/permissions");
+    	Map<String, Object> self = area.getValues(false);
+    	Set<String> sKeys = self.keySet();
+		for(String perm:sKeys){
+			result.put(perm, self.get(perm));
+		}
+    	return result;
     }
 }
