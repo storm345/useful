@@ -1312,7 +1312,7 @@ public void jailsConverter(){
 		e1.printStackTrace();
 		}
 		
-		getServer().getPluginManager().registerEvents(new UsefulListener(null), this);
+		getServer().getPluginManager().registerEvents(new UsefulListener(this), this);
 		Set<String> ver = warps.keySet();
         for (String v : ver) {
         	if (v.toLowerCase() != v){
@@ -1580,7 +1580,6 @@ public void jailsConverter(){
         	   new CustomRecipes().Register();
         	   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been enabled!");
 	}
- 
 	public void disableCommand(String cmdname) {
 		blockedCmds.add(cmdname);
 		return;
