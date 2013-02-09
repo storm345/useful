@@ -52,6 +52,7 @@ import org.bukkit.block.Skull;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -79,6 +80,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.ChatPaginator;
+import org.bukkit.util.ChatPaginator.ChatPage;
 
 import com.useful.useful.utils.*;
 
@@ -4474,7 +4476,11 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 							sender.sendMessage(plugin.colors.getError() + "Page number incorrect");
 							return true;
 						}
-						Map<String, Object> perms = plugin.permManager.viewPerms("groups/"+gname);
+						ConfigurationSection validGroups = plugin.permManager.getConfig().getConfigurationSection("groups");
+						Map<String, Object> perms = new HashMap<String, Object>();
+						if(validGroups.contains(gname)){
+							perms = plugin.permManager.viewPerms("groups/"+gname);
+						}
 						Set<String> keys = perms.keySet();
 						String result = "";
 						for(String v:keys){
@@ -4501,8 +4507,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					}
 				}
 				else if(args[1].equalsIgnoreCase("player")){
+					boolean valid = true;
 					//TODO player perms management
-					String usage = "Usage: /" + cmdname + " <Perms> <Player> [<Setgroups> <Player> <Groups>]";
+					String usage = "Usage: /" + cmdname + " <Perms> <Player> [<Setgroups> <Player> <Groups>], [<Setperm> <Player> <Node> <value>], [<Unsetperm> <Player> <Node>], [<View> <Player>], [<viewPersonalPerms> <Player> (Page)], [<ViewAllPerms> <Player> (Page)]";
 					if(args.length < 3){
 						sender.sendMessage(usage);
 						return true;
@@ -4532,7 +4539,222 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						plugin.permManager.setGroups(playerName, groups);
 						sender.sendMessage(plugin.colors.getSuccess() + playerName + " is now in groups "+ groups);
 					}
+					else if(action.equalsIgnoreCase("setperm")){
+						String gname = "";
+						if(args.length < 6){
+							valid = false;
+						}
+						if(valid){
+						gname = args[3];
+						String gperm = args[4];
+						String gval = args[5];
+						Object Val;
+						try {
+							Val = Boolean.parseBoolean(gval);
+						} catch (Exception e) {
+							sender.sendMessage(plugin.colors.getError() + "Value must be true or false!");
+							return true;
+						}
+						OfflinePlayer[] allPlay = plugin.getServer().getOfflinePlayers();
+						for(int i=0;i<allPlay.length;i++){
+							OfflinePlayer play = allPlay[i];
+							if(play.getName().equalsIgnoreCase(gname)){
+								gname = play.getName();
+							}
+						}
+						String path = "users/"+gname+"/permissions";
+						plugin.permManager.setPerm(path, gperm, Val);
+						}
+						if(valid){
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully set perm for "+gname+"!");
+						}
+					}
+					else if(action.equalsIgnoreCase("unsetperm")){
+						String gname = "";
+						if(args.length < 5){
+							valid = false;
+						}
+						if(valid){
+						gname = args[3];
+						String gperm = args[4];
+						OfflinePlayer[] allPlay = plugin.getServer().getOfflinePlayers();
+						for(int i=0;i<allPlay.length;i++){
+							OfflinePlayer play = allPlay[i];
+							if(play.getName().equalsIgnoreCase(gname)){
+								gname = play.getName();
+							}
+						}
+						String path = "users/"+gname+"/permissions";
+						plugin.permManager.setPerm(path, gperm, null);
+						}
+						if(valid){
+						sender.sendMessage(plugin.colors.getSuccess() + "Successfully unset perm for "+gname+"!");
+						}
+					}
+					else if(action.equalsIgnoreCase("view")){
+						if(args.length < 4){
+							valid = false;
+						}
+						if(valid){
+						String pname = args[3];
+						OfflinePlayer[] allPlay = plugin.getServer().getOfflinePlayers();
+						for(int i=0;i<allPlay.length;i++){
+							OfflinePlayer play = allPlay[i];
+							if(play.getName().equalsIgnoreCase(pname)){
+								pname = play.getName();
+							}
+						}
+						//TODO
+						if(plugin.permManager.getConfig().contains("users/"+pname+"/groups")){
+						List<String> list = plugin.permManager.getConfig().getStringList("users/"+pname+"/groups");
+						if(list.size() < 1){
+							sender.sendMessage(plugin.colors.getError() + pname + " is not in a group");
+							return true;
+						}
+						String toSend = list.get(0);
+						for(int i=1;i<list.size();i++){
+							String groupName = list.get(i);
+							toSend = toSend + ", " + groupName;
+						}
+						sender.sendMessage(plugin.colors.getTitle() + pname+" is in the groups: " + plugin.colors.getInfo() + toSend);
+						return true;
+						}
+						else{
+							sender.sendMessage(plugin.colors.getError() + pname + " is not in a group");
+							return true;
+						}
+						}
+					}
+					else if(action.equalsIgnoreCase("viewPersonalPerms")){
+						if(args.length < 4){
+							valid = false;
+						}
+						int page = 0;
+						if(args.length < 5){
+							page = 1;
+						}
+						else {
+						String pagRaw = args[4];
+						try {
+							page = Integer.parseInt(pagRaw);
+						} catch (NumberFormatException e) {
+							sender.sendMessage(plugin.colors.getError() + "Page number invalid");
+							return true;
+						}
+						}
+						String pname = args[3];
+						OfflinePlayer[] allPlay = plugin.getServer().getOfflinePlayers();
+						for(int i=0;i<allPlay.length;i++){
+							OfflinePlayer play = allPlay[i];
+							if(play.getName().equalsIgnoreCase(pname)){
+								pname = play.getName();
+							}
+						}
+						String personalPath = "users/"+pname+"/permissions";
+						if(!plugin.permManager.getConfig().getConfigurationSection("users").getKeys(false).contains(pname)){
+							sender.sendMessage(plugin.colors.getInfo() + pname + " does not have any personal permissions set");
+							return true;
+						}
+						else if(!plugin.permManager.getConfig().getConfigurationSection("users/" + pname).getKeys(false).contains("permissions")){
+							sender.sendMessage(plugin.colors.getInfo() + pname + " does not have any personal permissions set");
+							return true;
+						}
+						ConfigurationSection perms = plugin.permManager.getConfig().getConfigurationSection(personalPath);
+					    Set<String> permsKeys = perms.getKeys(false);
+					    String permsToSend = "";
+					    for(String key:permsKeys){
+					    	sender.sendMessage(".");
+					    	boolean value = false;
+					    	try {
+								value = perms.getBoolean(key);
+							} catch (Exception e) {
+								value = true;
+							}
+					    	permsToSend = permsToSend + key + " : " + value + ", ";
+					    }
+					    //TODO
+					    ChatPage toSend = ChatPaginator.paginate(permsToSend, page);
+					    int total = toSend.getTotalPages();
+					    sender.sendMessage(plugin.colors.getTp() + "Page: ["+toSend.getPageNumber()+"/"+total+"]");
+					    String[] lines = toSend.getLines();
+					    sender.sendMessage(plugin.colors.getTitle() + "Permissions for " + pname + ":");
+					    for(int i=0;i<lines.length;i++){
+					    	sender.sendMessage(plugin.colors.getInfo() + lines[i]);
+					    }
+					    return true;
+					}
+					else if(action.equalsIgnoreCase("viewAllPerms")){
+						if(args.length < 4){
+							valid = false;
+						}
+						int page = 0;
+						if(args.length < 5){
+							page = 1;
+						}
+						else {
+						String pagRaw = args[4];
+						try {
+							page = Integer.parseInt(pagRaw);
+						} catch (NumberFormatException e) {
+							sender.sendMessage(plugin.colors.getError() + "Page number invalid");
+							return true;
+						}
+						}
+						String pname = args[3];
+						OfflinePlayer[] allPlay = plugin.getServer().getOfflinePlayers();
+						for(int i=0;i<allPlay.length;i++){
+							OfflinePlayer play = allPlay[i];
+							if(play.getName().equalsIgnoreCase(pname)){
+								pname = play.getName();
+							}
+						}
+						String personalPath = "users/"+pname;
+						if(!plugin.permManager.getConfig().getConfigurationSection("users").getKeys(false).contains(pname)){
+							sender.sendMessage(plugin.colors.getInfo() + pname + " does not have any permissions set");
+							return true;
+						}
+						Map<String, Object> perms = plugin.permManager.viewPerms(personalPath);
+						if(plugin.permManager.getConfig().getConfigurationSection("users/"+pname).getKeys(false).contains("groups")){
+							List<String> allGroups = plugin.permManager.getConfig().getStringList("users/"+pname+"/groups");
+							for(String gname:allGroups){
+								gname = plugin.permManager.groupExists(gname);
+								if(gname != "^^error^^"){
+									Map<String, Object> permsToAdd = plugin.permManager.viewPerms("groups/"+gname);
+									Set<String> keysPerms = permsToAdd.keySet();
+									for(String keyPerm:keysPerms){
+										perms.put(keyPerm, permsToAdd.get(keyPerm));
+									}
+								}
+							}
+						}
+					    Set<String> permsKeys = perms.keySet();
+					    String permsToSend = "";
+					    for(String key:permsKeys){
+					    	sender.sendMessage(".");
+					    	Object value = false;
+					    	try {
+								value = perms.get(key);
+							} catch (Exception e) {
+								value = true;
+							}
+					    	permsToSend = plugin.colors.getInfo() + permsToSend + plugin.colors.getInfo() + key + " : " + value + ", ";
+					    }
+					    //TODO
+					    ChatPage toSend = ChatPaginator.paginate(permsToSend, page);
+					    int total = toSend.getTotalPages();
+					    sender.sendMessage(plugin.colors.getTp() + "Page: ["+toSend.getPageNumber()+"/"+total+"]");
+					    String[] lines = toSend.getLines();
+					    sender.sendMessage(plugin.colors.getTitle() + "All permissions for " + pname + ":");
+					    for(int i=0;i<lines.length;i++){
+					    	sender.sendMessage(plugin.colors.getInfo() + lines[i]);
+					    }
+					    return true;
+					}
 					else{
+						sender.sendMessage(usage);
+						return true;
+					}
+					if(!valid){
 						sender.sendMessage(usage);
 						return true;
 					}

@@ -25,6 +25,9 @@ public class uPerms {
 	}
 	private FileConfiguration file = useful.uperms;
 	//TODO
+	public FileConfiguration getConfig(){
+		return this.file;
+	}
 	public void checkPerms(Player player){
 		String name = player.getName();
 		PermissionAttachment attach = new PermissionAttachment(plugin, player);
@@ -124,11 +127,27 @@ public class uPerms {
 				}
 			}
 			groupname = v;
+			boolean validInherit = true;
+			Map<String, Object> tgroups = file.getConfigurationSection("groups/").getValues(false);
+	    	Set<String> groupnames = tgroups.keySet();
+	    	for(String g : groupnames){
+	    		if(g.equalsIgnoreCase(groupname)){
+	    			groupname = g;
+	    		}
+	    	}
+	    	if(validInherit){
+	    	ConfigurationSection groupSec = groups.getConfigurationSection(groupname);
+			if(!groupSec.contains("permissions")){
+				validInherit = false;
+			}
+	    	}
+			if(validInherit){
 			ConfigurationSection perms = groups.getConfigurationSection(groupname + "/permissions");
 			Set<String> tPerms = perms.getKeys(false);
 			for(String perm:tPerms){
 				boolean value = perms.getBoolean(perm);
 					returnedPerms.setPermission(perm, value);
+			}
 			}
 		}
 	}
@@ -287,19 +306,35 @@ public class uPerms {
     	List<String> inherited = file.getStringList(path + "/inheritance");
     	if(!inherited.isEmpty()){
     		for(int i=0;i<inherited.size();i++){
-    			Map<String, Object> inherit = viewPerms("groups/"+inherited.get(i));
+    			String toInheritFrom = inherited.get(i);
+    			toInheritFrom = plugin.permManager.groupExists(toInheritFrom);
+    			boolean validInherit = true;
+				if(toInheritFrom == "^^error^^"){
+					validInherit = false;
+				}
+				if(validInherit){
+    			Map<String, Object> inherit = viewPerms("groups/"+toInheritFrom);
     			Set<String> iKeys = inherit.keySet();
     			for(String perm:iKeys){
     				result.put(perm, inherit.get(perm));
     			}
+				}
     		}
     	}
-    	ConfigurationSection area = file.getConfigurationSection(path + "/permissions");
+    	boolean hasPerms = true;
+	    	ConfigurationSection groupSec = file.getConfigurationSection(path);
+			if(!groupSec.contains("permissions")){
+				hasPerms = false;
+			}
+			if(hasPerms){
+			ConfigurationSection area = file.getConfigurationSection(path + "/permissions");
     	Map<String, Object> self = area.getValues(false);
     	Set<String> sKeys = self.keySet();
 		for(String perm:sKeys){
 			result.put(perm, self.get(perm));
 		}
+			}
     	return result;
     }
+    
 }
