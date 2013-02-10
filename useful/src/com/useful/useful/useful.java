@@ -16,6 +16,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1197,81 +1198,133 @@ public void jailsConverter(){
 						getLogger().info("Idle system check complete!");
 	            		return;
 	            	}
-	       			if(autoupdate == true){
-	       		    getLogger().info("Checking version");
-	       			URL url = null;
-	       			InputStream in = null;
-	    			try {
-	    				url = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/version.txt");
-	    			} catch (MalformedURLException e1) {
-	    				
-	    			}
-	       			try {
-	    				in = new BufferedInputStream(url.openStream());
-	    			} catch (Exception e1) {
-	    				
-	    			}
-	       			try{
-	       				if(config.getBoolean("version.autoupdate.enable")){
-	       				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-	       				
-	       				String line;
-	       				while((line = reader.readLine()) != null){
-	       					double latest = 0;
-	       					double current = config.getDouble("version.current");
-	       					try {
-	       						latest = Double.parseDouble(line);
-	       					} catch (Exception e) {
-	       						getLogger().info("Error checking version");
-	       						latest = current;
-	       					}
-	       					if(latest <= current){
-	       						getLogger().info("Current version: " + current + " latest version: " + latest);
-	       						getLogger().info("Plugin up to date!");
-	       					}
-	       					else{
-	       						getLogger().info("Current version: " + current + " latest version: " + latest);
-	       						getLogger().info("Plugin outdated!");
-	       						getLogger().info("Attempting to update plugin...");
-	       						try{
-	       							URL path = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/download.txt");
-	       							InputStream dPathI = new BufferedInputStream(path.openStream());
-	       							BufferedReader readerPath = new BufferedReader(new InputStreamReader(dPathI));
-	       							String linePath;
-	       							String PathP = "";
-	       							while((linePath = readerPath.readLine()) != null){
-	       								PathP = linePath;
-	       							}
-	       							readerPath.close();
-	       							dPathI.close();
-	       							getLogger().info("Downloading update from " + PathP);
-	       							 URL update = new URL(PathP);
-	       							 InputStream inUp = new BufferedInputStream(update.openStream());
-	       							 ByteArrayOutputStream outUp = new ByteArrayOutputStream();
-	       							 byte[] buf = new byte[1024];
-	       							 int n = 0;
-	       							 while (-1!=(n=inUp.read(buf)))
-	       							 {
-	       							    outUp.write(buf, 0, n);
-	       							 }
-	       							 outUp.close();
-	       							 inUp.close();
-	       							 byte[] responseUp = outUp.toByteArray();
-	       							 (new File(getDataFolder().getParent() + File.separator + getServer().getUpdateFolder())).mkdirs();
-	       							 //FileOutputStream fos = new FileOutputStream(pluginFolder + File.separator + "Plugin updates" + File.separator +  "useful.jar");
-	       							 //FileOutputStream fos = new FileOutputStream(new File(getServer().getUpdateFolder() + File.separator + "useful.jar"));
-	       							 FileOutputStream fos = new FileOutputStream(new File(getDataFolder().getParent() + File.separator + getServer().getUpdateFolder() + File.separator + "useful.jar"));
-	       							     fos.write(responseUp);
-	       							     fos.close();
-	       							     updateManager.clear();
-	       							     saveHashMapBoolean(updateManager, getDataFolder() + File.separator + "updateManager.bin");
-	       							     getLogger().info("Successfully updated to version " + latest + " attempting to reload server...");
-	       							     getServer().reload();
+	            	if(autoupdate){
+	           		    //getLogger().info("Checking version");
+	           		 getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW+ "Checking version...");
+	           			URL url = null;
+	           			InputStream in = null;
+	        			try {
+	        				url = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/version.txt");
+	        			} catch (MalformedURLException e1) {
+	        			}
+	           			try {
+	        				in = new BufferedInputStream(url.openStream());
+	        			} catch (Exception e1) {
+	        				
+	        			}
+	           			try{
+	           				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
+	           				String line;
+	           				while((line = reader.readLine()) != null){
+	           					double latest = 0;
+	           					double current = config.getDouble("version.current");
+	           					try {
+	           						latest = Double.parseDouble(line);
+	           					} catch (Exception e) {
+	           						//getLogger().info("Error checking version");
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.RED + "Error checking version...");
+	           						latest = current;
+	           					}
+	           					if(latest <= current){
+	           						//getLogger().info("Current version: " + current + " latest version: " + latest);
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Current version: " + current + " latest version: " + latest);
+	           						//getLogger().info("Plugin up to date!");
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "Plugin up to date!");
+	           					}
+	           					else{
+	           						//getLogger().info("Current version: " + current + " latest version: " + latest);
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Current version: " + current + " latest version: " + latest);
+	           						//getLogger().info("Plugin outdated!");
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.RED + "Plugin outdated!");
+	           						//getLogger().info("Attempting to update plugin...");
+	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Attempting to update the plugin...");
+	           						try{
+	           							BufferedReader buff;
+	           					        InputStreamReader inStream;
+	           					        String htmlCode = null;
+	           					        String latestFilePage = "";
+	           					        try{
+	           					            URL bukkiturl = new URL("http://dev.bukkit.org/server-mods/useful");
+	           					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
+	           					            inStream = new InputStreamReader(urlConnection.getInputStream());
+	           					            buff = new BufferedReader(inStream);
+	           					            while(true){
+	           					                if (buff.readLine()!=null){
+	           					                    htmlCode += buff.readLine() + "\n";
+	           					                }else{
+	           					                    break;
+	           					                }
+	           					            }
+	           					            htmlCode = htmlCode.replaceAll(" ", "");
+	           					         htmlCode = htmlCode.replaceAll("	", "");
+	           					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
+	           					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/17-useful-v2-1/">Download</a>
+	           					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
+	           					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
+	           					            latestFilePage = htmlCode.substring(startFrom, endFrom);
+	           					            latestFilePage = latestFilePage.replaceFirst("<liclass=\"user-actionuser-action-download\"><ahref=\"", "");
+	           					            latestFilePage = "http://dev.bukkit.org" + latestFilePage;
+	           					            plugin.colLogger.info("For information on this version visit:"+latestFilePage);
+	           					        }catch(Exception e){
+	           					        	e.printStackTrace();
+	           					        	plugin.colLogger.info("Failed to retrieve the url. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
+	           					        };  
+	           					        String FilePath = "";
+	           					     try{
+	        					            URL bukkiturl = new URL(latestFilePage);
+	        					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
+	        					            inStream = new InputStreamReader(urlConnection.getInputStream());
+	        					            buff = new BufferedReader(inStream);
+	        					            while(true){
+	        					                if (buff.readLine()!=null){
+	        					                    htmlCode += buff.readLine() + "\n";
+	        					                }else{
+	        					                    break;
+	        					                }
+	        					            }
+	        					            htmlCode = htmlCode.replaceAll(" ", "");
+	        					         htmlCode = htmlCode.replaceAll("	", "");
+	        					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
+	        					      //<dd><spanclass="standard-date"title="Jan29,2013at17:04UTC"data-epoch="1359479056"data-shortdate="true">Jan29,2013</span></dd><dt>Gameversion</dt><dd><ahref="http://dev.bukkit.org/media/files/668/500/useful.jar">useful.jar</a>
+	        					            int startFrom = htmlCode.indexOf("</span></dd><dt>Gameversion</dt><dd><ahref=\"");
+	        					            int endFrom = htmlCode.indexOf("\">", startFrom);
+	        					            FilePath = htmlCode.substring(startFrom, endFrom);
+	        					            FilePath = FilePath.replaceFirst("</span></dd><dt>Gameversion</dt><dd><ahref=\"", "");
+	        					            plugin.colLogger.info("Latest version url: " + FilePath);
+	        					        }catch(Exception e){
+	        					        	e.printStackTrace();
+	        					        	plugin.colLogger.info("Failed to retrieve the file. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
+	        					        };  
+	           							URL update = new URL(FilePath);
+	           							getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW+ "Downloading update from " + FilePath);
+	           							 InputStream inUp = new BufferedInputStream(update.openStream());
+	           							 ByteArrayOutputStream outUp = new ByteArrayOutputStream();
+	           							 byte[] buf = new byte[1024];
+	           							 int n = 0;
+	           							 while (-1!=(n=inUp.read(buf)))
+	           							 {
+	           							    outUp.write(buf, 0, n);
+	           							 }
+	           							 outUp.close();
+	           							 inUp.close();
+	           							 byte[] responseUp = outUp.toByteArray();
+	           							 (new File(getDataFolder().getParent() + File.separator + getServer().getUpdateFolder())).mkdirs();
+	           							 //FileOutputStream fos = new FileOutputStream(pluginFolder + File.separator + "Plugin updates" + File.separator +  "useful.jar");
+	           							 //FileOutputStream fos = new FileOutputStream(new File(getServer().getUpdateFolder() + File.separator + "useful.jar"));
+	           							 FileOutputStream fos = new FileOutputStream(new File(getDataFolder().getParent() + File.separator + getServer().getUpdateFolder() + File.separator + "useful.jar"));
+	           							     fos.write(responseUp);
+	           							     fos.close();
+	           							     updateManager.clear();
+	           							     saveHashMapBoolean(updateManager, getDataFolder() + File.separator + "updateManager.bin");
+	           							     //getLogger().info("Successfully updated to version " + latest + " attempting to reload server...");
+	           							  getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "Successfully updated to version " + latest + " attempting to reload server...");
+	           							     getServer().reload();
 	       						}catch(Exception e){
 	       							getLogger().info("Failed to update the plugin!");
 	       							e.printStackTrace();
 	       						}
-	       					}
+	           					
+	       					
 	       				}
 	       			
 	       				reader.close();
@@ -1469,19 +1522,64 @@ public void jailsConverter(){
    						//getLogger().info("Attempting to update plugin...");
    						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Attempting to update the plugin...");
    						try{
-   							URL path = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/download.txt");
-   							InputStream dPathI = new BufferedInputStream(path.openStream());
-   							BufferedReader readerPath = new BufferedReader(new InputStreamReader(dPathI));
-   							String linePath;
-   							String PathP = "";
-   							while((linePath = readerPath.readLine()) != null){
-   								PathP = linePath;
-   							}
-   							readerPath.close();
-   							dPathI.close();
-   							//getLogger().info("Downloading update from " + PathP);
-   							getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW+ "Downloading update from " + PathP);
-   							 URL update = new URL(PathP);
+   							BufferedReader buff;
+   					        InputStreamReader inStream;
+   					        String htmlCode = null;
+   					        String latestFilePage = "";
+   					        try{
+   					            URL bukkiturl = new URL("http://dev.bukkit.org/server-mods/useful");
+   					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
+   					            inStream = new InputStreamReader(urlConnection.getInputStream());
+   					            buff = new BufferedReader(inStream);
+   					            while(true){
+   					                if (buff.readLine()!=null){
+   					                    htmlCode += buff.readLine() + "\n";
+   					                }else{
+   					                    break;
+   					                }
+   					            }
+   					            htmlCode = htmlCode.replaceAll(" ", "");
+   					         htmlCode = htmlCode.replaceAll("	", "");
+   					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
+   					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/17-useful-v2-1/">Download</a>
+   					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
+   					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
+   					            latestFilePage = htmlCode.substring(startFrom, endFrom);
+   					            latestFilePage = latestFilePage.replaceFirst("<liclass=\"user-actionuser-action-download\"><ahref=\"", "");
+   					            latestFilePage = "http://dev.bukkit.org" + latestFilePage;
+   					            plugin.colLogger.info("For information on this version visit:"+latestFilePage);
+   					        }catch(Exception e){
+   					        	e.printStackTrace();
+   					        	plugin.colLogger.info("Failed to retrieve the url. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
+   					        };  
+   					        String FilePath = "";
+   					     try{
+					            URL bukkiturl = new URL(latestFilePage);
+					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
+					            inStream = new InputStreamReader(urlConnection.getInputStream());
+					            buff = new BufferedReader(inStream);
+					            while(true){
+					                if (buff.readLine()!=null){
+					                    htmlCode += buff.readLine() + "\n";
+					                }else{
+					                    break;
+					                }
+					            }
+					            htmlCode = htmlCode.replaceAll(" ", "");
+					         htmlCode = htmlCode.replaceAll("	", "");
+					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
+					      //<dd><spanclass="standard-date"title="Jan29,2013at17:04UTC"data-epoch="1359479056"data-shortdate="true">Jan29,2013</span></dd><dt>Gameversion</dt><dd><ahref="http://dev.bukkit.org/media/files/668/500/useful.jar">useful.jar</a>
+					            int startFrom = htmlCode.indexOf("</span></dd><dt>Gameversion</dt><dd><ahref=\"");
+					            int endFrom = htmlCode.indexOf("\">", startFrom);
+					            FilePath = htmlCode.substring(startFrom, endFrom);
+					            FilePath = FilePath.replaceFirst("</span></dd><dt>Gameversion</dt><dd><ahref=\"", "");
+					            plugin.colLogger.info("Latest version url: " + FilePath);
+					        }catch(Exception e){
+					        	e.printStackTrace();
+					        	plugin.colLogger.info("Failed to retrieve the file. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
+					        };  
+   							URL update = new URL(FilePath);
+   							getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW+ "Downloading update from " + FilePath);
    							 InputStream inUp = new BufferedInputStream(update.openStream());
    							 ByteArrayOutputStream outUp = new ByteArrayOutputStream();
    							 byte[] buf = new byte[1024];
@@ -1566,7 +1664,6 @@ public void jailsConverter(){
         	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
         	   if(config.getBoolean("uperms.enable")){
         		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Setting up uhost's perm system...");
-        		   //TODO setup uperms for use
         		   permManager=new uPerms(this);
         		   Player[] player = getServer().getOnlinePlayers();
         		   for(int i=0;i<player.length;i++){
@@ -1574,8 +1671,6 @@ public void jailsConverter(){
         		   }
         	   }
         	   System.gc();
-        	   //getLogger().info("useful plugin v"+pluginVersion+" has been enabled!");
-        	   //TODO register custom crafting from config settings
         	   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Registering recipes...");
         	   new CustomRecipes().Register();
         	   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been enabled!");
