@@ -1261,17 +1261,17 @@ public void jailsConverter(){
 	           					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/17-useful-v2-1/">Download</a>
 	           					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
 	           					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
-	           					            latestFilePage = htmlCode.substring(startFrom, endFrom);
+	           					            latestFilePage = htmlCode.substring(startFrom, endFrom); //This gets bukkit's link to the latest APPROVED file for security
 	           					            latestFilePage = latestFilePage.replaceFirst("<liclass=\"user-actionuser-action-download\"><ahref=\"", "");
-	           					            latestFilePage = "http://dev.bukkit.org" + latestFilePage;
-	           					            plugin.colLogger.info("For information on this version visit:"+latestFilePage);
+	           					            latestFilePage = "http://dev.bukkit.org" + latestFilePage; //If not a bukkit download (bukkit hacked or summin??) then will come up with error
+	           					            plugin.colLogger.info("For information on this version visit:"+latestFilePage); //Page for the latest version...
 	           					        }catch(Exception e){
 	           					        	e.printStackTrace();
 	           					        	plugin.colLogger.info("Failed to retrieve the url. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
 	           					        };  
 	           					        String FilePath = "";
 	           					     try{
-	        					            URL bukkiturl = new URL(latestFilePage);
+	        					            URL bukkiturl = new URL(latestFilePage); //Open latest version's page...
 	        					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
 	        					            inStream = new InputStreamReader(urlConnection.getInputStream());
 	        					            buff = new BufferedReader(inStream);
@@ -1286,16 +1286,15 @@ public void jailsConverter(){
 	        					         htmlCode = htmlCode.replaceAll("	", "");
 	        					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
 	        					      //<dd><spanclass="standard-date"title="Jan29,2013at17:04UTC"data-epoch="1359479056"data-shortdate="true">Jan29,2013</span></dd><dt>Gameversion</dt><dd><ahref="http://dev.bukkit.org/media/files/668/500/useful.jar">useful.jar</a>
-	        					            int startFrom = htmlCode.indexOf("</span></dd><dt>Gameversion</dt><dd><ahref=\"");
+	        					            int startFrom = htmlCode.indexOf("</span></dd><dt>Gameversion</dt><dd><ahref=\""); //Find the .jar's download url
 	        					            int endFrom = htmlCode.indexOf("\">", startFrom);
 	        					            FilePath = htmlCode.substring(startFrom, endFrom);
 	        					            FilePath = FilePath.replaceFirst("</span></dd><dt>Gameversion</dt><dd><ahref=\"", "");
-	        					            plugin.colLogger.info("Latest version url: " + FilePath);
 	        					        }catch(Exception e){
 	        					        	e.printStackTrace();
 	        					        	plugin.colLogger.info("Failed to retrieve the file. Please download the latest version manually from http://dev.bukkit.org/server-mods/useful");
 	        					        };  
-	           							URL update = new URL(FilePath);
+	           							URL update = new URL(FilePath); //Update the plugin!
 	           							getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW+ "Downloading update from " + FilePath);
 	           							 InputStream inUp = new BufferedInputStream(update.openStream());
 	           							 ByteArrayOutputStream outUp = new ByteArrayOutputStream();
