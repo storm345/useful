@@ -505,6 +505,12 @@ public void jailsConverter(){
 			if(!config.contains("general.cars.ResetblockBoost")) {
 				config.set("general.cars.ResetblockBoost", 133);
 				}
+			if(!config.contains("general.cars.jumpBlock")) {
+				config.set("general.cars.jumpBlock", 42);
+				}
+			if(!config.contains("general.cars.jumpAmount")) {
+				config.set("general.cars.jumpAmount", 60);
+				}
 			if(!config.contains("general.rules.# description")) {
 				config.set("general.rules.# description", "If enabled this will allow for /rules.");
 				}

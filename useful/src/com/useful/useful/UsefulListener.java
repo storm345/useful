@@ -1510,11 +1510,11 @@ public class UsefulListener implements Listener{
 	    			return;
 	    		}
 	    		if(normalblock.getTypeId() != 0 && normalblock.getTypeId() != 8 && normalblock.getTypeId() != 9 && normalblock.getTypeId() != 44 && normalblock.getTypeId() != 43 && normalblock.getTypeId() != 70 && normalblock.getTypeId() != 72 && normalblock.getTypeId() != 31){
-	    			car.setVelocity(new Vector(0, 5, 0));
+	    			car.setVelocity(new Vector(0, 1, 0));
 	    	    	//player.getWorld().createExplosion(loc, 0);
 	    	    }
 	    		if(up.getTypeId() != 0 && up.getTypeId() != 8 && up.getTypeId() != 9 && up.getTypeId() != 44 && up.getTypeId() != 43){
-	    			car.setVelocity(new Vector(0, 5, 0));
+	    			car.setVelocity(new Vector(0, 1, 0));
 	    	    	//player.getWorld().createExplosion(loc, 0);
 	    	    }
 	    		if(playerVelocity.getX() == 0 && playerVelocity.getZ() == 0){
@@ -1533,6 +1533,15 @@ public class UsefulListener implements Listener{
 	    		//Block block = normalblock.getRelative(modX, modY, modZ);
 	    		//Block block = player.getTargetBlock(null, 1);
 	    		int bid = block.getTypeId();
+	    		int jumpBlock = useful.config.getInt("general.cars.jumpBlock");
+	    		if(tid == jumpBlock){
+	    			if(inACar(player.getName())){
+	    				double jumpAmount = useful.config.getDouble("general.cars.jumpAmount");
+	    				double y = Velocity.getY() + jumpAmount;
+	       		     Velocity.setY(y);
+	       		     car.setVelocity(Velocity);
+	    			}
+	    		}
 	    		if(block.getY() == under.getBlockY() || block.getY() > normalblock.getY()){
 	    			//On the floor or too high to jump
 	    			if(bid == 0 || bid == 10 || bid == 11 || bid == 8 || bid == 9 || bid == 139 || bid == 85 || bid == 107 || bid == 113 || bid == 70 || bid == 72){
@@ -1541,7 +1550,7 @@ public class UsefulListener implements Listener{
 	    			}
 	    			else if(block.getY() == under.getBlockY()){
 	    				car.getLocation().setYaw(dir + 360);
-	    				Velocity = new Vector(0, 2, 0);
+	    				Velocity = new Vector(0, 1, 0);
 	        		    car.setVelocity(Velocity);
 	    			}
 	    			else{
