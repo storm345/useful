@@ -1510,11 +1510,11 @@ public class UsefulListener implements Listener{
 	    			return;
 	    		}
 	    		if(normalblock.getTypeId() != 0 && normalblock.getTypeId() != 8 && normalblock.getTypeId() != 9 && normalblock.getTypeId() != 44 && normalblock.getTypeId() != 43 && normalblock.getTypeId() != 70 && normalblock.getTypeId() != 72 && normalblock.getTypeId() != 31){
-	    			car.setVelocity(new Vector(-0.5, 0, -0.5));
+	    			car.setVelocity(new Vector(0, 5, 0));
 	    	    	//player.getWorld().createExplosion(loc, 0);
 	    	    }
 	    		if(up.getTypeId() != 0 && up.getTypeId() != 8 && up.getTypeId() != 9 && up.getTypeId() != 44 && up.getTypeId() != 43){
-	    			car.setVelocity(new Vector(-0.5, 0, -0.5));
+	    			car.setVelocity(new Vector(0, 5, 0));
 	    	    	//player.getWorld().createExplosion(loc, 0);
 	    	    }
 	    		if(playerVelocity.getX() == 0 && playerVelocity.getZ() == 0){
@@ -1540,7 +1540,8 @@ public class UsefulListener implements Listener{
         		    car.setVelocity(Velocity);
 	    			}
 	    			else if(block.getY() == under.getBlockY()){
-	    				car.getLocation().setYaw(dir);
+	    				car.getLocation().setYaw(dir + 360);
+	    				Velocity = new Vector(0, 2, 0);
 	        		    car.setVelocity(Velocity);
 	    			}
 	    			else{
@@ -1555,7 +1556,11 @@ public class UsefulListener implements Listener{
     		    	if(bidU == 0 || bidU == 10 || bidU == 11 || bidU == 8 || bidU == 9 || bidU == 44 || bidU == 43){
     		    		//if(block.getTypeId() == 44 || block.getTypeId() == 43){
     		    theNewLoc.add(0, 1.5d, 0);
-    		    	car.teleport(theNewLoc);
+    		    //TODO no londer works
+    		     double y = Velocity.getY() + 13;
+    		     Velocity.setY(y);
+    		     car.setVelocity(Velocity);
+    		    	//car.teleport(theNewLoc);
     		    	}
     		    }
     		    else {
