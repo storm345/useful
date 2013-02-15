@@ -1468,6 +1468,32 @@ public void jailsConverter(){
         checkRegister("general.canfly.enable", "canfly");
         checkRegister("general.rename.enable", "rename");
         checkRegister("general.head.enable", "head");
+        if(new File(getDataFolder() + File.separator + "warps.bin").exists() || new File(getDataFolder() + File.separator + "warpowners.bin").exists() && new File(getDataFolder() + File.separator + "warps.bin") != null && new File(getDataFolder() + File.separator + "warps.bin").length() > 0){
+ 	       //getLogger().info("Old warp data found, converting now...");
+ 	       getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old warp data, converting now...");
+ 		   warpsConverter();
+ 	   }
+ 	   if(new File(getDataFolder() + File.separator + "jails.bin").exists() && new File(getDataFolder() + File.separator + "jails.bin") != null && new File(getDataFolder() + File.separator + "jails.bin").length() > 0){
+ 		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old jail data, converting now...");
+ 		   jailsConverter();
+ 	   }
+ 	   
+ 	   Object[] authVal = auths.values.toArray();
+ 	   for(int i=0;i<authVal.length;i++){
+ 		   String val = (String) authVal[i];
+ 		   String[] parts = val.split(" ");
+ 		   String pname = parts[0];
+ 		   authed.put(pname, false);
+ 	   }
+ 	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
+ 	   if(config.getBoolean("uperms.enable")){
+ 		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Setting up uhost's perm system...");
+ 		   permManager=new uPerms(this);
+ 		   Player[] player = getServer().getOnlinePlayers();
+ 		   for(int i=0;i<player.length;i++){
+ 			   permManager.refreshPerms(player[i]);
+ 		   }
+ 	   }
        String discmds = config.getString("general.blocked_commands(separated_by_commas_)");
         	   String[] cmds = discmds.split(",");
         	   for(int x=0 ; x<cmds.length ; x++) {
@@ -1649,30 +1675,11 @@ public void jailsConverter(){
         			   }
         		   }
         	   }
-        	   if(new File(getDataFolder() + File.separator + "warps.bin").exists() || new File(getDataFolder() + File.separator + "warpowners.bin").exists() && new File(getDataFolder() + File.separator + "warps.bin") != null && new File(getDataFolder() + File.separator + "warps.bin").length() > 0){
-        	       //getLogger().info("Old warp data found, converting now...");
-        	       getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old warp data, converting now...");
-        		   warpsConverter();
-        	   }
-        	   if(new File(getDataFolder() + File.separator + "jails.bin").exists() && new File(getDataFolder() + File.separator + "jails.bin") != null && new File(getDataFolder() + File.separator + "jails.bin").length() > 0){
-        		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old jail data, converting now...");
-        		   jailsConverter();
-        	   }
-        	   
-        	   Object[] authVal = auths.values.toArray();
-        	   for(int i=0;i<authVal.length;i++){
-        		   String val = (String) authVal[i];
-        		   String[] parts = val.split(" ");
-        		   String pname = parts[0];
-        		   authed.put(pname, false);
-        	   }
-        	   colors = new Colors(config.getString("colorScheme.success"), config.getString("colorScheme.error"), config.getString("colorScheme.info"), config.getString("colorScheme.title"), config.getString("colorScheme.title"));
-        	   if(config.getBoolean("uperms.enable")){
-        		   getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Setting up uhost's perm system...");
-        		   permManager=new uPerms(this);
-        		   Player[] player = getServer().getOnlinePlayers();
-        		   for(int i=0;i<player.length;i++){
-        			   permManager.refreshPerms(player[i]);
+        	   Plugin[] pluginsOn = getServer().getPluginManager().getPlugins();
+        	   for(int i=0;i<pluginsOn.length;i++){
+        		   if(pluginsOn[i].getName().equalsIgnoreCase("uCars")){
+        			    //Do this becuase ucars is a child (created by me) branch of useful. Useful CONTAINS ucars features and code but is always NEWER versions of it. So disable to stop overlap
+        			   plugin.colLogger.info(ChatColor.RED + "Detected ucars! - UCars should be removed to avoid conflict with useful. ALl UCars features are available within useful. It is recommended you remove ucars now. (Any errors after this message are likely a result of the conflict...)");
         		   }
         	   }
         	   System.gc();
