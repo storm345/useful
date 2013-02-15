@@ -1,3 +1,3 @@
-* Improved /uhost config slightly
-* Added an inbuilt permission system - disabled by default(To use enable in config)
-* Fixed console chat dupe bug
+* Made driving smoother
+* Made uphill fixed and smoother
+* Added jump blocks (Set in config - default = 42)
