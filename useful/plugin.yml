@@ -8,6 +8,12 @@ commands:
       permission: useful.test
       permission-message: You don't have <permission> permission
       default: true
+   craft:
+      description: This drops a workbench in front of the player.
+      usage: /<command>
+      permission: useful.craft
+      permission-message: You don't have <permission> permission
+      default: op
    kick:
       description: This kicks somebody.
       usage: /<command> [Name] [Reason]

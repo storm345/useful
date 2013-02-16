@@ -93,7 +93,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 	public UsefulCommandExecutor(useful instance){
 		plugin = useful.plugin;
 	}
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, String[] args){
 		String disabledmessage = useful.config.getString("general.disabledmessage");
@@ -119,6 +118,49 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			sender.sendMessage(plugin.colors.getInfo() + message);
 			
 			
+			return true;
+		}
+		else if(cmd.getName().equalsIgnoreCase("craft")){
+			if(player == null){
+				sender.sendMessage(plugin.colors.getError() + "This command is for players!");
+				return true;
+			}
+			//TODO drop a craft bench in front of them
+			BlockFace face = ClosestFace.getClosestFace(player.getLocation().getYaw());
+			Block toPlaceAt = player.getLocation().getBlock().getRelative(face);
+			boolean changed = false;
+			Location spawnAt = toPlaceAt.getLocation();
+			if(toPlaceAt.getType() != Material.AIR){
+				sender.sendMessage(plugin.colors.getError() + "Nowhere to place the crafting table!");
+				return true;
+			}
+			Block above = toPlaceAt.getRelative(BlockFace.UP);
+			if(above.getType() != Material.AIR && !changed){
+				spawnAt = toPlaceAt.getLocation();
+				changed = true;
+			}
+			Block above2 = above.getRelative(BlockFace.UP);
+			if(above2.getType() != Material.AIR && !changed){
+				spawnAt = above.getLocation();
+				changed = true;
+			}
+			Block above3 = above2.getRelative(BlockFace.UP);
+			if(above3.getType() != Material.AIR && !changed){
+				spawnAt = above2.getLocation();
+				changed = true;
+			}
+			Block above4 = above3.getRelative(BlockFace.UP);
+			if(above4.getType() != Material.AIR && !changed){
+				spawnAt = above3.getLocation();
+				changed = true;
+			}
+			else{
+				if(!changed){
+				spawnAt = above4.getLocation();
+				}
+			}
+			sender.sendMessage(plugin.colors.getSuccess() + "Successfully given you a crafting table.");
+			spawnAt.getWorld().spawnFallingBlock(spawnAt, Material.WORKBENCH, Byte.parseByte("0"));
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("world")){ // If the player typed /basic then do the following...

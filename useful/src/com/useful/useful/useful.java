@@ -571,6 +571,12 @@ public void jailsConverter(){
 			if(!config.contains("general.potion.enable")) {
 				config.set("general.potion.enable", true);
 				}
+			if(!config.contains("general.craft.# description")) {
+				config.set("general.craft.# description", "If enabled it will allow for /craft");
+				}
+			if(!config.contains("general.craft.enable")) {
+				config.set("general.craft.enable", true);
+				}
 			if(!config.contains("signs.warpSigns.enable")) {
 				config.set("signs.warpSigns.enable", true);
 				}
@@ -1221,7 +1227,7 @@ public void jailsConverter(){
 	           			try{
 	           				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
 	           				String line;
-	           				while((line = reader.readLine()) != null){
+	           				while(reader.ready() && (line = reader.readLine()) != null){
 	           					double latest = 0;
 	           					double current = config.getDouble("version.current");
 	           					try {
@@ -1468,6 +1474,7 @@ public void jailsConverter(){
         checkRegister("general.canfly.enable", "canfly");
         checkRegister("general.rename.enable", "rename");
         checkRegister("general.head.enable", "head");
+        checkRegister("general.craft.enable", "craft");
         if(new File(getDataFolder() + File.separator + "warps.bin").exists() || new File(getDataFolder() + File.separator + "warpowners.bin").exists() && new File(getDataFolder() + File.separator + "warps.bin") != null && new File(getDataFolder() + File.separator + "warps.bin").length() > 0){
  	       //getLogger().info("Old warp data found, converting now...");
  	       getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old warp data, converting now...");
