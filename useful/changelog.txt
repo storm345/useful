@@ -1,7 +1,1 @@
-* Made driving smoother
-* Made uphill fixed and smoother
-* Added jump blocks (Set in config - default = 42)
-* Made a warning on enable if ucars is detected
-* Fixed an error-on-update
-* Changed order of loading
-* Fixed things
+* Improved uphill ucars
