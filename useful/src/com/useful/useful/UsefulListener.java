@@ -240,6 +240,10 @@ public class UsefulListener implements Listener{
 	public void onEntityDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player && event.getDamage()>0) {
         	Player damagedplayer = (Player) event.getEntity();
+        	if(inACar(damagedplayer.getName())){
+        		event.setCancelled(true);
+        		return;
+        	}
         		String name = damagedplayer.getName();
         		String pluginFolder = useful.pluginFolder;
         		this.heros = new ListStore(new File(pluginFolder + File.separator + "heros.dat"));
@@ -1565,8 +1569,11 @@ public class UsefulListener implements Listener{
     		    	if(bidU == 0 || bidU == 10 || bidU == 11 || bidU == 8 || bidU == 9 || bidU == 44 || bidU == 43){
     		    		//if(block.getTypeId() == 44 || block.getTypeId() == 43){
     		    theNewLoc.add(0, 1.5d, 0);
-    		    //TODO no londer works
-    		     double y = Velocity.getY() + 13;
+    		    double y = 13;
+                 if(block.getType() == Material.STEP || block.getType() == Material.DOUBLE_STEP){
+                	 y = 7;
+                 }
+    		     
     		     Velocity.setY(y);
     		     car.setVelocity(Velocity);
     		    	//car.teleport(theNewLoc);
