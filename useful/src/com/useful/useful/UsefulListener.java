@@ -583,6 +583,28 @@ public class UsefulListener implements Listener{
 		return;
 	}
 	@EventHandler(priority = EventPriority.MONITOR)
+	public void canBuildChecker(BlockPlaceEvent event){
+		CheckPermBlockEvent pevent = null;
+		if(event instanceof CheckPermBlockEvent){
+			pevent = (CheckPermBlockEvent) event;
+		}
+		else{
+			if(event.getBlockAgainst().getState() instanceof Sign){
+				event.setCancelled(true);
+				return;
+			}
+			return;
+		}
+		if(event.isCancelled()){
+				pevent.confirm(false);
+				return;
+		}
+		else{
+			pevent.confirm(true);
+		}
+		return;
+	}
+	@EventHandler(priority = EventPriority.MONITOR)
 	void Auther(PlayerMoveEvent event){
 		String name = event.getPlayer().getName();
 		if(useful.authed.containsKey(name)){

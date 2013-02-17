@@ -130,6 +130,11 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			Block toPlaceAt = player.getLocation().getBlock().getRelative(face);
 			boolean changed = false;
 			Location spawnAt = toPlaceAt.getLocation();
+			Boolean canBuild = Builder.canBuild(player, spawnAt);
+			if(!canBuild){
+				sender.sendMessage(plugin.colors.getError() + "You cannot build here");
+				return true;
+			}
 			if(toPlaceAt.getType() != Material.AIR){
 				sender.sendMessage(plugin.colors.getError() + "Nowhere to place the crafting table!");
 				return true;
@@ -159,8 +164,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				spawnAt = above4.getLocation();
 				}
 			}
-			sender.sendMessage(plugin.colors.getSuccess() + "Successfully given you a crafting table.");
 			spawnAt.getWorld().spawnFallingBlock(spawnAt, Material.WORKBENCH, Byte.parseByte("0"));
+			sender.sendMessage(plugin.colors.getSuccess() + "Successfully given you a crafting table.");
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("world")){ // If the player typed /basic then do the following...

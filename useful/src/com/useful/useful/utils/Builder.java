@@ -1,5 +1,9 @@
 package com.useful.useful.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -11,6 +15,26 @@ import org.bukkit.plugin.Plugin;
 import com.useful.useful.useful;
 
 public class Builder {
+	public static HashMap<String, Boolean> tests = new HashMap<String, Boolean>();
+	public static Boolean canBuild(Player player, Location loc){
+		Block blockToPlaceIt = loc.getBlock();
+		Block old = blockToPlaceIt;
+		BlockState orig = old.getState();
+		Block newBlock = blockToPlaceIt;
+		Material material = Material.AIR;
+		tests.put(player.getName(), false);
+		//newBlock.setTypeId(5);
+		BlockState state = newBlock.getState();
+		Block pacedOn = blockToPlaceIt;
+		Event check = new CheckPermBlockEvent(newBlock, material, state, pacedOn, new ItemStack(5), player, false, orig);
+		useful.plugin.getServer().getPluginManager().callEvent(check);
+		if(tests.containsKey(player.getName())){
+			Boolean result = tests.get(player.getName());
+			tests.remove(player.getName());
+			return result;
+		}
+		return false;
+	}
 public static void build(Player player, Block blockToPlaceIt, Material mat){
 	Block old = blockToPlaceIt;
 	BlockState orig = old.getState();
