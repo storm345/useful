@@ -2200,7 +2200,21 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						messagetosend.append(",");
 						
 		           }
-		           sender.sendMessage(plugin.colors.getInfo() + "Warps:" + messagetosend);
+		           int pageNumber = 1;
+		           if(args.length > 0){
+		        	   try {
+						pageNumber = Integer.parseInt(args[0]);
+					} catch (NumberFormatException e) {
+						sender.sendMessage(plugin.colors.getError() + "Is an invalid page number");
+						return true;
+					}
+		           }
+		           ChatPage page = ChatPaginator.paginate("" + messagetosend, pageNumber);
+		           String[] lines = page.getLines();
+		           sender.sendMessage(plugin.colors.getInfo() + "Warps: Page[" + page.getPageNumber() + "/" + page.getTotalPages() + "]");
+		           for(int i=0;i<lines.length;i++){
+		        	   sender.sendMessage(plugin.colors.getInfo() + lines[i]);
+		           }
 		    	   }
 		       
 			  else {

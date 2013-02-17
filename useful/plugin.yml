@@ -285,7 +285,7 @@ commands:
       default: op
    warps:
       description: This lists all warps.
-      usage: /<command>
+      usage: /<command> (Page number)
       permission: useful.warplist
       permission-message: You don't have <permission> permission
       default: true
