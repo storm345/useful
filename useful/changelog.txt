@@ -1,2 +1,3 @@
 * Improved uphill ucars
 * Added /craft to get a crafting bench
+* Made pages for /warps
