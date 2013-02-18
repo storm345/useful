@@ -2309,7 +2309,21 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						messagetosend.append(",");
 						
 		           }
-		           sender.sendMessage(plugin.colors.getInfo() + "Jailed players:" + messagetosend);
+		           int page = 1;
+		           if(args.length > 0){
+		        	   try {
+						page = Integer.parseInt(args[0]);
+					} catch (NumberFormatException e) {
+						sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+						return true;
+					}
+		           }
+		           ChatPage tPage = ChatPaginator.paginate("" + messagetosend, page);
+		           sender.sendMessage(plugin.colors.getTitle() + "Jailed players: ["+tPage.getPageNumber() + "/" + tPage.getTotalPages() + "]");
+		           String[] lines = tPage.getLines();
+		           for(int i=0;i<lines.length;i++){
+		        	sender.sendMessage(plugin.colors.getInfo() + lines[i]);   
+		           }
 		    	   }
 		       
 			  else {
@@ -3460,7 +3474,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						plugin.warnsplayer = new ListStore(new File(pluginFolder + File.separator + "warns" + File.separator + playerName + ".txt"));
 						plugin.warnsplayer.load();
 						ArrayList<String> warnlist =  plugin.warnsplayer.getValues();
-						sender.sendMessage(plugin.colors.getTitle() +  playerName + "'s warnings:");
 						
 						String listString = "";
 						
@@ -3471,9 +3484,25 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						    listString += s + " %n";
 						}
 						//sender.sendMessage(playerName + " " + listString);
-						String[] message = listString.split("%n"); // Split everytime the "\n" into a new array value
+						int page = 1;
+				           if(args.length > 1){
+				        	   try {
+								page = Integer.parseInt(args[1]);
+							} catch (NumberFormatException e) {
+								sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+								return true;
+							}
+				           }
+				           ChatPage tPage = ChatPaginator.paginate("" + listString, page);
+				           sender.sendMessage(plugin.colors.getTitle() +  playerName + "'s warnings: ["+tPage.getPageNumber() + "/" + tPage.getTotalPages() + "]");
+				           String[] lines = tPage.getLines();
+				           String list = plugin.colors.getInfo() + "";
+				           for(int i=0;i<lines.length;i++){
+				        	list = plugin.colors.getInfo() + list + plugin.colors.getInfo() + ChatColor.stripColor(lines[i]) + " ";   
+				           }
+						String[] message = list.split("%n"); // Split everytime the "\n" into a new array value
 								for(int x=0 ; x<message.length ; x++) {
-								sender.sendMessage(plugin.colors.getError() + message[x]); // Send each argument in the message
+								sender.sendMessage(plugin.colors.getInfo() + ChatColor.stripColor(message[x])); // Send each argument in the message
 								}
 								
 								plugin.warnsplayer.save();
@@ -3555,7 +3584,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		}
 		else if(cmd.getName().equalsIgnoreCase("information")){
 			ArrayList<String> info =  plugin.info.getValues();
-			sender.sendMessage(plugin.colors.getTitle() + "Server info:");
 			
 			String listString = "";
 			
@@ -3566,7 +3594,23 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			    listString += s + " %n";
 			}
 			//sender.sendMessage(playerName + " " + listString);
-			String[] message = listString.split("%n"); // Split everytime the "\n" into a new array value
+			int page = 1;
+	           if(args.length > 0){
+	        	   try {
+					page = Integer.parseInt(args[0]);
+				} catch (NumberFormatException e) {
+					sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+					return true;
+				}
+	           }
+	           ChatPage tPage = ChatPaginator.paginate("" + listString, page);
+	           sender.sendMessage(plugin.colors.getTitle() + "Server info: ["+tPage.getPageNumber() + "/" + tPage.getTotalPages() + "]");
+	           String[] lines = tPage.getLines();
+	           String list = plugin.colors.getInfo() + "";
+	           for(int i=0;i<lines.length;i++){
+	        	list = plugin.colors.getInfo() + list + plugin.colors.getInfo() + lines[i] + " ";   
+	           }
+			String[] message = list.split("%n"); // Split everytime the "\n" into a new array value
 			
 					for(int x=0 ; x<message.length ; x++) {
 					sender.sendMessage(plugin.colors.getInfo() +  useful.colorise(message[x])); // Send each argument in the message
