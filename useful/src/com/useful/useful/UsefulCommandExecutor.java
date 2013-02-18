@@ -2164,7 +2164,21 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						messagetosend.append(",");
 						
 		           }
-		           sender.sendMessage(plugin.colors.getInfo() + "Jails:" + messagetosend);
+		           int page = 1;
+		           if(args.length > 0){
+		        	   try {
+						page = Integer.parseInt(args[0]);
+					} catch (NumberFormatException e) {
+						sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+						return true;
+					}
+		           }
+		           ChatPage tPage = ChatPaginator.paginate("" + messagetosend, page);
+		           sender.sendMessage(plugin.colors.getTitle() + "Jails: [" + tPage.getPageNumber() + "/" + tPage.getTotalPages() + "]");
+		           String[] lines = tPage.getLines();
+		           for(int i=0;i<lines.length;i++){
+		        	 sender.sendMessage(plugin.colors.getInfo() + lines[i]);  
+		           }
 		    	   }
 		       
 			  else {
