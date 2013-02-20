@@ -82,6 +82,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
+import org.bukkit.util.Vector;
 
 import com.useful.useful.utils.*;
 
@@ -4498,7 +4499,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						gname = args[3];
 						String gperm = args[4];
 						String gval = args[5];
-						Object Val;
+						Boolean Val;
 						try {
 							Val = Boolean.parseBoolean(gval);
 						} catch (Exception e) {
@@ -4511,6 +4512,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 							return true;
 						}
 						String path = "groups/"+gname+"/permissions";
+						gperm = gperm.replaceAll(":", "");
 						plugin.permManager.setPerm(path, gperm, Val);
 						}
 						if(valid){
@@ -4668,7 +4670,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						gname = args[3];
 						String gperm = args[4];
 						String gval = args[5];
-						Object Val;
+						Boolean Val;
 						try {
 							Val = Boolean.parseBoolean(gval);
 						} catch (Exception e) {
@@ -4683,6 +4685,7 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 							}
 						}
 						String path = "users/"+gname+"/permissions";
+						gperm = gperm.replaceAll(":", "");
 						plugin.permManager.setPerm(path, gperm, Val);
 						}
 						if(valid){
