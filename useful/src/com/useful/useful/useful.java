@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -1548,6 +1549,7 @@ public void jailsConverter(){
    						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.RED + "Error checking version...");
    						latest = current;
    					}
+   					latest = 3; //TODO test why not working
    					if(latest <= current){
    						//getLogger().info("Current version: " + current + " latest version: " + latest);
    						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Current version: " + current + " latest version: " + latest);
@@ -1568,7 +1570,11 @@ public void jailsConverter(){
    					        String latestFilePage = "";
    					        try{
    					            URL bukkiturl = new URL("http://dev.bukkit.org/server-mods/useful");
-   					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
+   					            HttpURLConnection urlConnection = (HttpURLConnection)bukkiturl.openConnection();
+   					            urlConnection.setRequestMethod("GET");
+   					            urlConnection.setUseCaches(false);
+   					            urlConnection.setReadTimeout(15*1000);
+   					            urlConnection.connect();
    					            inStream = new InputStreamReader(urlConnection.getInputStream());
    					            buff = new BufferedReader(inStream);
    					            while(true){
@@ -1581,9 +1587,20 @@ public void jailsConverter(){
    					            htmlCode = htmlCode.replaceAll(" ", "");
    					         htmlCode = htmlCode.replaceAll("	", "");
    					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
-   					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/17-useful-v2-1/">Download</a>
+   					      if(htmlCode.length() < 5){
+   					    	  plugin.colLogger.info("Failed to connect to bukkit.org - expect errors below:");
+   					      }
+   					      boolean debug = true;
+   					      if(debug){
+   					      ListStore debugFile = new ListStore(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "updateDebug.txt"));
+   					      debugFile.add(htmlCode);
+   					      debugFile.save();
+   					      }
+   					      //TODO fix autouodater!
+   					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/21-useful-v2-4/">Download</a></li>
    					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
    					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
+   					            plugin.colLogger.info("Data 1: " + startFrom + " Data 2: " + endFrom);
    					            latestFilePage = htmlCode.substring(startFrom, endFrom);
    					            latestFilePage = latestFilePage.replaceFirst("<liclass=\"user-actionuser-action-download\"><ahref=\"", "");
    					            latestFilePage = "http://dev.bukkit.org" + latestFilePage;
@@ -1649,8 +1666,9 @@ public void jailsConverter(){
    						}
    					}
    				}
-   				
+   				if(reader != null){
    				reader.close();
+   				}
    				in.close();
    			}catch (Exception e){
    				e.printStackTrace();
