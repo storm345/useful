@@ -1,6 +1,6 @@
 name: useful
 main: com.useful.useful.useful
-version: 2.4
+version: 2.5
 commands:
    test:
       description: This tests the plugin is working.

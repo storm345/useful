@@ -1227,6 +1227,7 @@ public void jailsConverter(){
 	           			try{
 	           				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
 	           				String line;
+	           				Boolean open = true;
 	           				while(reader.ready() && (line = reader.readLine()) != null){
 	           					double latest = 0;
 	           					double current = config.getDouble("version.current");
@@ -1242,6 +1243,7 @@ public void jailsConverter(){
 	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Current version: " + current + " latest version: " + latest);
 	           						//getLogger().info("Plugin up to date!");
 	           						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.GREEN + "Plugin up to date!");
+	           						open = false;
 	           					}
 	           					else{
 	           						//getLogger().info("Current version: " + current + " latest version: " + latest);
@@ -1342,7 +1344,7 @@ public void jailsConverter(){
 	       				in.close();
 	       				}
 	       			}catch (Exception e){
-	       				e.printStackTrace();
+	       				//e.printStackTrace();
 	       			}
 	       			
 	       			/*

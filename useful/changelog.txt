@@ -1,4 +1,1 @@
-* Improved uphill ucars
-* Added /craft to get a crafting bench
-* Made pages for /warps
-* Added pages for lots of commands
+* Hopefully fixed idle error bug.
