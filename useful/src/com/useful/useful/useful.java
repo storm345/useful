@@ -1549,7 +1549,6 @@ public void jailsConverter(){
    						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.RED + "Error checking version...");
    						latest = current;
    					}
-   					latest = 3; //TODO test why not working
    					if(latest <= current){
    						//getLogger().info("Current version: " + current + " latest version: " + latest);
    						getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Current version: " + current + " latest version: " + latest);
@@ -1573,30 +1572,32 @@ public void jailsConverter(){
    					            HttpURLConnection urlConnection = (HttpURLConnection)bukkiturl.openConnection();
    					            urlConnection.setRequestMethod("GET");
    					            urlConnection.setUseCaches(false);
-   					            urlConnection.setReadTimeout(15*1000);
+   					            urlConnection.setReadTimeout(25*1000);
+   					            urlConnection.setConnectTimeout(25*1000);
+   					         urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.60 Safari/537.17");
+   					            urlConnection.setInstanceFollowRedirects(true);
    					            urlConnection.connect();
    					            inStream = new InputStreamReader(urlConnection.getInputStream());
    					            buff = new BufferedReader(inStream);
-   					            while(true){
-   					                if (buff.readLine()!=null){
-   					                    htmlCode += buff.readLine() + "\n";
-   					                }else{
-   					                    break;
-   					                }
-   					            }
+   					         StringBuilder builder = new StringBuilder();
+   				            int byteRead;
+   				            while ((byteRead = buff.read()) != -1)
+   				                builder.append((char) byteRead);
+   				            
+   				            buff.close();
+   				            htmlCode = builder.toString();
    					            htmlCode = htmlCode.replaceAll(" ", "");
    					         htmlCode = htmlCode.replaceAll("	", "");
    					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
    					      if(htmlCode.length() < 5){
    					    	  plugin.colLogger.info("Failed to connect to bukkit.org - expect errors below:");
    					      }
-   					      boolean debug = true;
+   					      boolean debug = false;
    					      if(debug){
    					      ListStore debugFile = new ListStore(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "updateDebug.txt"));
    					      debugFile.add(htmlCode);
    					      debugFile.save();
    					      }
-   					      //TODO fix autouodater!
    					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/21-useful-v2-4/">Download</a></li>
    					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
    					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
@@ -1615,21 +1616,26 @@ public void jailsConverter(){
 					            URLConnection urlConnection = (URLConnection)bukkiturl.openConnection();
 					            inStream = new InputStreamReader(urlConnection.getInputStream());
 					            buff = new BufferedReader(inStream);
-					            while(true){
-					                if (buff.readLine()!=null){
-					                    htmlCode += buff.readLine() + "\n";
-					                }else{
-					                    break;
-					                }
-					            }
-					            htmlCode = htmlCode.replaceAll(" ", "");
+					            StringBuilder builder = new StringBuilder();
+	   				            int byteRead;
+	   				            while ((byteRead = buff.read()) != -1)
+	   				                builder.append((char) byteRead);
+	   				            
+	   				            buff.close();
+	   				            htmlCode = builder.toString();
+	   				            ListStore test = new ListStore(new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "test.txt"));
+					            test.add(htmlCode);
+					            test.save();
+	   				            htmlCode = htmlCode.replaceAll(" ", "");
 					         htmlCode = htmlCode.replaceAll("	", "");
 					      htmlCode = htmlCode.replaceAll("\n", "").replace("\r", "");
 					      //<dd><spanclass="standard-date"title="Jan29,2013at17:04UTC"data-epoch="1359479056"data-shortdate="true">Jan29,2013</span></dd><dt>Gameversion</dt><dd><ahref="http://dev.bukkit.org/media/files/668/500/useful.jar">useful.jar</a>
-					            int startFrom = htmlCode.indexOf("</span></dd><dt>Gameversion</dt><dd><ahref=\"");
-					            int endFrom = htmlCode.indexOf("\">", startFrom);
+					      //<li class="user-action user-action-download"><span><a href="http://dev.bukkit.org/media/files/674/587/useful.jar">Download</a></span></li>      
+					      //<liclass="user-actionuser-action-download"><span><ahref="http://dev.bukkit.org/media/files/674/587/useful.jar">Download</a></span></li>
+					      int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><span><ahref=\"");
+					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
 					            FilePath = htmlCode.substring(startFrom, endFrom);
-					            FilePath = FilePath.replaceFirst("</span></dd><dt>Gameversion</dt><dd><ahref=\"", "");
+					            FilePath = FilePath.replaceFirst("<liclass=\"user-actionuser-action-download\"><span><ahref=\"", "");
 					            plugin.colLogger.info("Latest version url: " + FilePath);
 					        }catch(Exception e){
 					        	e.printStackTrace();
