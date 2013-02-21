@@ -1228,7 +1228,7 @@ public void jailsConverter(){
 	           				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
 	           				String line;
 	           				Boolean open = true;
-	           				while(reader.ready() && (line = reader.readLine()) != null){
+	           				while(open && reader.ready() && (line = reader.readLine()) != null){
 	           					double latest = 0;
 	           					double current = config.getDouble("version.current");
 	           					try {
