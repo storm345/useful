@@ -1,1 +1,2 @@
 * Hopefully fixed idle error bug.
+* Fixed the autoupdater
