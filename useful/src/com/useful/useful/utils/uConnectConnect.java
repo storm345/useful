@@ -4,17 +4,17 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Set;
-
 import com.dropbox.client2.session.Session.AccessType;
 import com.dropbox.client2.*;
 import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.session.*;
-import com.useful.useful.useful;
 
 public class uConnectConnect {
+	private boolean loaded = false;
+	
+	public uConnectConnect(){
+		this.loaded = true;
+	}
 
 	private static final String APP_KEY = "27y91t6ni72mhva";
     private static final String APP_SECRET = "nfni1r28rvapbhi";
@@ -59,7 +59,6 @@ public class uConnectConnect {
         return true;
     	}
     	public static File getFile(String path, File save){
-        	
             try {
     			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);

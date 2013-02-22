@@ -75,6 +75,7 @@ public class useful extends JavaPlugin {
 	public static useful plugin;
 	public Colors colors = null;
 	public double pluginVersion = 0;
+	public UConnect uconnect = null;
 	static File ranksFile;
 	static FileConfiguration ranks;
 	static File upermsFile;
@@ -1099,6 +1100,10 @@ public void jailsConverter(){
 			this.commandViewers.load();
 			this.heros = new ListStore(new File(pluginFolder + File.separator + "heros.dat"));
 			this.heros.load();
+			//TODO make optional
+			plugin.colLogger.info("Loading uConnect...");
+			uconnect = new UConnect();
+			plugin.colLogger.info("uConnect loaded!");
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 	            @Override
 	            public void run() {
@@ -1748,7 +1753,9 @@ public void jailsConverter(){
 		}
 		saveYamls();
 		auths.save();
+		if(broadcaster != null){
 		broadcaster.cancel();
+		}
 		backup.cancel();
 		idle.cancel();
 		idleRunning = false;
