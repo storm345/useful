@@ -14,9 +14,11 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -108,6 +110,21 @@ public class useful extends JavaPlugin {
 		prefix = prefix.replace("&m", "" + ChatColor.MAGIC);
 		return prefix;
 	}
+	private void addClassPath(final URL url) throws IOException {
+        final URLClassLoader sysloader = (URLClassLoader) ClassLoader
+                .getSystemClassLoader();
+        final Class<URLClassLoader> sysclass = URLClassLoader.class;
+        try {
+            final Method method = sysclass.getDeclaredMethod("addURL",
+                    new Class[] { URL.class });
+            method.setAccessible(true);
+            method.invoke(sysloader, new Object[] { url });
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            throw new IOException("Error adding " + url
+                    + " to system classloader");
+        }
+    }
 	@SuppressWarnings("unchecked")
 	public HashMap<String, ArrayList<String>> load(String path)
 	{
@@ -1102,6 +1119,33 @@ public void jailsConverter(){
 			this.heros.load();
 			//TODO make optional
 			plugin.colLogger.info("Loading uConnect...");
+			//LOAD JARS!
+			try {
+	            final File[] libs = new File[] {
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpclient.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpmime.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpcore.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar") };
+	            for (final File lib : libs) {
+	                if (!lib.exists()) {
+	                    JarUtils.extractFromJar(lib.getName(),
+	                            lib.getAbsolutePath());
+	                }
+	            }
+	            for (final File lib : libs) {
+	                if (!lib.exists()) {
+	                    getLogger().warning(
+	                            "There was a critical error loading My plugin! Could not find lib: "
+	                                    + lib.getName());
+	                    Bukkit.getServer().getPluginManager().disablePlugin(this);
+	                    return;
+	                }
+	                addClassPath(JarUtils.getJarUrl(lib));
+	            }
+	        } catch (final Exception e) {
+	            e.printStackTrace();
+	        }
 			uconnect = new UConnect();
 			plugin.colLogger.info("uConnect loaded!");
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
