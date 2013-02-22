@@ -15,7 +15,7 @@ import com.dropbox.client2.session.Session.AccessType;
 import com.dropbox.client2.session.WebAuthSession;
 import com.dropbox.client2.session.WebAuthSession.WebAuthInfo;
 
-public class DopBoxTest {
+public class Test {
 	private static final String APP_KEY = "27y91t6ni72mhva";
     private static final String APP_SECRET = "nfni1r28rvapbhi";
     private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER;
