@@ -10,7 +10,7 @@ commands:
       default: true
    uconnect:
       description: This is the access to the uconnect system.
-      usage: /<command> [Msg [<Send> <Player> <Msg>], [<Clear>], [<Read> (Page)]]
+      usage: /<command> [Msg [<Send> <Player> <Msg>], [<Clear>], [<Read> (Page)]], [Profile <Name>]
       aliases: [uc, ucon]
       permission: useful.uconnect
       permission-message: You don't have <permission> permission

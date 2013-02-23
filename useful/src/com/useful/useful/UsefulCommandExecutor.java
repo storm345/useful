@@ -409,6 +409,18 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return false;
 				}
 			}
+			else if(program.equalsIgnoreCase("profile")){
+				if(args.length < 2){
+					return false;
+				}
+				String pName = args[1];
+				plugin.uconnect.loadProfiles();
+				UConnectProfile profile = plugin.uconnect.loadProfile(pName);
+				sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pName);
+				sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
+				sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+				return true;
+			}
 			return false;
 		}
 		else if(cmd.getName().equalsIgnoreCase("needauth")){

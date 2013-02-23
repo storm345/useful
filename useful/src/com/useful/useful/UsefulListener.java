@@ -271,6 +271,11 @@ public class UsefulListener implements Listener{
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player playerJoined = event.getPlayer();
+		if(useful.config.getBoolean("uConnect.enable")){
+			UConnectProfile profile = plugin.uconnect.loadProfile(event.getPlayer().getName());
+			profile.setOnline(true);
+			profile.save();
+		}
 		String name = playerJoined.getName();
 		String loginmsg = useful.config.getString("general.loginmessage");
 		loginmsg = useful.colorise(loginmsg);
@@ -367,6 +372,9 @@ public class UsefulListener implements Listener{
 		}
 		Player playerJoined = event.getPlayer();
 		String name = playerJoined.getName();
+		UConnectProfile profile = plugin.uconnect.loadProfile(name);
+		profile.setOnline(false);
+		profile.save();
 		String msg = useful.config.getString("general.quitmessage");
 		msg = useful.colorise(msg);
 		msg = msg.replace("*name*", name);
@@ -375,7 +383,13 @@ public class UsefulListener implements Listener{
 		event.setQuitMessage(msg);
 		}
 	}
-	
+	@EventHandler
+	public void kick(PlayerKickEvent event){
+		UConnectProfile profile = plugin.uconnect.loadProfile(event.getPlayer().getName());
+		profile.setOnline(false);
+		profile.save();
+		return;
+	}
 	
 	@EventHandler
 	public void jailSmash(BlockBreakEvent event)  {
