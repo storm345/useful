@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import com.useful.useful.useful;
 public class UConnect {
 private YamlConfiguration main = new YamlConfiguration();
 private YamlConfiguration profiles = new YamlConfiguration();
+public final HashMap<String, Boolean> tasks = new HashMap<String, Boolean>();
 private useful plugin = useful.plugin;
 private File cache = null;
 public UConnect(){
@@ -39,11 +41,18 @@ public UConnect(){
 }
 public void load(){
 	try {
-		this.cache = File.createTempFile("uConnectDataCache", ".txt");
+		this.cache = new File("uConnectDataCache.txt");
+		this.cache.createNewFile();
 	} catch (IOException e1) {
 		return;
 	}
-	File checkFile = uConnectConnect.getFile("/main.yml", this.cache);
+	String uuid = UniqueString.generate();
+	this.tasks.put(uuid, false);
+	File checkFile = uConnectConnect.getFile("/main.yml", this.cache, uuid);
+	while(!this.tasks.get(uuid)){
+		//useful.plugin.colLogger.info("main: " + this.tasks.get(uuid));
+	}
+	this.tasks.remove(uuid);
 	if(checkFile == null){
 		this.cache.delete();
 		return;
@@ -68,7 +77,13 @@ public void save(){
 	} catch (IOException e) {
 		return;
 	}
-	uConnectConnect.uploadFile(this.cache, "/main.yml");
+	String uuid = UniqueString.generate();
+	this.tasks.put(uuid, false);
+	uConnectConnect.uploadFile(this.cache, "/main.yml", uuid);
+	while(!this.tasks.get(uuid)){
+		
+	}
+	this.tasks.remove(uuid);
 	this.cache.delete();
 	return;
 }
@@ -117,7 +132,13 @@ public void loadProfiles(){
 	} catch (IOException e1) {
 		return;
 	}
-	File checkFile = uConnectConnect.getFile("/profiles.yml", this.cache);
+	String uuid = UniqueString.generate();
+	this.tasks.put(uuid, false);
+	File checkFile = uConnectConnect.getFile("/profiles.yml", this.cache, uuid);
+	while(!this.tasks.get(uuid)){
+		
+	}
+	this.tasks.remove(uuid);
 	if(checkFile == null){
 		this.cache.delete();
 		return;
@@ -142,7 +163,13 @@ public void saveProfiles(){
 	} catch (IOException e) {
 		return;
 	}
-	uConnectConnect.uploadFile(this.cache, "/profiles.yml");
+	String uuid = UniqueString.generate();
+	this.tasks.put(uuid, false);
+	uConnectConnect.uploadFile(this.cache, "/profiles.yml", uuid);
+	while(!this.tasks.get(uuid)){
+		
+	}
+	this.tasks.remove(uuid);
 	this.cache.delete();
 	return;
 }
@@ -176,6 +203,14 @@ public UConnectProfile loadProfile(String pname){
 	}
 	else{
 		return new UConnectProfile(pname);
+	}
+}
+public int MessageCount(String pname){
+	if(this.main.contains("messaging."+pname)){
+		return this.main.getStringList("messaging."+pname).size();
+	}
+	else{
+		return 0;
 	}
 }
 

@@ -361,7 +361,12 @@ public class UsefulListener implements Listener{
 						}
 		 }
 			
-					
+					if(useful.config.getBoolean("uConnect.enable")){
+						int unreadMsg = plugin.uconnect.MessageCount(event.getPlayer().getName());
+						if(unreadMsg > 0){
+							event.getPlayer().sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + unreadMsg + plugin.colors.getInfo() + " unread messages!");
+						}
+					}
 	        return;
 	}
 	

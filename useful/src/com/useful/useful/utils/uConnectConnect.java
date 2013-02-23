@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 
 import javax.xml.ws.http.HTTPException;
 
@@ -29,6 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpParams;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.session.AccessTokenPair;
@@ -53,12 +55,11 @@ public class uConnectConnect {
     private static final String APP_SECRET = "nfni1r28rvapbhi";
     private static DropboxAPI<WebAuthSession> mDBApi = null;
     private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER; 
-    	public static Boolean uploadFile(final File file, final String path){
+    	public static Boolean uploadFile(final File file, final String path, final String uuid){
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
-					// TODO Auto-generated method stub
 					try {
 			        	AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
 						WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
@@ -85,25 +86,25 @@ public class uConnectConnect {
 						/*
 						System.out.println("Key token: " + tokens.key);
 						System.out.println("Secret token: " + tokens.secret);
-						*/
-						
-						
+						*/	
 						//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
 					} catch (Exception e) {
+						useful.plugin.uconnect.tasks.put(uuid, true);
 						e.printStackTrace();
 					}
+					useful.plugin.uconnect.tasks.put(uuid, true);
 				}});
-        
+    		
         return true;
     	}
     	
-    	public static File getFile(final String path, final File save){
-    		
-            try {
-            	useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
+    	public static File getFile(final String path, final File save, final String uuid){
+    		useful.plugin.uconnect.tasks.put(uuid, false);
+    		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
-    				@Override
-    				public void run() {
+				@Override
+				public void run() {
+					try {
     					AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     	    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
     	    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
@@ -130,33 +131,49 @@ public class uConnectConnect {
     	    			*/
     	    			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
     	    			FileOutputStream os;
+    	    			useful.plugin.colLogger.info("Preparing to connect...");
 						try {
 							os = new FileOutputStream(save);
+							useful.plugin.colLogger.info("Connecting...");
 							mDBApi.getFile(path, null, os, null);
+							os.close();
+							useful.plugin.uconnect.tasks.put(uuid, true);
 						} catch (Exception e) {
+							useful.plugin.uconnect.tasks.put(uuid, true);
 							e.printStackTrace();
 						}
-    	    			
-    				}});
     		} catch (Exception e) {
     			e.printStackTrace();
-    			return null;
+    			useful.plugin.uconnect.tasks.put(uuid, true);
     		}
+					useful.plugin.uconnect.tasks.put(uuid, true);
+				}});
+            while(!useful.plugin.uconnect.tasks.get(uuid)){
+            	
+            }
             return save;
         	}
-    	public static void deleteFile(String path){
-    		try {
-    			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
-    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
-    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
-    			session.setAccessTokenPair(tokens);
-    			mDBApi = new DropboxAPI<WebAuthSession>(session);
-    			mDBApi.delete(path);
-    		}
-    		catch (Exception e) {
-    			e.printStackTrace();
-    			return;
-    		}
+    	public static void deleteFile(final String path, final String uuid){
+    		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					try {
+		    			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+		    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
+		    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+		    			session.setAccessTokenPair(tokens);
+		    			mDBApi = new DropboxAPI<WebAuthSession>(session);
+		    			mDBApi.delete(path);
+		    		}
+		    		catch (Exception e) {
+		    			e.printStackTrace();
+		    			useful.plugin.uconnect.tasks.put(uuid, true);
+		    			return;
+		    		}
+		    		useful.plugin.uconnect.tasks.put(uuid, true);
+				}});
+    		
     		return;
     	}
     	public static DropboxAPI<WebAuthSession> getApi(){
