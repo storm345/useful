@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,6 +72,7 @@ import com.useful.useful.utils.Performance;
 import com.useful.useful.utils.Potions;
 import com.useful.useful.utils.TeleportRequest;
 import com.useful.useful.utils.TpaReq;
+import com.useful.useful.utils.UConnectProfile;
 import com.useful.useful.utils.getColor;
 import com.useful.useful.utils.getEnchant;
 
@@ -322,6 +325,91 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			sender.sendMessage(plugin.colors.getSuccess() + "Created firework");
 			player.getInventory().addItem(item);
 			return true;
+		}
+		else if(cmd.getName().equalsIgnoreCase("uconnect")){
+			//TODO the uconnect inta-server system!
+			if(args.length <1){
+				return false;
+			}
+			String program = args[0];
+			if(program.equalsIgnoreCase("message") || program.equalsIgnoreCase("msg")){
+				if(player == null){
+					sender.sendMessage(plugin.colors.getError() + "Only players can use the messaging part of uconnect.");
+					return true;
+				}
+				if(args.length <2){
+					return false;
+				}
+				String action = args[1];
+				if(action.equalsIgnoreCase("read")){
+					UConnectProfile profile = new UConnectProfile(player.getName());
+					List<String> inbox = plugin.uconnect.getMessages(profile);
+					//TODO paginate and send
+					int displayable = 8;
+					int page = 1;
+					if(args.length > 2){
+						try {
+							page = Integer.parseInt(args[2]);
+						} catch (Exception e) {
+							sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+							return true;
+						}
+					}
+					int totalpages = 1;
+					double unrounded = inbox.size() / 8;
+					NumberFormat fmt = NumberFormat.getNumberInstance();
+					fmt.setMaximumFractionDigits(0);
+					fmt.setRoundingMode(RoundingMode.UP);
+					String value = fmt.format(unrounded);
+					totalpages = Integer.parseInt(value);
+					int it = ((page -1)*8);
+					if(it > inbox.size()){
+						if(inbox.size() > 8){
+						it = inbox.size() -8;
+						}
+						else{
+							it = 0;
+						}
+					}
+					double pageno = it/8 + 1;
+					String pagenumber = fmt.format(pageno);
+					sender.sendMessage(plugin.colors.getTitle() + ChatColor.BOLD + "My messages: ("+inbox.size()+") page:" + ChatColor.RESET + "" + plugin.colors.getInfo() + "["+pagenumber+"/"+(totalpages+1)+"]");
+				    int displayed = 0;
+				    if(inbox.size() == 0){
+				    	sender.sendMessage(plugin.colors.getSuccess() + "No new messages!");
+				    	return true;
+				    }
+					for(int i=it;i<inbox.size() && displayed<=displayable;i++){
+				    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(inbox.get(i)));
+				    	displayed++;
+				    }
+					return true;
+				}
+				else if(action.equalsIgnoreCase("clear")){
+					UConnectProfile profile = new UConnectProfile(player.getName());
+					plugin.uconnect.clearMessages(profile);
+					sender.sendMessage(plugin.colors.getSuccess() + "Your messages have been cleared!");
+					return true;
+				}
+				else if(action.equalsIgnoreCase("send")){
+					if(args.length < 4){
+						return false;
+					}
+					String playerName = args[2];
+					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
+					String message = args[3];
+				    for(int i = 4; i<args.length;i++){
+						message = message + " " + args[i];
+					}
+				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message);
+				    sender.sendMessage(plugin.colors.getSuccess() + "Successfully sent message to: " + playerName);
+				    return true;
+				}
+				else{
+					return false;
+				}
+			}
+			return false;
 		}
 		else if(cmd.getName().equalsIgnoreCase("needauth")){
 			//TODO

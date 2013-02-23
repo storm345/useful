@@ -59,7 +59,7 @@ public class uConnectConnect {
 			session.setAccessTokenPair(tokens);
 			FileInputStream in = new FileInputStream(file);
 			mDBApi = new DropboxAPI<WebAuthSession>(session);
-			mDBApi.putFile(path, in, file.length(), null, null);
+			mDBApi.putFileOverwrite(path, in, file.length(), null);
 			/* setup again if i delete from dropbox
 			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
 			WebAuthInfo authInfo = session.getAuthInfo();

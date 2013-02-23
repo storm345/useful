@@ -1074,6 +1074,12 @@ public void jailsConverter(){
 	        if(!config.contains("customCrafting.fire.enable")){
 	        	config.set("customCrafting.fire.enable", true);
 	        }
+	        if(!config.contains("uConnect.# description")){
+	        	config.set("uConnect.# description", "This allows for the uConnect inta-server system.");
+	        }
+	        if(!config.contains("uConnect.enable")){
+	        	config.set("uConnect.enable", true);
+	        }
 			saveConfig();
 			pluginFolder = this.getDataFolder().getAbsolutePath();
 			(new File(pluginFolder)).mkdirs();
@@ -1118,6 +1124,7 @@ public void jailsConverter(){
 			this.heros = new ListStore(new File(pluginFolder + File.separator + "heros.dat"));
 			this.heros.load();
 			//TODO make optional
+			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			//LOAD JARS!
 			
@@ -1153,6 +1160,7 @@ public void jailsConverter(){
 	        
 			uconnect = new UConnect();
 			plugin.colLogger.info("uConnect loaded!");
+			}
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 	            @Override
 	            public void run() {
@@ -1531,6 +1539,7 @@ public void jailsConverter(){
         checkRegister("general.rename.enable", "rename");
         checkRegister("general.head.enable", "head");
         checkRegister("general.craft.enable", "craft");
+        checkRegister("uConnect.enable", "uconnect");
         if(new File(getDataFolder() + File.separator + "warps.bin").exists() || new File(getDataFolder() + File.separator + "warpowners.bin").exists() && new File(getDataFolder() + File.separator + "warps.bin") != null && new File(getDataFolder() + File.separator + "warps.bin").length() > 0){
  	       //getLogger().info("Old warp data found, converting now...");
  	       getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old warp data, converting now...");
