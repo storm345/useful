@@ -1120,12 +1120,16 @@ public void jailsConverter(){
 			//TODO make optional
 			plugin.colLogger.info("Loading uConnect...");
 			//LOAD JARS!
+			
 			try {
 	            final File[] libs = new File[] {
 	                    new File(getDataFolder() + File.separator + "uConnect", "httpclient.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "httpmime.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "httpcore.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "dropbox.jar"),
+	                    //new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
+	                    //new File(getDataFolder() + File.separator + "uConnect", "junit.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "commons-logging.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar") };
 	            for (final File lib : libs) {
 	                if (!lib.exists()) {
@@ -1146,6 +1150,7 @@ public void jailsConverter(){
 	        } catch (final Exception e) {
 	            e.printStackTrace();
 	        }
+	        
 			uconnect = new UConnect();
 			plugin.colLogger.info("uConnect loaded!");
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {

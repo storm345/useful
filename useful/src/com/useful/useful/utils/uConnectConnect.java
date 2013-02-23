@@ -1,34 +1,65 @@
 package com.useful.useful.utils;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.xml.ws.http.HTTPException;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 
 import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.DropboxAPI.Entry;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
-import com.dropbox.client2.session.Session.AccessType;
 import com.dropbox.client2.session.WebAuthSession;
+import com.dropbox.client2.session.Session.AccessType;
 
 public class uConnectConnect {
 	private boolean loaded = false;
-	
+	private static SortedMap<String, String> oauth = new TreeMap<String, String>();
 	public uConnectConnect(){
 		this.loaded = true;
+		this.oauth.put("oauth_consumer_key", "27y91t6ni72mhva");
+		this.oauth.put("oauth_signature_method", "HMAZ-SHA1");
+		this.oauth.put("oauth_version", "1.0");
+		this.oauth.put("oauth_token", "l4yln3msdyua24o");
+		//this.oauth.put("oauth_token_secret", "jf23d653v9cryms");
 	}
 
 	private static final String APP_KEY = "27y91t6ni72mhva";
     private static final String APP_SECRET = "nfni1r28rvapbhi";
-    private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER;
-    private static DropboxAPI<WebAuthSession> mDBApi;
- 
+    private static DropboxAPI<WebAuthSession> mDBApi = null;
+    private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER; 
     	public static Boolean uploadFile(File file, String path){
-    	
         try {
-			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+        	AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
 			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
+			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+			session.setAccessTokenPair(tokens);
+			FileInputStream in = new FileInputStream(file);
+			mDBApi = new DropboxAPI<WebAuthSession>(session);
+			mDBApi.putFile(path, in, file.length(), null, null);
 			/* setup again if i delete from dropbox
 			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
 			WebAuthInfo authInfo = session.getAuthInfo();
@@ -42,29 +73,29 @@ public class uConnectConnect {
 			
 			AccessTokenPair tokens = session.getAccessTokenPair();
 			*/
-			//key:  l4yln3msdyua24o secret:  jf23d653v9cryms   -   for storm345Dev dropbox
+			//key:  l4yln3msdyua24o secret:  jf23d653v9cryms   -   for dropbox
 			//System.out.println("Use this token pair in future so you don't have to re-authenticate each time:");
 			/*
 			System.out.println("Key token: " + tokens.key);
 			System.out.println("Secret token: " + tokens.secret);
 			*/
-			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
-			session.setAccessTokenPair(tokens);
-			mDBApi = new DropboxAPI<WebAuthSession>(session);
-			DataInputStream input = new DataInputStream(new FileInputStream(file));
+			
+			
 			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
-			@SuppressWarnings("unused")
-			Entry newEntry = mDBApi.putFile(path, input, file.length(), null, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
         return true;
     	}
+    	
     	public static File getFile(String path, File save){
             try {
     			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
+    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+    			session.setAccessTokenPair(tokens);
+    			mDBApi = new DropboxAPI<WebAuthSession>(session);
     			/* setup again if i delete from dropbox
     			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
     			WebAuthInfo authInfo = session.getAuthInfo();
@@ -84,9 +115,6 @@ public class uConnectConnect {
     			System.out.println("Key token: " + tokens.key);
     			System.out.println("Secret token: " + tokens.secret);
     			*/
-    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
-    			session.setAccessTokenPair(tokens);
-    			mDBApi = new DropboxAPI<WebAuthSession>(session);
     			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
     			FileOutputStream os = new FileOutputStream(save);
     			mDBApi.getFile(path, null, os, null);
@@ -125,5 +153,6 @@ public class uConnectConnect {
     			return null;
     		}
     	}
+    	
     
 }
