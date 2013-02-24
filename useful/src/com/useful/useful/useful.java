@@ -1661,11 +1661,19 @@ public void jailsConverter(){
    					      debugFile.save();
    					      }
    					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/21-useful-v2-4/">Download</a></li>
-   					            int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
-   					            int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
+   					      String startPoint = GetStringFromUrl.get("https://dl.dropbox.com/u/50672767/usefulplugin/updaterStartpoint.txt");      
+   					      String endPoint = GetStringFromUrl.get("https://dl.dropbox.com/u/50672767/usefulplugin/updaterEndpoint.txt");
+   					      if(startPoint == null || endPoint == null){
+   					    	  plugin.colLogger.info("Error fetching points!");
+   					    	  break;
+   					      }
+   					      //int startFrom = htmlCode.indexOf("<liclass=\"user-actionuser-action-download\"><ahref=\"");
+   					      //int endFrom = htmlCode.indexOf("\">Download</a>", startFrom);
+   					      int startFrom = htmlCode.indexOf(startPoint);
+   					            int endFrom = htmlCode.indexOf(endPoint, startFrom);
    					            plugin.colLogger.info("Data 1: " + startFrom + " Data 2: " + endFrom);
    					            latestFilePage = htmlCode.substring(startFrom, endFrom);
-   					            latestFilePage = latestFilePage.replaceFirst("<liclass=\"user-actionuser-action-download\"><ahref=\"", "");
+   					            latestFilePage = latestFilePage.replaceFirst(startPoint, "");
    					            latestFilePage = "http://dev.bukkit.org" + latestFilePage;
    					            plugin.colLogger.info("For information on this version visit:"+latestFilePage);
    					        }catch(Exception e){

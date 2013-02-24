@@ -348,11 +348,13 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					if(args.length > 2){
 						page = args[2];
 					}
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
 					plugin.uconnect.getMessages(profile,page,sender);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("clear")){
 					UConnectProfile profile = new UConnectProfile(player.getName());
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
 					plugin.uconnect.clearMessages(profile, sender);
 					return true;
 				}
@@ -366,6 +368,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				    for(int i = 4; i<args.length;i++){
 						message = message + " " + args[i];
 					}
+				    sender.sendMessage(ChatColor.GRAY + "Loading...");
 				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message, sender);
 				    return true;
 				}
@@ -381,8 +384,58 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				List<Object> uargs = new ArrayList<Object>();
 				uargs.add(pName);
 				UConnectDataRequest request = new UConnectDataRequest("loadProfile", uargs.toArray(), sender);
+				sender.sendMessage(ChatColor.GRAY + "Loading...");
 				plugin.uconnect.loadProfile(pName, request, sender);
 				return true;
+			}
+			else if(program.equalsIgnoreCase("setprofile")){
+				if(player == null){
+					sender.sendMessage(plugin.colors.getError() + "This part of uConnect is for players");
+					return true;
+				}
+				if(args.length < 3){
+					return false;
+				}
+				String action = args[1];
+				if(action.equalsIgnoreCase("contact")){
+					String contactInfo = args[2];
+					for(int i=3;i<args.length;i++){
+						contactInfo = contactInfo + " " + args[i];
+					}
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(player.getName());
+					uargs.add(contactInfo);
+					UConnectDataRequest request = new UConnectDataRequest("setProfileContact", uargs.toArray(), sender);
+					plugin.uconnect.loadProfile(player.getName(), request, sender);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				}
+				else if(action.equalsIgnoreCase("about")){
+					String contactInfo = args[2];
+					for(int i=3;i<args.length;i++){
+						contactInfo = contactInfo + " " + args[i];
+					}
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(player.getName());
+					uargs.add(contactInfo);
+					UConnectDataRequest request = new UConnectDataRequest("setProfileAbout", uargs.toArray(), sender);
+					plugin.uconnect.loadProfile(player.getName(), request, sender);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				}
+				else if(action.equalsIgnoreCase("favserver")){
+					String contactInfo = args[2];
+					for(int i=3;i<args.length;i++){
+						contactInfo = contactInfo + " " + args[i];
+					}
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(player.getName());
+					uargs.add(contactInfo);
+					UConnectDataRequest request = new UConnectDataRequest("setProfileFavServer", uargs.toArray(), sender);
+					plugin.uconnect.loadProfile(player.getName(), request, sender);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				}
 			}
 			return false;
 		}

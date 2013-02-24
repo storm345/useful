@@ -94,7 +94,6 @@ public class uConnectConnect {
 						//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
 					} catch (Exception e) {
 						useful.plugin.uconnect.tasks.put(uuid, true);
-						e.printStackTrace();
 					}
 					useful.plugin.uconnect.tasks.put(uuid, true);
 					/*
@@ -156,7 +155,6 @@ public class uConnectConnect {
 							useful.plugin.uconnect.tasks.put(uuid, true);
 						} catch (Exception e) {
 							useful.plugin.uconnect.tasks.put(uuid, true);
-							e.printStackTrace();
 						}
     		} catch (Exception e) {
     			e.printStackTrace();

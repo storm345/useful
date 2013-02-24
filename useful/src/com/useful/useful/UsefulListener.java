@@ -520,13 +520,52 @@ public class UsefulListener implements Listener{
         	if(data.contains("profile." + pname + ".online")){
         		profile.setOnline(data.getBoolean("profile."+pname+".online"));
         	}
+        	if(data.contains("profile." + pname + ".contact")){
+        		profile.setContactInfo(data.getString("profile."+pname+".contact"));
+        	}
+        	if(data.contains("profile." + pname + ".about")){
+        		profile.setAbout(data.getString("profile."+pname+".about"));
+        	}
+        	if(data.contains("profile." + pname + ".favserver")){
+        		profile.setFavServer(data.getString("profile."+pname+".favserver"));
+        	}
         	}
         	else{
         	}
         	sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pname);
 			sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
 			sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+			sender.sendMessage(plugin.colors.getTitle() + "Contact info: " + plugin.colors.getInfo() + useful.colorise(profile.getContactInfo()));
+			sender.sendMessage(plugin.colors.getTitle() + "Favourite server: " + plugin.colors.getInfo() + useful.colorise(profile.getFavServer()));
+			sender.sendMessage(plugin.colors.getTitle() + "About: " + plugin.colors.getInfo() + useful.colorise(profile.getAbout()));
 			return;
+        }
+        else if(key.equalsIgnoreCase("setProfileContact")){
+        	String name = (String) args[0];
+        	String contact = (String) args[1];
+        	data.set("profile."+name+".contact", contact);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set contact details");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("setProfileAbout")){
+        	String name = (String) args[0];
+        	String contact = (String) args[1];
+        	data.set("profile."+name+".about", contact);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set details");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("setProfileFavServer")){
+        	String name = (String) args[0];
+        	String contact = (String) args[1];
+        	data.set("profile."+name+".favserver", contact);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set your favourite server");
+        	return;
         }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
