@@ -568,6 +568,77 @@ public class UsefulListener implements Listener{
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set your favourite server");
         	return;
         }
+        else if(key.equalsIgnoreCase("showNews")){
+        	if(!data.contains("news.articles")){
+        		sender.sendMessage(plugin.colors.getInfo() + "No news available");
+        		return;
+        	}
+        	List<String> stories = data.getStringList("news.articles");
+        	sender.sendMessage(plugin.colors.getTitle() + "News:");
+        	for(int i=0;i<stories.size();i++){
+        		String news = stories.get(i);
+        		String[] parts = news.split("abcd");
+        		String toSend = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[" + useful.colorise(parts[0]) + ChatColor.RESET + "" + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "]" + ChatColor.RESET + " " + ChatColor.YELLOW + useful.colorise(parts[1]);
+        		sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[" + i + "]" + ChatColor.RESET + toSend + ChatColor.RESET + "  -Posted by "+parts[2]);
+        	}
+        	return;
+        }
+        else if(key.equalsIgnoreCase("createNews")){
+        	String name = sender.getName();
+        	UConnectProfile profile = new UConnectProfile(name);
+        	if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
+        		return;
+        	}
+        	String news = (String) args[0];
+        	news = news + "abcd" + name;
+        	List<String> articles = new ArrayList<String>();
+        	if(data.contains("news.articles")){
+        		articles = data.getStringList("news.articles");
+        	}
+        	articles.add(news);
+        	data.set("news.articles", articles);
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully created news article!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("deleteNews")){
+        	String article = ChatColor.stripColor(useful.colorise((String)args[0]));
+        	article = article.toLowerCase();
+        	String name = sender.getName();
+        	UConnectProfile profile = new UConnectProfile(name);
+        	if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
+        		return;
+        	}
+        	if(!data.contains("news.articles")){
+        		sender.sendMessage(plugin.colors.getError() + "No articles matching "+article+" found!");
+        		return;
+        	}
+        	List<String> news = data.getStringList("news.articles");
+        	Boolean found = false;
+        	String art = article;
+        	String toDel = "";
+        	for(int i=0;i<news.size();i++){
+        		String check = news.get(i);
+        		String[] parts = check.split("abcd");
+        		String tname = ChatColor.stripColor(useful.colorise(parts[0])).toLowerCase();
+        		if(article.equals(tname)){
+        			article = news.get(i);
+        			toDel = news.get(i);
+        			art = tname;
+        			found = true;
+        		}
+        	}
+        	if(!found){
+        		sender.sendMessage(plugin.colors.getError() + "No articles matching "+art+" found!");
+        		return;
+        	}
+        	news.remove(toDel);
+        	data.set("news.articles", news);
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted " + art);
+        }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
         	sender.sendMessage(plugin.colors.getError() + msg);

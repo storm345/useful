@@ -74,6 +74,7 @@ import com.useful.useful.utils.TeleportRequest;
 import com.useful.useful.utils.TpaReq;
 import com.useful.useful.utils.UConnectDataRequest;
 import com.useful.useful.utils.UConnectProfile;
+import com.useful.useful.utils.UConnectRank;
 import com.useful.useful.utils.getColor;
 import com.useful.useful.utils.getEnchant;
 
@@ -436,6 +437,54 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
 					return true;
 				}
+				else{
+					return true;
+				}
+			}
+			
+				else if(program.equalsIgnoreCase("news")){
+					UConnectDataRequest request = new UConnectDataRequest("showNews", null, sender);
+					plugin.uconnect.load(request);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				}
+				else if(program.equalsIgnoreCase("createnews")){
+					UConnectProfile profile = new UConnectProfile(sender.getName());
+					if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
+						sender.sendMessage(plugin.colors.getError() + "You don't have permission to do this");
+					}
+					if(args.length < 3){
+						return false;
+					}
+					String article = args[1];
+					String story = args[2];
+					for(int i=4;i<args.length;i++){
+						story = story + " " + args[i];
+					}
+					String toPut = "&2&l"+article+"abcd&r&e"+story;
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(toPut);
+					UConnectDataRequest request = new UConnectDataRequest("createNews", uargs.toArray(), sender);
+					plugin.uconnect.load(request);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				}
+				else if(program.equalsIgnoreCase("deleteNews")){
+					UConnectProfile profile = new UConnectProfile(sender.getName());
+					if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
+						sender.sendMessage(plugin.colors.getError() + "You don't have permission to do this");
+					}
+					if(args.length < 2){
+						return false;
+					}
+					String article = args[1];
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(article);
+					UConnectDataRequest request = new UConnectDataRequest("deleteNews", uargs.toArray(), sender);
+					plugin.uconnect.load(request);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					return true;
+				
 			}
 			return false;
 		}
