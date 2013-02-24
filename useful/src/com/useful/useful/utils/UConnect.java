@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,12 +20,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import com.useful.useful.useful;
 
 public class UConnect {
-private YamlConfiguration main = new YamlConfiguration();
-private YamlConfiguration profiles = new YamlConfiguration();
+public YamlConfiguration main = new YamlConfiguration();
+public YamlConfiguration profiles = new YamlConfiguration();
 public final HashMap<String, Boolean> tasks = new HashMap<String, Boolean>();
 private useful plugin = useful.plugin;
 private File cache = null;
 public UConnect(){
+	try {
+		File.createTempFile("uConnectDataCache", ".txt");
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	/*
 	this.load();
 	if(!main.contains("uconnect.create")){
 		main.set("uconnect.create", true);
@@ -38,20 +45,18 @@ public UConnect(){
 		profiles.set("profiles.create", true);
 	}
     this.saveProfiles();
+    */
 }
-public void load(){
+public void load(UConnectDataRequest request){
 	try {
-		this.cache = new File("uConnectDataCache.txt");
-		this.cache.createNewFile();
+		File.createTempFile("uConnectDataCache", ".txt");
 	} catch (IOException e1) {
 		return;
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	File checkFile = uConnectConnect.getFile("/main.yml", this.cache, uuid);
-	while(!this.tasks.get(uuid)){
-		//useful.plugin.colLogger.info("main: " + this.tasks.get(uuid));
-	}
+	File checkFile = uConnectConnect.getFile("/main.yml", this.cache, uuid, request);
+	/*
 	this.tasks.remove(uuid);
 	if(checkFile == null){
 		this.cache.delete();
@@ -64,6 +69,10 @@ public void load(){
 		this.cache.delete();
 	}
 	this.cache.delete();
+	if(!main.contains("uconnect.create")){
+		main.set("uconnect.create", true);
+	}
+	*/
 	return;
 }
 public void save(){
@@ -80,18 +89,19 @@ public void save(){
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
 	uConnectConnect.uploadFile(this.cache, "/main.yml", uuid);
-	while(!this.tasks.get(uuid)){
-		
-	}
-	this.tasks.remove(uuid);
-	this.cache.delete();
 	return;
 }
-public void message(UConnectProfile to, UConnectProfile from, String msg){
+public void message(UConnectProfile to, UConnectProfile from, String msg, CommandSender sender){
 	String toName = to.getName();
 	String fromName = from.getName();
-	this.load();
+	List<String> args = new ArrayList<String>();
+	args.add(toName);
+	args.add(fromName);
+	args.add(msg);
+	UConnectDataRequest request = new UConnectDataRequest("msg", args.toArray(), sender);
+	this.load(request);
 	//messaging.toname
+	/*
 	List<String> inbox = new ArrayList<String>();
 	if(this.main.contains("messaging." + toName)){
 		inbox = this.main.getStringList("messaging." + toName);
@@ -101,18 +111,30 @@ public void message(UConnectProfile to, UConnectProfile from, String msg){
 	inbox.add("&r&i["+time+"]&r&3[From]&a" + fromName + ": &6" + msg);
 	this.main.set("messaging." + toName, inbox);
 	this.save();
+	*/
 }
-public void clearMessages(UConnectProfile player){
+public void clearMessages(UConnectProfile player, CommandSender sender){
 	String name = player.getName();
-	this.load();
+	List<String> args = new ArrayList<String>();
+	args.add(name);
+	UConnectDataRequest request = new UConnectDataRequest("clearMsg", args.toArray(), sender);
+	this.load(request);
+	/*
 	if(this.main.contains("messaging." + name)){
 		this.main.set("messaging." + name, null);
 	}
 	this.save();
+	*/
 }
-public List<String> getMessages(UConnectProfile player){
-	this.update();
+public void getMessages(UConnectProfile player, String page, CommandSender sender){
+	this.update(sender);
 	String name = player.getName();
+	List<String> args = new ArrayList<String>();
+	args.add(name);
+	args.add(page);
+	UConnectDataRequest request = new UConnectDataRequest("getMsg", args.toArray(), sender);
+	this.load(request);
+	/*
 	if(this.main.contains("messaging." + name)){
 		return this.main.getStringList("messaging."+name);
 	}
@@ -121,12 +143,15 @@ public List<String> getMessages(UConnectProfile player){
 		//result.add("&aNo new messages");
 		return result;
 	}
+	*/
+	return;
 }
-public void update(){
-	this.load();
-	this.save(); //Before using save in a method ALWAYS use load for security
+public void update(CommandSender sender){
+	UConnectDataRequest request = new UConnectDataRequest("reloadMain", null, sender);
+	this.load(request); //Before using save in a method ALWAYS use load for security
 }
-public void loadProfiles(){
+public void loadProfiles(UConnectDataRequest request){
+	useful.plugin.colLogger.info("Loading profiles...");
 	try {
 		this.cache = File.createTempFile("uConnectDataCache", ".txt");
 	} catch (IOException e1) {
@@ -134,22 +159,16 @@ public void loadProfiles(){
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	File checkFile = uConnectConnect.getFile("/profiles.yml", this.cache, uuid);
-	while(!this.tasks.get(uuid)){
-		
+	useful.plugin.colLogger.info("Task id: " + uuid);
+	uConnectConnect.getFile("/profiles.yml", this.cache, uuid, request);
+	/*
+	if(!profiles.contains("uconnect.create")){
+		profiles.set("uconnect.create", true);
 	}
-	this.tasks.remove(uuid);
-	if(checkFile == null){
-		this.cache.delete();
-		return;
+    if(!profiles.contains("profiles.create")){
+		profiles.set("profiles.create", true);
 	}
-	try {
-		this.profiles.load(this.cache);
-	} catch (Exception e) {
-		this.profiles = new YamlConfiguration();
-		this.cache.delete();
-	}
-	this.cache.delete();
+	*/
 	return;
 }
 public void saveProfiles(){
@@ -173,18 +192,27 @@ public void saveProfiles(){
 	this.cache.delete();
 	return;
 }
-public void updateProfiles(){
-	loadProfiles();
+public void updateProfiles(CommandSender sender){
+	UConnectDataRequest request = new UConnectDataRequest("dummy", null, sender);
+	loadProfiles(request);
 	saveProfiles();
+	return;
 }
-public void saveProfile(UConnectProfile profile){
-	String name = profile.getName();
-	loadProfiles();
+public void saveProfile(UConnectProfile profile, CommandSender sender){
+	List<Object> args = new ArrayList<Object>();
+	args.add(profile);
+	UConnectDataRequest request = new UConnectDataRequest("saveProfile", args.toArray(), sender);
+	loadProfiles(request);
+	/*
 	this.profiles.set("profiles." + name + ".online", profile.isOnline());
 	saveProfiles();
+	*/
+	return;
 }
-public UConnectProfile loadProfile(String pname){
-	loadProfiles();
+public void loadProfile(String pname, UConnectDataRequest request, CommandSender sender){
+	
+	loadProfiles(request);
+	/*
 	ConfigurationSection profiles = this.profiles.getConfigurationSection("profiles");
 	Set<String> names = profiles.getKeys(false);
 	Boolean contains = false;
@@ -195,23 +223,35 @@ public UConnectProfile loadProfile(String pname){
 	}
 	saveProfiles();
 	if(contains){
+		useful.plugin.colLogger.info("Contains profile");
 	UConnectProfile profile = new UConnectProfile(pname);
 	if(this.profiles.contains("profiles." + pname + ".online")){
 		profile.setOnline(this.profiles.getBoolean("profiles."+pname+".online"));
 	}
 	return profile;	
+	
 	}
 	else{
+		useful.plugin.colLogger.info("Doesn't contain profile");
 		return new UConnectProfile(pname);
 	}
+	*/
+	return;
 }
-public int MessageCount(String pname){
+public void MessageCount(String pname, CommandSender sender){
+	List<Object> args = new ArrayList<Object>();
+	args.add(pname);
+	UConnectDataRequest request = new UConnectDataRequest("alertMsg", args.toArray(), sender);
+	this.load(request);
+	/*
 	if(this.main.contains("messaging."+pname)){
 		return this.main.getStringList("messaging."+pname).size();
 	}
 	else{
 		return 0;
 	}
+	*/
+	return;
 }
 
 }

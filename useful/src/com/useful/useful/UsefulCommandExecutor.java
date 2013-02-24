@@ -72,6 +72,7 @@ import com.useful.useful.utils.Performance;
 import com.useful.useful.utils.Potions;
 import com.useful.useful.utils.TeleportRequest;
 import com.useful.useful.utils.TpaReq;
+import com.useful.useful.utils.UConnectDataRequest;
 import com.useful.useful.utils.UConnectProfile;
 import com.useful.useful.utils.getColor;
 import com.useful.useful.utils.getEnchant;
@@ -343,52 +344,16 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				String action = args[1];
 				if(action.equalsIgnoreCase("read")){
 					UConnectProfile profile = new UConnectProfile(player.getName());
-					List<String> inbox = plugin.uconnect.getMessages(profile);
-					//TODO paginate and send
-					int displayable = 8;
-					int page = 1;
+					String page = "1";
 					if(args.length > 2){
-						try {
-							page = Integer.parseInt(args[2]);
-						} catch (Exception e) {
-							sender.sendMessage(plugin.colors.getError() + "Invalid page number");
-							return true;
-						}
+						page = args[2];
 					}
-					int totalpages = 1;
-					double unrounded = inbox.size() / 8;
-					NumberFormat fmt = NumberFormat.getNumberInstance();
-					fmt.setMaximumFractionDigits(0);
-					fmt.setRoundingMode(RoundingMode.UP);
-					String value = fmt.format(unrounded);
-					totalpages = Integer.parseInt(value);
-					int it = ((page -1)*8);
-					if(it > inbox.size()){
-						if(inbox.size() > 8){
-						it = inbox.size() -8;
-						}
-						else{
-							it = 0;
-						}
-					}
-					double pageno = it/8 + 1;
-					String pagenumber = fmt.format(pageno);
-					sender.sendMessage(plugin.colors.getTitle() + ChatColor.BOLD + "My messages: ("+inbox.size()+") page:" + ChatColor.RESET + "" + plugin.colors.getInfo() + "["+pagenumber+"/"+(totalpages+1)+"]");
-				    int displayed = 0;
-				    if(inbox.size() == 0){
-				    	sender.sendMessage(plugin.colors.getSuccess() + "No new messages!");
-				    	return true;
-				    }
-					for(int i=it;i<inbox.size() && displayed<=displayable;i++){
-				    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(inbox.get(i)));
-				    	displayed++;
-				    }
+					plugin.uconnect.getMessages(profile,page,sender);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("clear")){
 					UConnectProfile profile = new UConnectProfile(player.getName());
-					plugin.uconnect.clearMessages(profile);
-					sender.sendMessage(plugin.colors.getSuccess() + "Your messages have been cleared!");
+					plugin.uconnect.clearMessages(profile, sender);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("send")){
@@ -401,8 +366,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				    for(int i = 4; i<args.length;i++){
 						message = message + " " + args[i];
 					}
-				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message);
-				    sender.sendMessage(plugin.colors.getSuccess() + "Successfully sent message to: " + playerName);
+				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message, sender);
 				    return true;
 				}
 				else{
@@ -414,11 +378,10 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return false;
 				}
 				String pName = args[1];
-				plugin.uconnect.loadProfiles();
-				UConnectProfile profile = plugin.uconnect.loadProfile(pName);
-				sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pName);
-				sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
-				sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+				List<Object> uargs = new ArrayList<Object>();
+				uargs.add(pName);
+				UConnectDataRequest request = new UConnectDataRequest("loadProfile", uargs.toArray(), sender);
+				plugin.uconnect.loadProfile(pName, request, sender);
 				return true;
 			}
 			return false;

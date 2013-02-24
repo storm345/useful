@@ -19,7 +19,7 @@ public class UConnectProfile {
 		return;
 	}
 	public void save(){
-		useful.plugin.uconnect.saveProfile(this);
+		useful.plugin.uconnect.saveProfile(this, null);
 		return;
 	}
 

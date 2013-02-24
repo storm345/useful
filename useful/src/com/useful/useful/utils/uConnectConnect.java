@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -30,6 +31,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpParams;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.dropbox.client2.DropboxAPI;
@@ -93,18 +97,36 @@ public class uConnectConnect {
 						e.printStackTrace();
 					}
 					useful.plugin.uconnect.tasks.put(uuid, true);
+					/*
+					YamlConfiguration result = new YamlConfiguration();
+					try {
+						result.load(file);
+					} catch (Exception e) {
+						request.setType("error");
+						result.set("error.msg", "Unable to connect to uConnect!");
+						request.setData(result);
+					}
+					request.setData(result);
+					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
+					useful.plugin.getServer().getPluginManager().callEvent(event);
+					*/
+					file.delete();
+					useful.plugin.uconnect.tasks.remove(uuid);
 				}});
     		
         return true;
     	}
     	
-    	public static File getFile(final String path, final File save, final String uuid){
+    	public static File getFile(final String path, final File save, final String uuid, final UConnectDataRequest request){
     		useful.plugin.uconnect.tasks.put(uuid, false);
+    		useful.plugin.colLogger.info("Starting runnable...");
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
+					useful.plugin.colLogger.info("Runnable started...");
 					try {
+						useful.plugin.colLogger.info("Retrieving data");
     					AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     	    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
     	    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
@@ -131,10 +153,8 @@ public class uConnectConnect {
     	    			*/
     	    			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
     	    			FileOutputStream os;
-    	    			useful.plugin.colLogger.info("Preparing to connect...");
 						try {
 							os = new FileOutputStream(save);
-							useful.plugin.colLogger.info("Connecting...");
 							mDBApi.getFile(path, null, os, null);
 							os.close();
 							useful.plugin.uconnect.tasks.put(uuid, true);
@@ -147,10 +167,21 @@ public class uConnectConnect {
     			useful.plugin.uconnect.tasks.put(uuid, true);
     		}
 					useful.plugin.uconnect.tasks.put(uuid, true);
+					YamlConfiguration result = new YamlConfiguration();
+					try {
+						result.load(save);
+					} catch (Exception e) {
+						request.setType("error");
+						result.set("error.msg", "Unable to connect to uConnect!");
+						request.setData(result);
+					}
+					request.setData(result);
+					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
+					useful.plugin.getServer().getPluginManager().callEvent(event);
+					save.delete();
+					useful.plugin.uconnect.tasks.remove(uuid);
 				}});
-            while(!useful.plugin.uconnect.tasks.get(uuid)){
-            	
-            }
+            
             return save;
         	}
     	public static void deleteFile(final String path, final String uuid){
@@ -172,6 +203,7 @@ public class uConnectConnect {
 		    			return;
 		    		}
 		    		useful.plugin.uconnect.tasks.put(uuid, true);
+		    		useful.plugin.uconnect.tasks.remove(uuid);
 				}});
     		
     		return;

@@ -9,9 +9,14 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +40,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -272,9 +278,11 @@ public class UsefulListener implements Listener{
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player playerJoined = event.getPlayer();
 		if(useful.config.getBoolean("uConnect.enable")){
-			UConnectProfile profile = plugin.uconnect.loadProfile(event.getPlayer().getName());
-			profile.setOnline(true);
-			profile.save();
+			List<Object> args = new ArrayList<Object>();
+			args.add(true);
+			args.add(event.getPlayer().getName());
+			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined);
+			plugin.uconnect.loadProfile(event.getPlayer().getName(), request, playerJoined);
 		}
 		String name = playerJoined.getName();
 		String loginmsg = useful.config.getString("general.loginmessage");
@@ -362,12 +370,167 @@ public class UsefulListener implements Listener{
 		 }
 			
 					if(useful.config.getBoolean("uConnect.enable")){
-						int unreadMsg = plugin.uconnect.MessageCount(event.getPlayer().getName());
-						if(unreadMsg > 0){
-							event.getPlayer().sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + unreadMsg + plugin.colors.getInfo() + " unread messages!");
-						}
+						plugin.uconnect.MessageCount(event.getPlayer().getName(), event.getPlayer());
 					}
 	        return;
+	}
+	@EventHandler (priority = EventPriority.LOWEST)
+	public void uConnectDataHandling(UConnectDataAvailableEvent event){
+		//TODO uconnectdatarequesthandling
+		UConnectDataRequest request = event.getRequest();
+		Object[] args = request.getArgs();
+        CommandSender sender = event.getRequester();
+        String key = request.getRequestKey();
+        YamlConfiguration data = request.getData();
+        if(key.equalsIgnoreCase("dummy")){
+        	return;
+        }
+        else if(key.equalsIgnoreCase("reloadMain")){
+        	plugin.uconnect.main = data;
+        	return;
+        }
+        else if(key.equalsIgnoreCase("reloadProfiles")){
+        	plugin.uconnect.profiles = data;
+        	return;
+        }
+        else if(key.equalsIgnoreCase("msg")){
+        	String to = (String) args[0];
+        	String from = (String) args[1];
+        	String msg = (String) args[2];
+        	List<String> inbox = new ArrayList<String>();
+        	if(data.contains("messaging." + to)){
+        		inbox = data.getStringList("messaging." + to);
+        	}
+        	Date cal = Calendar.getInstance().getTime();
+        	String time = new SimpleDateFormat("dd-MM : HH:mm:ss").format(cal);
+        	inbox.add("&r&i["+time+"]&r&3[From]&a" + from + ": &6" + msg);
+        	data.set("messaging." + to, inbox);
+        	if(!data.contains("uconnect.create")){
+        		data.set("uconnect.create", true);
+        	}
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully sent message to: " + to);
+        	return;
+        }
+        else if(key.equalsIgnoreCase("clearMsg")){
+        	String name = (String) args[0];
+        	if(data.contains("messaging." + name)){
+        		data.set("messaging." + name, null);
+        	}
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Your messages have been cleared!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("getMsg")){
+        	String name = (String) args[0];
+        	List<String> inbox = new ArrayList<String>();
+        	if(data.contains("messaging." + name)){
+        		inbox = data.getStringList("messaging."+name);
+        	}
+        	int displayable = 8;
+			int page = 1;
+			
+				try {
+					page = Integer.parseInt((String)args[1]);
+				} catch (Exception e) {
+					sender.sendMessage(plugin.colors.getError() + "Invalid page number");
+					return;
+				}
+			
+			int totalpages = 1;
+			double unrounded = inbox.size() / 8;
+			NumberFormat fmt = NumberFormat.getNumberInstance();
+			fmt.setMaximumFractionDigits(0);
+			fmt.setRoundingMode(RoundingMode.UP);
+			String value = fmt.format(unrounded);
+			totalpages = Integer.parseInt(value);
+			int it = ((page -1)*8);
+			if(it > inbox.size()){
+				if(inbox.size() > 8){
+				it = inbox.size() -8;
+				}
+				else{
+					it = 0;
+				}
+			}
+			double pageno = it/8 + 1;
+			String pagenumber = fmt.format(pageno);
+			sender.sendMessage(plugin.colors.getTitle() + ChatColor.BOLD + "My messages: ("+inbox.size()+") page:" + ChatColor.RESET + "" + plugin.colors.getInfo() + "["+pagenumber+"/"+(totalpages+1)+"]");
+		    int displayed = 0;
+		    if(inbox.size() == 0){
+		    	sender.sendMessage(plugin.colors.getSuccess() + "No new messages!");
+		    	return;
+		    }
+			for(int i=it;i<inbox.size() && displayed<=displayable;i++){
+		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(inbox.get(i)));
+		    	displayed++;
+		    }
+			return;
+        }
+        else if(key.equalsIgnoreCase("saveProfile")){
+        	UConnectProfile profile = (UConnectProfile) args[0];
+        	data.set("profiles." + profile.getName() + ".online", profile.isOnline());
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        }
+        else if(key.equalsIgnoreCase("alertMsg")){
+        	String pname = (String) args[0];
+        	int size = 0;
+        	if(data.contains("messaging."+pname)){
+        		size = data.getStringList("messaging."+pname).size();
+        	}
+        	else{
+        		size =  0;
+        	}	
+        	if(size > 0){
+				sender.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + size + plugin.colors.getInfo() + " unread messages!");
+			}
+        	return;
+        }
+        else if(key.equalsIgnoreCase("setOnline")){
+        	Boolean online = (Boolean) args[0];
+        	String name = (String) args[1];
+            data.set("profile."+name+".online", online);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	return;
+        }
+        else if(key.equalsIgnoreCase("loadProfile")){
+        	String pname = (String) args[0];
+        	if(!data.contains("uconnect.create")){
+        		data.set("uconnect.create", true);
+        	}
+            if(!data.contains("profiles.create")){
+        		data.set("profiles.create", true);
+        	}
+            plugin.uconnect.profiles = data;
+            plugin.uconnect.saveProfiles();
+            ConfigurationSection profiles = data.getConfigurationSection("profiles");
+        	Set<String> names = profiles.getKeys(false);
+        	Boolean contains = false;
+        	for(String name:names){
+        		if(name == pname){
+        			contains = true;
+        		}
+        	}
+        	UConnectProfile profile = new UConnectProfile(pname);
+        	if(contains){
+        		useful.plugin.colLogger.info("Contains profile");
+        	if(data.contains("profiles." + pname + ".online")){
+        		profile.setOnline(data.getBoolean("profiles."+pname+".online"));
+        	}
+        	}
+        	else{
+        		useful.plugin.colLogger.info("Doesn't contain profile");
+        	}
+        	sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pname);
+			sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
+			sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+			return;
+        }
+		return;
 	}
 	
 	@EventHandler (priority = EventPriority.HIGHEST)
@@ -377,9 +540,13 @@ public class UsefulListener implements Listener{
 		}
 		Player playerJoined = event.getPlayer();
 		String name = playerJoined.getName();
-		UConnectProfile profile = plugin.uconnect.loadProfile(name);
-		profile.setOnline(false);
-		profile.save();
+		if(useful.config.getBoolean("uConnect.enable")){
+		List<Object> args = new ArrayList<Object>();
+		args.add(false);
+		args.add(name);
+		UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined);
+		plugin.uconnect.loadProfile(name, request, playerJoined);
+		}
 		String msg = useful.config.getString("general.quitmessage");
 		msg = useful.colorise(msg);
 		msg = msg.replace("*name*", name);
@@ -390,9 +557,14 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	public void kick(PlayerKickEvent event){
-		UConnectProfile profile = plugin.uconnect.loadProfile(event.getPlayer().getName());
-		profile.setOnline(false);
-		profile.save();
+		if(useful.config.getBoolean("uConnect.enable")){
+			String name = event.getPlayer().getName();
+			List<Object> args = new ArrayList<Object>();
+			args.add(false);
+			args.add(name);
+			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), event.getPlayer());
+			plugin.uconnect.loadProfile(name, request, event.getPlayer());
+		}
 		return;
 	}
 	
