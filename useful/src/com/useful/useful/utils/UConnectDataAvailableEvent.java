@@ -5,6 +5,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class UConnectDataAvailableEvent extends Event{
+	private static final HandlerList handlers = new HandlerList();
 	private UConnectDataRequest request = null;
 	CommandSender requester = null;
 	
@@ -13,10 +14,13 @@ public class UConnectDataAvailableEvent extends Event{
 		this.requester = requester;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
-		return null;
-	}
+        return handlers;
+    }
+ 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
     public CommandSender getRequester(){
     	return this.requester;
     }

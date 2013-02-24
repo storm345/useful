@@ -110,7 +110,6 @@ public class uConnectConnect {
 					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
 					useful.plugin.getServer().getPluginManager().callEvent(event);
 					*/
-					file.delete();
 					useful.plugin.uconnect.tasks.remove(uuid);
 				}});
     		
@@ -119,14 +118,11 @@ public class uConnectConnect {
     	
     	public static File getFile(final String path, final File save, final String uuid, final UConnectDataRequest request){
     		useful.plugin.uconnect.tasks.put(uuid, false);
-    		useful.plugin.colLogger.info("Starting runnable...");
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
-					useful.plugin.colLogger.info("Runnable started...");
 					try {
-						useful.plugin.colLogger.info("Retrieving data");
     					AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     	    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
     	    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
@@ -172,13 +168,12 @@ public class uConnectConnect {
 						result.load(save);
 					} catch (Exception e) {
 						request.setType("error");
-						result.set("error.msg", "Unable to connect to uConnect!");
+						result.set("error.msg", "Error connecting to uConnect!");
 						request.setData(result);
 					}
 					request.setData(result);
 					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
 					useful.plugin.getServer().getPluginManager().callEvent(event);
-					save.delete();
 					useful.plugin.uconnect.tasks.remove(uuid);
 				}});
             

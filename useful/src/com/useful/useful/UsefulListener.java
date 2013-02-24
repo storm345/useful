@@ -507,28 +507,31 @@ public class UsefulListener implements Listener{
         	}
             plugin.uconnect.profiles = data;
             plugin.uconnect.saveProfiles();
-            ConfigurationSection profiles = data.getConfigurationSection("profiles");
+            ConfigurationSection profiles = data.getConfigurationSection("profile");
         	Set<String> names = profiles.getKeys(false);
         	Boolean contains = false;
         	for(String name:names){
-        		if(name == pname){
+        		if(name.equals(pname)){
         			contains = true;
         		}
         	}
         	UConnectProfile profile = new UConnectProfile(pname);
         	if(contains){
-        		useful.plugin.colLogger.info("Contains profile");
-        	if(data.contains("profiles." + pname + ".online")){
-        		profile.setOnline(data.getBoolean("profiles."+pname+".online"));
+        	if(data.contains("profile." + pname + ".online")){
+        		profile.setOnline(data.getBoolean("profile."+pname+".online"));
         	}
         	}
         	else{
-        		useful.plugin.colLogger.info("Doesn't contain profile");
         	}
         	sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pname);
 			sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
 			sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
 			return;
+        }
+        else if(key.equalsIgnoreCase("error")){
+        	String msg = data.getString("error.msg");
+        	sender.sendMessage(plugin.colors.getError() + msg);
+        	return;
         }
 		return;
 	}
