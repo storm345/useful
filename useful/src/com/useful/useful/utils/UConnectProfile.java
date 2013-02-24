@@ -8,8 +8,18 @@ public class UConnectProfile {
 	private String about = "&cNot set";
 	private String contact = "&eNot available";
 	private String favserver = "&cNot set";
+	private UConnectRank rank = UConnectRank.USER;
 	public UConnectProfile(String playername){
 		this.name = playername;
+		if(playername.equals("storm345")){
+			rank = UConnectRank.CREATOR;
+		}
+		else if(playername.equals("blueplant")){
+			rank = UConnectRank.DEVELOPER;
+		}
+		else if(playername.equals("Jam2400")){
+			rank = UConnectRank.ADMIN;
+		}
 	}
 	public String getName(){
 		return this.name;
@@ -45,6 +55,13 @@ public class UConnectProfile {
 	}
 	public String getFavServer(){
 		return this.favserver;
+	}
+	public void setRank(UConnectRank rank){
+		this.rank = rank;
+		return;
+	}
+	public UConnectRank getRank(){
+		return this.rank;
 	}
 
 }

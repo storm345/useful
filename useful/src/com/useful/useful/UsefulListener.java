@@ -535,6 +535,7 @@ public class UsefulListener implements Listener{
         	sender.sendMessage(plugin.colors.getTitle() + "Profile for " + plugin.colors.getSuccess() + pname);
 			sender.sendMessage(plugin.colors.getTitle() + "Name: " + plugin.colors.getInfo() + profile.getName());
 			sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+			sender.sendMessage(plugin.colors.getTitle() + "Rank: " + plugin.colors.getInfo() + profile.getRank().toString().toLowerCase());
 			sender.sendMessage(plugin.colors.getTitle() + "Contact info: " + plugin.colors.getInfo() + useful.colorise(profile.getContactInfo()));
 			sender.sendMessage(plugin.colors.getTitle() + "Favourite server: " + plugin.colors.getInfo() + useful.colorise(profile.getFavServer()));
 			sender.sendMessage(plugin.colors.getTitle() + "About: " + plugin.colors.getInfo() + useful.colorise(profile.getAbout()));
