@@ -87,6 +87,7 @@ public class useful extends JavaPlugin {
 	public BukkitTask backup = null;
 	public BukkitTask idle = null;
 	public BukkitTask reloadUcMsg = null;
+	public BukkitTask UcMsgNotify = null;
 	public static useful plugin;
 	public Colors colors = null;
 	public double pluginVersion = 0;
@@ -1278,9 +1279,30 @@ public void jailsConverter(){
 
 				@Override
 				public void run() {
+					if(useful.config.getBoolean("uConnect.enable")){
 					plugin.uconnect.load(new UConnectDataRequest("reloadMain", null, null));
+					}
 				}}, 18000, 18000);
 			}
+			UcMsgNotify = this.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					if(useful.config.getBoolean("uConnect.enable")){
+					YamlConfiguration data = plugin.uconnect.main;
+					Player[] online = getServer().getOnlinePlayers();
+					for(int i=0;i<online.length;i++){
+						Player p = online[i];
+						String name = p.getName();
+						if(data.contains("messaging."+name)){
+							List<String> msgs = data.getStringList("messaging."+name);
+							if(msgs.size() > 0){
+								p.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + msgs.size() + plugin.colors.getInfo() + " unread messages!");
+							}
+						}
+					}
+					}
+				}}, 5000, 5000);
 			if(idleRunning == false){
 				idleRunning = true;
 			idle = this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {

@@ -448,6 +448,7 @@ public class UsefulListener implements Listener{
 		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(inbox.get(i)));
 		    	displayed++;
 		    }
+			sender.sendMessage(plugin.colors.getInfo() + "To mark messages as read (And delete) do /(uconnect/uc) msg clear");
 			return;
         }
         else if(key.equalsIgnoreCase("saveProfile")){
