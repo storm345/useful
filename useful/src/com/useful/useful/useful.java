@@ -57,6 +57,7 @@ import com.useful.useful.utils.ListStore;
 import com.useful.useful.utils.Performance;
 import com.useful.useful.utils.SerializableLocation;
 import com.useful.useful.utils.UConnect;
+import com.useful.useful.utils.UConnectDataRequest;
  
 public class useful extends JavaPlugin {
 	public static String pluginFolder;
@@ -85,6 +86,7 @@ public class useful extends JavaPlugin {
 	public BukkitTask broadcaster = null;
 	public BukkitTask backup = null;
 	public BukkitTask idle = null;
+	public BukkitTask reloadUcMsg = null;
 	public static useful plugin;
 	public Colors colors = null;
 	public double pluginVersion = 0;
@@ -96,6 +98,7 @@ public class useful extends JavaPlugin {
 	//static FileConfiguration config;
 	public static FileConfiguration config;
 	boolean idleRunning = false;
+	boolean ucReloadMsgRun = false;
 	public ColoredLogger colLogger;
 
 	public static String  colorise(String prefix){
@@ -1269,6 +1272,15 @@ public void jailsConverter(){
 				
 	            
 	        }, 60000, 60000);
+			if(ucReloadMsgRun == false){
+				ucReloadMsgRun= true;
+			reloadUcMsg = this.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable(){
+
+				@Override
+				public void run() {
+					plugin.uconnect.load(new UConnectDataRequest("reloadMain", null, null));
+				}}, 18000, 18000);
+			}
 			if(idleRunning == false){
 				idleRunning = true;
 			idle = this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
@@ -1836,6 +1848,8 @@ public void jailsConverter(){
 		backup.cancel();
 		idle.cancel();
 		idleRunning = false;
+		reloadUcMsg.cancel();
+		ucReloadMsgRun = false;
 		this.getServer().getScheduler().cancelTasks(getServer().getPluginManager().getPlugin("useful"));
         sqlite.close();
         authed.clear();
