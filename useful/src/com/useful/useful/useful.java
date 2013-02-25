@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -29,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
+import lib.PatPeter.SQLibrary.SQLite;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -44,8 +46,17 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import com.useful.useful.utils.*;
-import lib.PatPeter.SQLibrary.*;
+
+import com.useful.useful.utils.ColoredLogger;
+import com.useful.useful.utils.Colors;
+import com.useful.useful.utils.Copier;
+import com.useful.useful.utils.CustomRecipes;
+import com.useful.useful.utils.GetStringFromUrl;
+import com.useful.useful.utils.JarUtils;
+import com.useful.useful.utils.ListStore;
+import com.useful.useful.utils.Performance;
+import com.useful.useful.utils.SerializableLocation;
+import com.useful.useful.utils.UConnect;
  
 public class useful extends JavaPlugin {
 	public static String pluginFolder;

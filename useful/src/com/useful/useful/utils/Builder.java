@@ -1,6 +1,5 @@
 package com.useful.useful.utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Location;
@@ -10,7 +9,6 @@ import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import com.useful.useful.useful;
 

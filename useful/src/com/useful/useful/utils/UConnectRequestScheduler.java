@@ -2,7 +2,6 @@ package com.useful.useful.utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.useful.useful.useful;
 
@@ -11,7 +10,6 @@ public class UConnectRequestScheduler {
 	private UConnectDataRequest request = null;
 	private long delay = 0;
 	private int tries = 0;
-	private int task = 0;
 	public UConnectRequestScheduler(String yaml, UConnectDataRequest request, long delay, int tries){
 		this.yaml = yaml;
 		this.request = request;

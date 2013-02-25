@@ -1,6 +1,5 @@
 package com.useful.useful.utils;
 
-import java.util.Calendar;
 
 public class UniqueString {
 public static String generate(){

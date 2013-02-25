@@ -1,6 +1,5 @@
 package com.useful.useful.utils;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.useful.useful.useful;
