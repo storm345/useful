@@ -1519,7 +1519,7 @@ public class UsefulListener implements Listener{
 		msg = msg.replace("&a", "" + ChatColor.GREEN);
 		msg = msg.replace("&b", "" + ChatColor.AQUA);
 		msg = msg.replace("&c", "" + ChatColor.RED);
-		msg = msg.replace("&d", "" + plugin.colors.getTp());
+		msg = msg.replace("&d", "" + ChatColor.LIGHT_PURPLE);
 		msg = msg.replace("&e", "" + ChatColor.YELLOW);
 		msg = msg.replace("&f", "" + ChatColor.WHITE);
 		msg = msg.replace("&r", "" + ChatColor.RESET);

@@ -108,7 +108,9 @@ public void message(UConnectProfile to, UConnectProfile from, String msg, Comman
 	args.add(fromName);
 	args.add(msg);
 	UConnectDataRequest request = new UConnectDataRequest("msg", args.toArray(), sender);
-	this.load(request);
+	@SuppressWarnings("unused")
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
+	//this.load(request);
 	//messaging.toname
 	/*
 	List<String> inbox = new ArrayList<String>();
@@ -133,7 +135,9 @@ public void clearMessages(UConnectProfile player, CommandSender sender){
 	List<String> args = new ArrayList<String>();
 	args.add(name);
 	UConnectDataRequest request = new UConnectDataRequest("clearMsg", args.toArray(), sender);
-	this.load(request);
+	@SuppressWarnings("unused")
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
+	//this.load(request);
 	/*
 	if(this.main.contains("messaging." + name)){
 		this.main.set("messaging." + name, null);
@@ -153,7 +157,9 @@ public void getMessages(UConnectProfile player, String page, CommandSender sende
 	args.add(name);
 	args.add(page);
 	UConnectDataRequest request = new UConnectDataRequest("getMsg", args.toArray(), sender);
-	this.load(request);
+	@SuppressWarnings("unused")
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
+	//this.load(request);
 	/*
 	if(this.main.contains("messaging." + name)){
 		return this.main.getStringList("messaging."+name);
@@ -222,7 +228,9 @@ public void saveProfile(UConnectProfile profile, CommandSender sender){
 	List<Object> args = new ArrayList<Object>();
 	args.add(profile);
 	UConnectDataRequest request = new UConnectDataRequest("saveProfile", args.toArray(), sender);
-	loadProfiles(request);
+	@SuppressWarnings("unused")
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("profiles", request, 5000, 5);
+	//loadProfiles(request);
 	/*
 	this.profiles.set("profiles." + name + ".online", profile.isOnline());
 	saveProfiles();
@@ -267,7 +275,9 @@ public void MessageCount(String pname, CommandSender sender){
 	List<Object> args = new ArrayList<Object>();
 	args.add(pname);
 	UConnectDataRequest request = new UConnectDataRequest("alertMsg", args.toArray(), sender);
-	this.load(request);
+	@SuppressWarnings("unused")
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
+	//this.load(request);
 	/*
 	if(this.main.contains("messaging."+pname)){
 		return this.main.getStringList("messaging."+pname).size();
