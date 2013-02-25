@@ -373,6 +373,45 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message, sender);
 				    return true;
 				}
+				else if(action.equalsIgnoreCase("block")){
+					if(args.length < 3){
+						return false;
+					}
+					String name = args[2];
+					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(name);
+					UConnectDataRequest request = new UConnectDataRequest("block", uargs.toArray(), player);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					plugin.uconnect.load(request);
+					return true;
+				}
+				else if(action.equalsIgnoreCase("unblock")){
+					if(args.length < 3){
+						return false;
+					}
+					String name = args[2];
+					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(name);
+					UConnectDataRequest request = new UConnectDataRequest("unblock", uargs.toArray(), player);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					plugin.uconnect.load(request);
+					return true;
+				}
+				else if(action.equalsIgnoreCase("blocked")){
+					//TODO
+					String page = "1";
+					if(args.length > 2){
+						page = args[2];
+					}
+					List<Object> uargs = new ArrayList<Object>();
+					uargs.add(page);
+					UConnectDataRequest request = new UConnectDataRequest("blocked", uargs.toArray(), player);
+					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					plugin.uconnect.load(request);
+					return true;
+				}
 				else{
 					return false;
 				}
@@ -452,6 +491,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectProfile profile = new UConnectProfile(sender.getName());
 					if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
 						sender.sendMessage(plugin.colors.getError() + "You don't have permission to do this");
+						return true;
 					}
 					if(args.length < 3){
 						return false;
@@ -473,6 +513,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectProfile profile = new UConnectProfile(sender.getName());
 					if(profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
 						sender.sendMessage(plugin.colors.getError() + "You don't have permission to do this");
+						return true;
 					}
 					if(args.length < 2){
 						return false;

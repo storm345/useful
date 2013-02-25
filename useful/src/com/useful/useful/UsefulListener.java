@@ -116,6 +116,8 @@ import org.bukkit.material.Stairs;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.permissions.ServerOperator;
+import org.bukkit.util.ChatPaginator;
+import org.bukkit.util.ChatPaginator.ChatPage;
 import org.bukkit.util.Vector;
 import com.useful.useful.utils.*;
 
@@ -397,6 +399,14 @@ public class UsefulListener implements Listener{
         	String to = (String) args[0];
         	String from = (String) args[1];
         	String msg = (String) args[2];
+        	List<String> blocked = new ArrayList<String>();
+        	if(data.contains("blocked."+to)){
+        		blocked = data.getStringList("blocked."+to);
+        	}
+        	if(blocked.contains(from)){
+        		sender.sendMessage(plugin.colors.getError() + to+" has blocked you from messaging them!");
+        		return;
+        	}
         	List<String> inbox = new ArrayList<String>();
         	if(data.contains("messaging." + to)){
         		inbox = data.getStringList("messaging." + to);
@@ -638,6 +648,69 @@ public class UsefulListener implements Listener{
         	plugin.uconnect.main = data;
         	plugin.uconnect.save();
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted " + art);
+        }
+        else if(key.equalsIgnoreCase("block")){
+        	String name = (String) args[0];
+        	String pname = sender.getName();
+        	List<String> blocked = new ArrayList<String>();
+        	if(data.contains("blocked."+pname)){
+        		blocked = data.getStringList("blocked."+pname);
+        	}
+        	if(blocked.contains(name)){
+        		sender.sendMessage(plugin.colors.getSuccess() + "Successfully blocked "+name);
+        		return;
+        	}
+        	blocked.add(name);
+        	data.set("blocked."+pname, blocked);
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully blocked "+name);
+        	return;
+        }
+        else if(key.equalsIgnoreCase("unblock")){
+        	String name = (String) args[0];
+        	String pname = sender.getName();
+        	List<String> blocked = new ArrayList<String>();
+        	if(data.contains("blocked."+pname)){
+        		blocked = data.getStringList("blocked."+pname);
+        	}
+        	if(!blocked.contains(name)){
+        		sender.sendMessage(plugin.colors.getError() + "Player not blocked: "+name);
+        		return;
+        	}
+        	blocked.remove(name);
+        	data.set("blocked."+pname, blocked);
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully unblocked "+name);
+        	return;
+        }
+        else if(key.equalsIgnoreCase("blocked")){
+        	String page = (String) args[0];
+        	String pname = sender.getName();
+        	List<String> blocked = new ArrayList<String>();
+        	if(data.contains("blocked."+pname)){
+        		blocked = data.getStringList("blocked."+pname);
+        	}
+        	if(blocked.size() < 1){
+        		sender.sendMessage(plugin.colors.getTitle() + "Blocked players: "+plugin.colors.getInfo() + "Page: [1/1]");
+        		return;
+        	}
+        	String list = plugin.colors.getInfo() + blocked.get(0);
+        	for(int i=1;i<blocked.size();i++){
+        		list = plugin.colors.getInfo() + list + ", "+plugin.colors.getInfo() + blocked.get(i);
+        	}
+        	int pageno = 1;
+        	try {
+				pageno = Integer.parseInt(page);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(plugin.colors.getError() + "Invalid page number!");
+				return;
+			}
+        	ChatPage cpage = ChatPaginator.paginate(list, pageno);
+        	sender.sendMessage(plugin.colors.getTitle() + "Blocked players: "+plugin.colors.getInfo() + "Page: ["+cpage.getPageNumber()+"/"+cpage.getTotalPages()+"]");
+        	sender.sendMessage(list);
+        	return;
         }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");

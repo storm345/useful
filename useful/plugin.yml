@@ -10,7 +10,7 @@ commands:
       default: true
    uconnect:
       description: This is the access to the uconnect system.
-      usage: /<command> [Msg [<Send> <Player> <Msg>], [<Clear>], [<Read> (Page)]], [Profile <Name>], [Setprofile <about/contact/favserver> <Value>], [News], [createNews <Article> <Story>]
+      usage: /<command> [Msg [<Send> <Player> <Msg>], [<Clear>], [<Read> (Page)], [<Block> <Name>], [<Unblock> <Name>], [<Blocked> (Page)]], [Profile <Name>], [Setprofile <about/contact/favserver> <Value>], [News], [createNews <Article> <Story>]
       aliases: [uc, ucon]
       permission: useful.uconnect
       permission-message: You don't have <permission> permission
