@@ -525,6 +525,65 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return true;
 				
 			}
+				else if(program.equalsIgnoreCase("servers")){
+				   if(args.length < 2){
+					   return false;
+				   }
+				   String action = args[1];
+				   if(action.equalsIgnoreCase("add")){
+					   if(args.length < 4){
+						   return false;
+					   }
+					   String ip = args[2];
+					   String about = args[3];
+					   for(int i=4;i<args.length;i++){
+						   about = about + " " + args[i];
+					   }
+					   List<Object> uargs = new ArrayList<Object>();
+					   uargs.add(ip);
+					   uargs.add(about);
+					   UConnectDataRequest request = new UConnectDataRequest("addServer", uargs.toArray(), sender);
+					   plugin.uconnect.load(request);
+						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						return true;
+				   }
+				   else if(action.equalsIgnoreCase("delete")){
+					   if(args.length < 3){
+						   return false;
+					   }
+					   String ip = args[2];
+					   List<Object> uargs = new ArrayList<Object>();
+					   uargs.add(ip);
+					   UConnectDataRequest request = new UConnectDataRequest("deleteServer", uargs.toArray(), sender);
+					   plugin.uconnect.load(request);
+						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						return true;
+				   }
+				   else if(action.equalsIgnoreCase("list")){
+					   int page = 1;
+					   if(args.length > 2){
+						   String pag = args[2];
+						   try {
+							page = Integer.parseInt(pag);
+						} catch (NumberFormatException e) {
+							sender.sendMessage(plugin.colors.getError()+"Invalid page number");
+							return true;
+						}
+					   }
+					   if(page < 1){
+						   page = 1;
+					   }
+					   List<Object> uargs = new ArrayList<Object>();
+					   uargs.add(page);
+					   UConnectDataRequest request = new UConnectDataRequest("listServer", uargs.toArray(), sender);
+					   plugin.uconnect.load(request);
+						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						return true;
+				   }
+				   else{
+					   return false;
+				   }
+				}
 			return false;
 		}
 		else if(cmd.getName().equalsIgnoreCase("needauth")){

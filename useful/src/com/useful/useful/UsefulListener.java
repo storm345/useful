@@ -355,6 +355,10 @@ public class UsefulListener implements Listener{
         CommandSender sender = event.getRequester();
         String key = request.getRequestKey();
         YamlConfiguration data = request.getData();
+        if(data == null){
+        	sender.sendMessage(plugin.colors.getError() + "Error- Unable to connect to UConnect or invalid request");
+        	return;
+        }
         if(key.equalsIgnoreCase("dummy")){
         	return;
         }
@@ -684,10 +688,117 @@ public class UsefulListener implements Listener{
         	sender.sendMessage(list);
         	return;
         }
+        else if(key.equalsIgnoreCase("addServer")){
+        	String ip = (String) args[0];
+        	ip = ip.toLowerCase();
+        	ip = ip.replaceAll("\\.", ">");
+        	String about = (String) args[1];
+        	if(!data.contains("servers.null")){
+        		data.set("servers.null", true);
+        	}
+        	ConfigurationSection section = data.getConfigurationSection("servers");
+        	Set<String> ips = section.getKeys(false);
+        	for(String check:ips){
+        		if(check.equalsIgnoreCase(ip)){
+        			sender.sendMessage(plugin.colors.getError() + "Server already listed! (If invalid listing please msg an admin, storm345 or blueplant)");
+        			return;
+        		}
+        	}
+        	data.set("servers."+ip, about);
+        	plugin.uconnect.main = data;
+        	plugin.uconnect.save();
+        	sender.sendMessage(plugin.colors.getSuccess() + "Successfully saved server!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("deleteServer")){
+        	UConnectProfile profile = new UConnectProfile(sender.getName());
+        	if(profile.getRank() != UConnectRank.ADMIN && profile.getRank() != UConnectRank.CREATOR && profile.getRank() != UConnectRank.DEVELOPER){
+        		sender.sendMessage(plugin.colors.getError() + "You are not authorised to do this! Please ask an admin, storm345 or blueplant");
+        		return;
+        	}
+        	String name = (String) args[0];
+        	name = name.replaceAll("\\.", ">");
+        	if(!data.contains("servers.null")){
+        		data.set("servers.null", true);
+        	}
+        	ConfigurationSection section = data.getConfigurationSection("servers");
+        	Set<String> ips = section.getKeys(false);
+        	Boolean contains = false;
+        	for(String check:ips){
+        		if(check.equalsIgnoreCase(name)){
+        			name = check;
+        			contains = true;
+        		}
+        	}
+        	if(!contains){
+        		sender.sendMessage(plugin.colors.getError() + "Unable to find server");
+        		return;
+        	}
+            section.set(name, null);
+            plugin.uconnect.main = data;
+            plugin.uconnect.save();
+            sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted server!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("listServer")){
+        	if(!data.contains("servers.null")){
+        		data.set("servers.null", true);
+        	}
+        	int page = (int) args[0];
+        	ConfigurationSection section = data.getConfigurationSection("servers");
+        	List<String> servers = new ArrayList<String>();
+        	Set<String> ips = section.getKeys(false);
+        	Object[] iparray = ips.toArray();
+        	for(int i=0;i<iparray.length;i++){
+        		String ip = (String) iparray[i];
+        		if(!ip.equalsIgnoreCase("null")){
+        			String about = data.getString("servers."+ip);
+            		servers.add(ChatColor.DARK_RED + "[" +i+"] "+ ChatColor.DARK_GREEN + ChatColor.stripColor(useful.colorise(ip)).replaceAll(">", ".") + ChatColor.DARK_AQUA + " -"+useful.colorise(about));
+        		}
+        	}
+        	//TODO paginate and send, etc...
+            double total = ips.size();
+            total = total /8;
+            int totalpages = 1;
+			double unrounded = total;
+			NumberFormat fmt = NumberFormat.getNumberInstance();
+			fmt.setMaximumFractionDigits(0);
+			fmt.setRoundingMode(RoundingMode.UP);
+			String value = fmt.format(unrounded);
+			totalpages = Integer.parseInt(value);
+			int it = ((page -1)*8);
+			if(it > servers.size()){
+				if(servers.size() > 8){
+				it = servers.size() -8;
+				}
+				else{
+					it = 0;
+				}
+			}
+			double pageno = it/8 + 1;
+			String pagenumber = fmt.format(pageno);
+			sender.sendMessage(plugin.colors.getTitle() + "Servers: Page"+plugin.colors.getInfo() + "["+pagenumber+"/"+totalpages+"]");
+			int displayed = 0;
+		    if(servers.size() == 0){
+		    	sender.sendMessage(plugin.colors.getSuccess() + "No servers found!");
+		    	return;
+		    }
+			for(int i=it;i<servers.size() && displayed<=8;i++){
+		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(servers.get(i)));
+		    	displayed++;
+		    }
+			if(Integer.parseInt(pagenumber) != totalpages){
+			sender.sendMessage(plugin.colors.getInfo() + "To view the next page do /uc servers list "+(Integer.parseInt(pagenumber)+1));
+			}
+        	return;
+        }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
         	sender.sendMessage(plugin.colors.getError() + msg);
         	return;
+        }
+        else{
+        	sender.sendMessage(plugin.colors.getError() + "Invalid request? Contact author of subcommand");
         }
 		return;
 	}
