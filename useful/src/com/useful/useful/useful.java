@@ -318,8 +318,8 @@ sqlite.open();
         getPluginLoader().disablePlugin(plugin);
     }
 }
+@SuppressWarnings("deprecation")
 public void sqlTableCheck() {
-	//TODO sql table check
     if(sqlite.checkTable("warps")){
     }else{
   try {
@@ -473,7 +473,7 @@ public void jailsConverter(){
 	                    //new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
 	                    //new File(getDataFolder() + File.separator + "uConnect", "junit.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "commons-logging.jar"),
-	                    new File(getDataFolder() + File.separator + "lib", "SQLibrary.jar"), //TODO NOT FFS WORKING
+	                    new File(getDataFolder() + File.separator + "lib", "SQLibrary.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar")};
 	            
 	            for (final File lib : libs) {
@@ -1198,7 +1198,6 @@ public void jailsConverter(){
 			this.commandViewers.load();
 			this.heros = new ListStore(new File(pluginFolder + File.separator + "heros.dat"));
 			this.heros.load();
-			//TODO make optional
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect();
