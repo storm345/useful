@@ -1893,13 +1893,13 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		    	   if (sender instanceof Player){
 		    		   String query = "SELECT jailname FROM jails";
 						boolean shouldReturn = false;
-						ResultSet rs = plugin.sqlite.query(query);
-						if(rs == null){
-							sender.sendMessage(plugin.colors.getError() + "Error saving jail.");
-							plugin.colLogger.log(Level.SEVERE, "[Useful] - error saving a new jail.");
-							return true;
-						}
 						try {
+							ResultSet rs = plugin.sqlite.query(query);
+							if(rs == null){
+								sender.sendMessage(plugin.colors.getError() + "Error saving jail.");
+								plugin.colLogger.log(Level.SEVERE, "[Useful] - error saving a new jail.");
+								return true;
+							}
 							while(rs.next() && shouldReturn == false){
 								if(rs.getString("jailname").equalsIgnoreCase(args[0].toLowerCase())){
 									sender.sendMessage(plugin.colors.getError() + "Jail already exists! Use /deljail to remove it.");
@@ -1929,8 +1929,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					pitch = loc.getPitch();
 					//We now have all the location details set!
 					String theData = "INSERT INTO jails VALUES('"+args[0].toLowerCase()+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-					ResultSet rsi = plugin.sqlite.query(theData);
+					
 					try {
+						ResultSet rsi = plugin.sqlite.query(theData);
 						rsi.close();
 					} catch (SQLException e) {
 						sender.sendMessage(plugin.colors.getError() + "Error saving jail.");
@@ -2040,8 +2041,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		    		   boolean found = false;
 		    		   boolean del = false;
 		    		   String query = "SELECT * FROM jails";
-	    			   ResultSet rs = plugin.sqlite.query(query);
+	    			   
 	    			   try {
+	    				   ResultSet rs = plugin.sqlite.query(query);
 	    				   while(rs.next()){
 	    					   if(rs.getString("jailname").equalsIgnoreCase(args[0].toLowerCase())){
 	    						   found = true;
@@ -2063,8 +2065,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 	    			   }
 	    			   //Delete the warp
 	    			   String delquery = "DELETE FROM jails WHERE jailname='"+args[0].toLowerCase()+"'";
-	    			   ResultSet delete = plugin.sqlite.query(delquery);
+	    			  
 	    			   try {
+	    				   ResultSet delete = plugin.sqlite.query(delquery);
 						delete.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -2104,8 +2107,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		    			   boolean isOwner = true;
 		    			   boolean del = false;
 		    			   String query = "SELECT * FROM warps";
-		    			   ResultSet rs = plugin.sqlite.query(query);
+		    			   
 		    			   try {
+		    				   ResultSet rs = plugin.sqlite.query(query);
 		    				   while(rs.next()){
 		    					   if(rs.getString("warpname").equalsIgnoreCase(args[0].toLowerCase())){
 		    						   found = true;
@@ -2135,8 +2139,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 		    			   }
 		    			   //Delete the warp
 		    			   String delquery = "DELETE FROM warps WHERE warpname='"+args[0].toLowerCase()+"'";
-		    			   ResultSet delete = plugin.sqlite.query(delquery);
+		    			   
 		    			   try {
+		    				   ResultSet delete = plugin.sqlite.query(delquery);
 							delete.close();
 						} catch (SQLException e) {
 							e.printStackTrace();
@@ -2228,8 +2233,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				mode = "none";
 				String wname = player.getLocation().getWorld().getName();
 				String delquery = "DELETE FROM worldgm WHERE world='"+wname+"'";
- 			   ResultSet delete = plugin.sqlite.query(delquery);
+ 			   
  			   try {
+ 				  ResultSet delete = plugin.sqlite.query(delquery);
 					delete.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -2246,8 +2252,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			String query = "SELECT world FROM worldgm";
 			String wname = player.getLocation().getWorld().getName();
 			boolean shouldReturn = false;
-			ResultSet rs = plugin.sqlite.query(query);
+			
 			try {
+				ResultSet rs = plugin.sqlite.query(query);
 				while(rs.next()){
 					if(rs.getString("world") == wname){
 						shouldReturn = true;
@@ -2261,8 +2268,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			if(shouldReturn){
 				//remove it from list
 				String delquery = "DELETE FROM worldgm WHERE world='"+wname+"'";
- 			   ResultSet delete = plugin.sqlite.query(delquery);
+ 			   
  			   try {
+ 				  ResultSet delete = plugin.sqlite.query(delquery);
 					delete.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -2272,8 +2280,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			}
 			//add it to list
 			String theData = "INSERT INTO worldgm VALUES('"+wname+"', '"+mode+"');";
-			ResultSet rsi = plugin.sqlite.query(theData);
+			
 			try {
+				ResultSet rsi = plugin.sqlite.query(theData);
 				rsi.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -2393,8 +2402,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			boolean isenabled = useful.config.getBoolean("general.jail.enable");
 		       if(isenabled == true){
 		    	   ArrayList<String> jailnames = new ArrayList<String>();
-		    	   ResultSet jails = plugin.sqlite.query("SELECT DISTINCT jailname FROM jails ORDER BY jailname");
+		    	   
 		    	   try {
+		    		   ResultSet jails = plugin.sqlite.query("SELECT DISTINCT jailname FROM jails ORDER BY jailname");
 		    		   while(jails.next()){
 		    			   String name = jails.getString("jailname");
 		    			   jailnames.add(name);
@@ -2443,8 +2453,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			boolean isenabled = useful.config.getBoolean("general.warps.enable");
 		       if(isenabled == true){
 		    	   ArrayList<String> warpnames = new ArrayList<String>();
-		    	   ResultSet warps = plugin.sqlite.query("SELECT DISTINCT warpname FROM warps ORDER BY warpname");
+		    	   
 		    	   try {
+		    		   ResultSet warps = plugin.sqlite.query("SELECT DISTINCT warpname FROM warps ORDER BY warpname");
 		    		   while(warps.next()){
 		    			   String warpname = warps.getString("warpname");
 		    			   warpnames.add(warpname);
@@ -2837,8 +2848,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 						}
 						String query = "SELECT warpname FROM warps";
 						boolean shouldReturn = false;
-						ResultSet rs = plugin.sqlite.query(query);
+						
 						try {
+							ResultSet rs = plugin.sqlite.query(query);
 							while(rs.next() && shouldReturn == false){
 								if(rs.getString("warpname").equalsIgnoreCase(args[0].toLowerCase())){
 									sender.sendMessage(plugin.colors.getError() + "Warp already exists! Use /delwarp to remove it.");
@@ -2869,8 +2881,9 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					pitch = loc.getPitch();
 					//We now have all the location details set!
 					String theData = "INSERT INTO warps VALUES('"+owner+"', '"+args[0].toLowerCase()+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-					ResultSet rsi = plugin.sqlite.query(theData);
+					
 					try {
+						ResultSet rsi = plugin.sqlite.query(theData);
 						rsi.close();
 					} catch (SQLException e) {
 						e.printStackTrace();

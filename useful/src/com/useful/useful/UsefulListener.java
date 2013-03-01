@@ -872,8 +872,9 @@ public class UsefulListener implements Listener{
 		y = loc.getY();
 		z = loc.getZ();
 			String query = "DELETE FROM wir WHERE signNo='"+number+"' AND locWorld='"+world+"' AND locX='"+x+"' AND locY='"+y+"' AND locZ='"+z+"'";
-			ResultSet rs = plugin.sqlite.query(query);
+			
 			try {
+				ResultSet rs = plugin.sqlite.query(query);
 				rs.close();
 				event.getPlayer().sendMessage(plugin.colors.getSuccess() + "Successfully unregistered wireless reciever");
 			} catch (Exception e) {
@@ -913,8 +914,9 @@ public class UsefulListener implements Listener{
 				y = loc.getY();
 				z = loc.getZ();
 					String query = "DELETE FROM wir WHERE signNo='"+number+"' AND locWorld='"+world+"' AND locX='"+x+"' AND locY='"+y+"' AND locZ='"+z+"'";
-					ResultSet rs = plugin.sqlite.query(query);
+					
 					try {
+						ResultSet rs = plugin.sqlite.query(query);
 						rs.close();
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -1101,8 +1103,9 @@ public class UsefulListener implements Listener{
 		boolean found = false;
         boolean sReturn = false;
 		   String query = "SELECT * FROM worldgm";
-		   ResultSet rs = plugin.sqlite.query(query);
+		   
 		   try {
+			   ResultSet rs = plugin.sqlite.query(query);
 			   while(rs.next()){
 				   if(rs.getString("world").equalsIgnoreCase(wname)){
 					   found = true;
@@ -1122,8 +1125,9 @@ public class UsefulListener implements Listener{
 		//FOUND THE WORLD!
 		String gamemode = "";
 		String tquery = "SELECT * FROM worldgm WHERE world='"+wname+"'";
-		   ResultSet trs = plugin.sqlite.query(tquery);
+		   
 		   try {
+			   ResultSet trs = plugin.sqlite.query(tquery);
 			   while(trs.next()){
 				gamemode = trs.getString("gamemode");   
 			   }
@@ -1710,8 +1714,9 @@ public class UsefulListener implements Listener{
 		pitch = loc.getPitch();
 		//We now have all the location details set!
 		String theData = "INSERT INTO wir VALUES('"+lines[0]+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-		ResultSet rsi = plugin.sqlite.query(theData);
+		
 		try {
+			ResultSet rsi = plugin.sqlite.query(theData);
 			rsi.close();
 			event.getPlayer().sendMessage(plugin.colors.getSuccess() + "Successfully registered wireless reciever channel: " + lines[0]);
 		} catch (SQLException e) {
@@ -2103,8 +2108,9 @@ public class UsefulListener implements Listener{
 					return;
 				}
 				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			   ResultSet rs = plugin.sqlite.query(query);
+ 			   
  			   try {
+ 				  ResultSet rs = plugin.sqlite.query(query);
  				   while(rs.next()){
  					  String locWorld = rs.getString("locWorld");
 						double locX = Double.parseDouble(rs.getString("locX"));
@@ -2176,8 +2182,9 @@ public class UsefulListener implements Listener{
 					return;
 				}
 				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			   ResultSet rs = plugin.sqlite.query(query);
+ 			  
  			   try {
+ 				  ResultSet rs = plugin.sqlite.query(query);
  				   while(rs.next()){
  					  String locWorld = rs.getString("locWorld");
 						double locX = Double.parseDouble(rs.getString("locX"));
@@ -2249,8 +2256,9 @@ public class UsefulListener implements Listener{
 				}
 				
 				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			   ResultSet rs = plugin.sqlite.query(query);
+ 			  
  			   try {
+ 				  ResultSet rs = plugin.sqlite.query(query);
  				   while(rs.next()){
  					  String locWorld = rs.getString("locWorld");
 						double locX = Double.parseDouble(rs.getString("locX"));
@@ -2324,8 +2332,9 @@ public class UsefulListener implements Listener{
 				}
 				
 				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			   ResultSet rs = plugin.sqlite.query(query);
+ 			   
  			   try {
+ 				  ResultSet rs = plugin.sqlite.query(query);
  				   while(rs.next()){
  					  String locWorld = rs.getString("locWorld");
 						double locX = Double.parseDouble(rs.getString("locX"));
@@ -2540,8 +2549,9 @@ public class UsefulListener implements Listener{
 						return;
 					}
 			    	ArrayList<String> warpnames = new ArrayList<String>();
-			    	   ResultSet warps = plugin.sqlite.query("SELECT DISTINCT warpname FROM warps ORDER BY warpname");
+			    	   
 			    	   try {
+			    		   ResultSet warps = plugin.sqlite.query("SELECT DISTINCT warpname FROM warps ORDER BY warpname");
 			    		   while(warps.next()){
 			    			   String warpname = warps.getString("warpname");
 			    			   warpnames.add(warpname);
@@ -2597,8 +2607,9 @@ public class UsefulListener implements Listener{
 						return;
 					}
 			    	ArrayList<String> jailnames = new ArrayList<String>();
-			    	   ResultSet jails = plugin.sqlite.query("SELECT DISTINCT jailname FROM jails ORDER BY jailname");
+			    	   
 			    	   try {
+			    		   ResultSet jails = plugin.sqlite.query("SELECT DISTINCT jailname FROM jails ORDER BY jailname");
 			    		   while(jails.next()){
 			    			   String name = jails.getString("jailname");
 			    			   jailnames.add(name);

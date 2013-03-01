@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -319,26 +320,42 @@ public void sqlTableCheck() {
 	//TODO sql table check
     if(sqlite.checkTable("warps")){
     }else{
-  sqlite.query("CREATE TABLE warps (playername VARCHAR(50),  warpname VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+  try {
+	sqlite.query("CREATE TABLE warps (playername VARCHAR(50),  warpname VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+} catch (SQLException e) {
+	e.printStackTrace();
+}
  
         //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
     }
     //Now make the jails database!
     if(sqlite.checkTable("jails")){
     	    }else{
-    	  sqlite.query("CREATE TABLE jails (jailname VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+    	  try {
+			sqlite.query("CREATE TABLE jails (jailname VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     	 
     	        //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
     	    }
     if(sqlite.checkTable("wir")){
   	    }else{
-  	  sqlite.query("CREATE TABLE wir (signNo VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+  	  try {
+		sqlite.query("CREATE TABLE wir (signNo VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
   	 
   	        //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
   	    }
     if(sqlite.checkTable("worldgm")){
 	    }else{
-	  sqlite.query("CREATE TABLE worldgm (world VARCHAR(50), gamemode VARCHAR(50));");
+	  try {
+		sqlite.query("CREATE TABLE worldgm (world VARCHAR(50), gamemode VARCHAR(50));");
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
 	 
 	        //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
 	    }
@@ -389,7 +406,11 @@ public void warpsConverter(){
 	pitch = loc.getPitch();
 	//We now have all the location details set!
 	String theData = "INSERT INTO warps VALUES('"+owner+"', '"+warp+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-	sqlite.query(theData);
+	try {
+		sqlite.query(theData);
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
 	getLogger().info("Successfully updated " + warp + " to the new data storage format!");
 	}
 	file3.delete();
@@ -424,7 +445,11 @@ public void jailsConverter(){
 	pitch = loc.getPitch();
 	//We now have all the location details set!
 	String theData = "INSERT INTO jails VALUES('"+jail.toLowerCase()+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-	sqlite.query(theData);
+	try {
+		sqlite.query(theData);
+	} catch (SQLException e) {
+		e.printStackTrace();
+	}
 	getLogger().info("Successfully updated " + jail + " to the new data storage format!");
 	}
 	new File(getDataFolder() + File.separator + "jails.bin").delete();
@@ -1152,9 +1177,11 @@ public void jailsConverter(){
 	                    //new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
 	                    //new File(getDataFolder() + File.separator + "uConnect", "junit.jar"),
 	                    new File(getDataFolder() + File.separator + "uConnect", "commons-logging.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar") };
+	                    new File(getDataFolder() + File.separator + "lib", "SQLibrary.jar"), //TODO NOT FFS WORKING
+	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar")};
+	            
 	            for (final File lib : libs) {
-	                if (!lib.exists()) {
+	                if (!lib.exists() || lib.length() < 2) {
 	                    JarUtils.extractFromJar(lib.getName(),
 	                            lib.getAbsolutePath());
 	                }
