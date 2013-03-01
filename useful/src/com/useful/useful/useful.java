@@ -305,9 +305,11 @@ private void copy(InputStream in, File file) {
 }
 public void sqlConnection() {
 sqlite = new SQLite(plugin.getLogger(),
-                "useful",
-                "data",
-                plugin.getDataFolder().getAbsolutePath());
+		        "useful",
+                //"useful",
+		        plugin.getDataFolder().getAbsolutePath(),
+                "data"
+                );
 //Make sure sqlite is the same as the variable you specified at the top of the plugin!
 try {
 sqlite.open();
@@ -460,6 +462,39 @@ public void jailsConverter(){
 		colLogger = new ColoredLogger(this);
 		try{
 			colLogger.info(ChatColor.GREEN + "Loading useful...");
+//LOAD JARS!
+			
+			try {
+	            final File[] libs = new File[] {
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpclient.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpmime.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "httpcore.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "dropbox.jar"),
+	                    //new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
+	                    //new File(getDataFolder() + File.separator + "uConnect", "junit.jar"),
+	                    new File(getDataFolder() + File.separator + "uConnect", "commons-logging.jar"),
+	                    new File(getDataFolder() + File.separator + "lib", "SQLibrary.jar"), //TODO NOT FFS WORKING
+	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar")};
+	            
+	            for (final File lib : libs) {
+	                if (!lib.exists() || lib.length() < 2) {
+	                    JarUtils.extractFromJar(lib.getName(),
+	                            lib.getAbsolutePath());
+	                }
+	            }
+	            for (final File lib : libs) {
+	                if (!lib.exists() || lib.length() < 2) {
+	                    getLogger().warning(
+	                            "There was a critical error loading My plugin! Could not find lib: "
+	                                    + lib.getName());
+	                    Bukkit.getServer().getPluginManager().disablePlugin(this);
+	                    return;
+	                }
+	                addClassPath(JarUtils.getJarUrl(lib));
+	            }
+	        } catch (final Exception e) {
+	            e.printStackTrace();
+	        }
 			sqlConnection();
 	        sqlTableCheck();
 	        copy(getResource("changelog.txt"), new File(getDataFolder().getAbsolutePath() + File.separator + "changelog.txt"));
@@ -1166,40 +1201,6 @@ public void jailsConverter(){
 			//TODO make optional
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
-			//LOAD JARS!
-			
-			try {
-	            final File[] libs = new File[] {
-	                    new File(getDataFolder() + File.separator + "uConnect", "httpclient.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "httpmime.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "httpcore.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "dropbox.jar"),
-	                    //new File(getDataFolder() + File.separator + "uConnect", "apachelogging.jar"),
-	                    //new File(getDataFolder() + File.separator + "uConnect", "junit.jar"),
-	                    new File(getDataFolder() + File.separator + "uConnect", "commons-logging.jar"),
-	                    new File(getDataFolder() + File.separator + "lib", "SQLibrary.jar"), //TODO NOT FFS WORKING
-	                    new File(getDataFolder() + File.separator + "uConnect", "json_simple.jar")};
-	            
-	            for (final File lib : libs) {
-	                if (!lib.exists() || lib.length() < 2) {
-	                    JarUtils.extractFromJar(lib.getName(),
-	                            lib.getAbsolutePath());
-	                }
-	            }
-	            for (final File lib : libs) {
-	                if (!lib.exists()) {
-	                    getLogger().warning(
-	                            "There was a critical error loading My plugin! Could not find lib: "
-	                                    + lib.getName());
-	                    Bukkit.getServer().getPluginManager().disablePlugin(this);
-	                    return;
-	                }
-	                addClassPath(JarUtils.getJarUrl(lib));
-	            }
-	        } catch (final Exception e) {
-	            e.printStackTrace();
-	        }
-	        
 			uconnect = new UConnect();
 			plugin.colLogger.info("uConnect loaded!");
 			}
