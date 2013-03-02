@@ -333,17 +333,25 @@ public class UsefulCommandExecutor implements CommandExecutor {
 		}
 		else if(cmd.getName().equalsIgnoreCase("uconnect")){
 			//TODO the uconnect inta-server system!
+			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers"};
 			if(args.length <1){
-				return false;
+				for(String line:usage){
+					sender.sendMessage(line);
+				}
+				return true;
 			}
 			String program = args[0];
 			if(program.equalsIgnoreCase("message") || program.equalsIgnoreCase("msg")){
+				String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"send <Player> <Msg>", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"clear", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"read (Page)", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"block <Player>", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"unblock <Player>", ChatColor.DARK_RED + "/"+cmdname+" msg "+ChatColor.YELLOW+"blocked (Page)"};
 				if(player == null){
 					sender.sendMessage(plugin.colors.getError() + "Only players can use the messaging part of uconnect.");
 					return true;
 				}
 				if(args.length <2){
-					return false;
+					for(String line:msgUsage){
+						sender.sendMessage(line);
+					}
+					return true;
 				}
 				String action = args[1];
 				if(action.equalsIgnoreCase("read")){
@@ -364,7 +372,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				}
 				else if(action.equalsIgnoreCase("send")){
 					if(args.length < 4){
-						return false;
+						sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" msg"+ChatColor.YELLOW + " send <Player> <Msg>");
+						return true;
 					}
 					String playerName = args[2];
 					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
@@ -378,7 +387,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				}
 				else if(action.equalsIgnoreCase("block")){
 					if(args.length < 3){
-						return false;
+						sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" msg"+ChatColor.YELLOW + " block <Player>");
+						return true;
 					}
 					String name = args[2];
 					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
@@ -391,7 +401,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				}
 				else if(action.equalsIgnoreCase("unblock")){
 					if(args.length < 3){
-						return false;
+						sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" msg"+ChatColor.YELLOW + " unblock <Player>");
+						return true;
 					}
 					String name = args[2];
 					sender.sendMessage(plugin.colors.getError() + "WARNING: Player names are CaSe SenSitIvE");
@@ -421,7 +432,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			}
 			else if(program.equalsIgnoreCase("profile")){
 				if(args.length < 2){
-					return false;
+					sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" profile"+ChatColor.YELLOW + " <Player>");
+					return true;
 				}
 				String pName = args[1];
 				List<Object> uargs = new ArrayList<Object>();
@@ -432,12 +444,16 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			else if(program.equalsIgnoreCase("setprofile")){
+				String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" setprofile "+ChatColor.YELLOW+"About <Value>", ChatColor.DARK_RED + "/"+cmdname+" setprofile "+ChatColor.YELLOW+"Contact <Value>", ChatColor.DARK_RED + "/"+cmdname+" setprofile "+ChatColor.YELLOW+"Favserer <Value>"};
 				if(player == null){
 					sender.sendMessage(plugin.colors.getError() + "This part of uConnect is for players");
 					return true;
 				}
 				if(args.length < 3){
-					return false;
+					for(String line:msgUsage){
+						sender.sendMessage(line);
+					}
+					return true;
 				}
 				String action = args[1];
 				if(action.equalsIgnoreCase("contact")){
@@ -497,7 +513,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(args.length < 3){
-						return false;
+						sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" createnews"+ChatColor.YELLOW + " <Article> <Story>");
+						return true;
 					}
 					String article = args[1];
 					String story = args[2];
@@ -519,7 +536,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					if(args.length < 2){
-						return false;
+						sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" deleteNews"+ChatColor.YELLOW + " <Article>");
+						return true;
 					}
 					String article = args[1];
 					List<Object> uargs = new ArrayList<Object>();
@@ -531,13 +549,18 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				
 			}
 				else if(program.equalsIgnoreCase("servers")){
+					String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" servers "+ChatColor.YELLOW+"list (Page)", ChatColor.DARK_RED + "/"+cmdname+" servers "+ChatColor.YELLOW+"add <Ip> <About>", ChatColor.DARK_RED + "/"+cmdname+" servers "+ChatColor.YELLOW+"delete <Ip>"};
 				   if(args.length < 2){
-					   return false;
+					   for(String line:msgUsage){
+						   sender.sendMessage(line);
+					   }
+					   return true;
 				   }
 				   String action = args[1];
 				   if(action.equalsIgnoreCase("add")){
 					   if(args.length < 4){
-						   return false;
+						   sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" servers"+ChatColor.YELLOW + " add <Ip> <About>");
+							return true;
 					   }
 					   String ip = args[2];
 					   String about = args[3];
@@ -554,7 +577,8 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				   }
 				   else if(action.equalsIgnoreCase("delete")){
 					   if(args.length < 3){
-						   return false;
+						   sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" servers"+ChatColor.YELLOW + " delete <Ip>");
+							return true;
 					   }
 					   String ip = args[2];
 					   List<Object> uargs = new ArrayList<Object>();
