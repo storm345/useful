@@ -783,7 +783,7 @@ public class UsefulListener implements Listener{
 		    	sender.sendMessage(plugin.colors.getSuccess() + "No servers found!");
 		    	return;
 		    }
-			for(int i=it;i<servers.size() && displayed<=8;i++){
+			for(int i=it;i<servers.size() && displayed<8;i++){
 		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(servers.get(i)));
 		    	displayed++;
 		    }
