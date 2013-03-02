@@ -427,7 +427,10 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				else{
-					return false;
+					for(String line:msgUsage){
+						sender.sendMessage(line);
+					}
+					return true;
 				}
 			}
 			else if(program.equalsIgnoreCase("profile")){
@@ -496,6 +499,9 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				else{
+					for(String line:msgUsage){
+						sender.sendMessage(line);
+					}
 					return true;
 				}
 			}
