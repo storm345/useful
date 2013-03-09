@@ -628,12 +628,10 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					   //TODO A FRIENDLY THINGY!!
 					   return true;
 				   }
-			if(args.length <1){
 				for(String line:usage){
 					sender.sendMessage(line);
 				}
 				return true;
-			}
 		}
 		else if(cmd.getName().equalsIgnoreCase("needauth")){
 			//TODO
