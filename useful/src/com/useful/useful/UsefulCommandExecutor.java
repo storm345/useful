@@ -616,10 +616,24 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						return true;
 				   }
 				   else{
-					   return false;
+					   if(args.length <1){
+							for(String line:usage){
+								sender.sendMessage(line);
+							}
+							return true;
+						}
 				   }
 				}
-			return false;
+				else if(program.equalsIgnoreCase("friends")){
+					   //TODO A FRIENDLY THINGY!!
+					   return true;
+				   }
+			if(args.length <1){
+				for(String line:usage){
+					sender.sendMessage(line);
+				}
+				return true;
+			}
 		}
 		else if(cmd.getName().equalsIgnoreCase("needauth")){
 			//TODO
