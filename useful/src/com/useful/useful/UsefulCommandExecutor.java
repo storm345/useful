@@ -333,7 +333,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 		}
 		else if(cmd.getName().equalsIgnoreCase("uconnect")){
 			//TODO the uconnect inta-server system!
-			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers"};
+			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news (page)", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers"};
 			if(args.length <1){
 				for(String line:usage){
 					sender.sendMessage(line);
@@ -507,7 +507,21 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			}
 			
 				else if(program.equalsIgnoreCase("news")){
-					UConnectDataRequest request = new UConnectDataRequest("showNews", null, sender);
+					int page = 1;
+					if(args.length > 1){
+						try {
+							page = Integer.parseInt(args[1]);
+						} catch (NumberFormatException e) {
+                        sender.sendMessage(plugin.colors.getError() + "Invalid page number!");
+                        return true;
+						}
+						if(page < 1){
+							sender.sendMessage(plugin.colors.getError() + "Invalid page number!");
+	                        return true;
+						}
+					}
+					Object[] uargs = {page};
+					UConnectDataRequest request = new UConnectDataRequest("showNews", uargs, sender);
 					plugin.uconnect.load(request);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
 					return true;
