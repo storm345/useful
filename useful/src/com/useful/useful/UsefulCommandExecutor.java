@@ -626,6 +626,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				}
 				else if(program.equalsIgnoreCase("friends")){
 					   //TODO A FRIENDLY THINGY!!
+					
 					   return true;
 				   }
 				for(String line:usage){
