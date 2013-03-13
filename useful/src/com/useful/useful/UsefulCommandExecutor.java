@@ -333,7 +333,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 		}
 		else if(cmd.getName().equalsIgnoreCase("uconnect")){
 			//TODO the uconnect inta-server system!
-			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news (page)", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers"};
+			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news (page)", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" friends"};
 			if(args.length <1){
 				for(String line:usage){
 					sender.sendMessage(line);
@@ -640,7 +640,14 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				}
 				else if(program.equalsIgnoreCase("friends")){
 					   //TODO A FRIENDLY THINGY!!
-					
+					   // /uc friends: add, view, remove, list, overview/over
+					String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Add <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Remove <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"View <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"List (Page)", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Overview/Over (Page)"};
+					if(args.length < 2){
+						for(String msg:msgUsage){
+							sender.sendMessage(msg);
+						}
+						return true;
+					}
 					   return true;
 				   }
 				for(String line:usage){

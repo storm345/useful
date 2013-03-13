@@ -1853,8 +1853,10 @@ public void jailsConverter(){
         	   Plugin[] pluginsOn = getServer().getPluginManager().getPlugins();
         	   for(int i=0;i<pluginsOn.length;i++){
         		   if(pluginsOn[i].getName().equalsIgnoreCase("uCars")){
-        			    //Do this becuase ucars is a child (created by me) branch of useful. Useful CONTAINS ucars features and code but is always NEWER versions of it. So disable to stop overlap
-        			   plugin.colLogger.info(ChatColor.RED + "Detected ucars! - UCars should be removed to avoid conflict with useful. ALl UCars features are available within useful. It is recommended you remove ucars now. (Any errors after this message are likely a result of the conflict...)");
+        			   plugin.colLogger.info("Hooked into UCars...");
+        			   config.set("general.cars.enable", false);
+        			   saveConfig();
+        			   plugin.colLogger.info("Successfully given UCars car control!");
         		   }
         	   }
         	   System.gc();
