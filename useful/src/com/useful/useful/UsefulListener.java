@@ -566,16 +566,24 @@ public class UsefulListener implements Listener{
         	NumberFormat fmt = NumberFormat.getNumberInstance();
 			fmt.setMaximumFractionDigits(0);
 			fmt.setRoundingMode(RoundingMode.UP);
-        	int pages = Integer.parseInt(fmt.format(total/4));
+        	int pages = Integer.parseInt(fmt.format(total/4d));
         	if(page > pages){
         		page = pages;
         	}
-        	int displayed = 0;//TODO IT DOESNT WORK!!
-        	page-=1;
+        	int displayed = 0;
         	sender.sendMessage(plugin.colors.getInfo() + "Page: ("+page+"/"+pages+")");
-        	int iterator = stories.size()-(page * 4);
+        	if(page<1){
+        		page = 1;
+        	}
+        	int iterator = stories.size()-((page-1) * 4);
         	for(int i=iterator;i>=0&&displayed < 5;i--){
-        		String news = stories.get(i);
+        		String news;
+        		if(stories.size() >= i && i>0){
+        		news = stories.get(i-1);
+        		}
+        		else{
+        			break;
+        		}
         		String[] parts = news.split("abcd");
         		String toSend = ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "[" + useful.colorise(parts[0]) + ChatColor.RESET + "" + ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "]" + ChatColor.RESET + " " + ChatColor.YELLOW + useful.colorise(parts[1]);
         		sender.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + "[" + i + "]" + ChatColor.RESET + toSend + ChatColor.RESET + "  -Posted by "+parts[2]);
