@@ -576,7 +576,7 @@ public class UsefulListener implements Listener{
         		page = 1;
         	}
         	int iterator = stories.size()-((page-1) * 4);
-        	for(int i=iterator;i>=0&&displayed < 5;i--){
+        	for(int i=iterator;i>=0&&displayed < 4;i--){
         		String news;
         		if(stories.size() >= i && i>0){
         		news = stories.get(i-1);
