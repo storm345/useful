@@ -128,7 +128,20 @@ public class uConnectConnect {
     	    			System.out.println("Secret token: " + tokens.secret);
     	    			*/
     	    			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
-    	    			InputStream stream = mDBApi.getFileStream(path, null);
+    	    			InputStream stream = null;
+    	    			try {
+							stream = mDBApi.getFileStream(path, null);
+						} catch (Exception e1) {
+							if(stream!=null){
+							stream.close();
+							}
+							YamlConfiguration newFile = new YamlConfiguration();
+							newFile.set("uconnect.create", true);
+							String uuid = UniqueString.generate();
+							useful.plugin.uconnect.tasks.put(uuid, false);
+							uConnectConnect.uploadYaml(newFile, "/main.yml", uuid);
+							return;
+						}
     	    			useful.plugin.uconnect.tasks.put(uuid, true);
     					YamlConfiguration result = new YamlConfiguration();
     					try {
@@ -138,6 +151,7 @@ public class uConnectConnect {
     						result.set("error.msg", "Error connecting to uConnect!");
     						request.setData(result);
     					}
+    					stream.close();
     					request.setData(result);
     					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
     					useful.plugin.getServer().getPluginManager().callEvent(event);

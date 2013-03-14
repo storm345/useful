@@ -388,7 +388,7 @@ public class UsefulListener implements Listener{
         	}
         	Date cal = Calendar.getInstance().getTime();
         	String time = new SimpleDateFormat("dd-MM : HH:mm:ss").format(cal);
-        	inbox.add("&r&i["+time+"]&r&3[From]&a" + from + ": &6" + msg);
+        	inbox.add(plugin.encrypter.encryptStr("&r&i["+time+"]&r&3[From]&a" + from + ": &6" + msg));
         	data.set("messaging." + to, inbox);
         	if(!data.contains("uconnect.create")){
         		data.set("uconnect.create", true);
@@ -449,7 +449,7 @@ public class UsefulListener implements Listener{
 		    	return;
 		    }
 			for(int i=it;i<inbox.size() && displayed<=displayable;i++){
-		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(inbox.get(i)));
+		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(plugin.encrypter.decryptStr(inbox.get(i))));
 		    	displayed++;
 		    }
 			sender.sendMessage(plugin.colors.getInfo() + "To mark messages as read (And delete) do /(uconnect/uc) msg clear");

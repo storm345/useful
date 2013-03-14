@@ -37,7 +37,7 @@ public class UConnectRequestScheduler {
 								}
 							}
 							if(useful.plugin.uconnect.tasks.size() > 5){
-								trequest.getSender().sendMessage(ChatColor.GRAY + "UConnect busy. Retrying in "+tdelay/1000+"seconds. You have "+tries + " tries left!");
+								trequest.getSender().sendMessage(ChatColor.GRAY + "UConnect busy. Retrying in "+tdelay/1000+" seconds. You have "+tries + " tries left!");
 									try {
 										Thread.sleep(tdelay);
 									} catch (InterruptedException e) {

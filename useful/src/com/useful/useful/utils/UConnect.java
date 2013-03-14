@@ -16,37 +16,10 @@ public YamlConfiguration main = new YamlConfiguration();
 public YamlConfiguration profiles = new YamlConfiguration();
 public final HashMap<String, Boolean> tasks = new HashMap<String, Boolean>();
 private useful plugin = useful.plugin;
-private File cache = null;
 public UConnect(){
-	try {
-		this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-		this.cache.createNewFile();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-	/*
-	this.load();
-	if(!main.contains("uconnect.create")){
-		main.set("uconnect.create", true);
-	}
-    this.save();
-    this.loadProfiles();
-    if(!profiles.contains("uconnect.create")){
-		profiles.set("uconnect.create", true);
-	}
-    if(!profiles.contains("profiles.create")){
-		profiles.set("profiles.create", true);
-	}
-    this.saveProfiles();
-    */
+	
 }
 public void load(UConnectDataRequest request){
-	try {
-		this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-		this.cache.createNewFile();
-	} catch (IOException e1) {
-		return;
-	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
 	uConnectConnect.getFile("/main.yml", uuid, request);
@@ -70,29 +43,12 @@ public void load(UConnectDataRequest request){
 	return;
 }
 public void save(){
-	try {
-		this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-		this.cache.createNewFile();
-	} catch (IOException e1) {
-		return;
-	}
-	try {
-		this.main.save(cache);
-	} catch (IOException e) {
-		return;
-	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
 	uConnectConnect.uploadYaml(this.main, "/main.yml", uuid);
 	return;
 }
 public void message(UConnectProfile to, UConnectProfile from, String msg, CommandSender sender){
-	this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-	try {
-		this.cache.createNewFile();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
 	String toName = to.getName();
 	String fromName = from.getName();
 	List<String> args = new ArrayList<String>();
@@ -117,12 +73,6 @@ public void message(UConnectProfile to, UConnectProfile from, String msg, Comman
 	*/
 }
 public void clearMessages(UConnectProfile player, CommandSender sender){
-	this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-	try {
-		this.cache.createNewFile();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
 	String name = player.getName();
 	List<String> args = new ArrayList<String>();
 	args.add(name);
@@ -138,11 +88,6 @@ public void clearMessages(UConnectProfile player, CommandSender sender){
 	*/
 }
 public void getMessages(UConnectProfile player, String page, CommandSender sender){
-	this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectDataCache.txt");
-	try {
-		this.cache.createNewFile();
-	} catch (IOException e) {
-	}
 	this.update(sender);
 	String name = player.getName();
 	List<String> args = new ArrayList<String>();
@@ -169,12 +114,6 @@ public void update(CommandSender sender){
 	this.load(request); //Before using save in a method ALWAYS use load for security
 }
 public void loadProfiles(UConnectDataRequest request){
-	try {
-		this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectProfileDataCache.txt");
-		this.cache.createNewFile();
-	} catch (IOException e1) {
-		return;
-	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
 	uConnectConnect.getFile("/profiles.yml", uuid, request);
@@ -189,28 +128,12 @@ public void loadProfiles(UConnectDataRequest request){
 	return;
 }
 public void saveProfiles(){
-	try {
-		this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectProfileDataCache.txt");
-		this.cache.createNewFile();
-	} catch (IOException e1) {
-		return;
-	}
-	try {
-		this.profiles.save(cache);
-	} catch (IOException e) {
-		return;
-	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
 	uConnectConnect.uploadYaml(this.profiles, "/profiles.yml", uuid);
 	return;
 }
 public void updateProfiles(CommandSender sender){
-	this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectProfileDataCache.txt");
-	try {
-		this.cache.createNewFile();
-	} catch (IOException e) {
-	}
 	UConnectDataRequest request = new UConnectDataRequest("dummy", null, sender);
 	loadProfiles(request);
 	saveProfiles();
@@ -230,12 +153,6 @@ public void saveProfile(UConnectProfile profile, CommandSender sender){
 	return;
 }
 public void loadProfile(String pname, UConnectDataRequest request, CommandSender sender){
-	this.cache = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "uConnectProfileDataCache.txt");
-	try {
-		this.cache.createNewFile();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
 	loadProfiles(request);
 	/*
 	ConfigurationSection profiles = this.profiles.getConfigurationSection("profiles");
