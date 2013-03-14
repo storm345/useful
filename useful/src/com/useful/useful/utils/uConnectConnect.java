@@ -45,12 +45,13 @@ public class uConnectConnect {
 						session.setAccessTokenPair(tokens);
 						File dir = new File(useful.plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "Data cache");
 						dir.mkdirs();
-						File file = File.createTempFile(uuid, ".yml", dir);
+						final File file = File.createTempFile(uuid, ".yml", dir);
 						yaml.save(file);
 						FileInputStream in = new FileInputStream(file);
 						mDBApi = new DropboxAPI<WebAuthSession>(session);
 						mDBApi.putFileOverwrite(path, in, file.length(), null);
-						file.deleteOnExit();
+						in.close();
+						file.delete();
 						/* setup again if i delete from dropbox
 						WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
 						WebAuthInfo authInfo = session.getAuthInfo();
