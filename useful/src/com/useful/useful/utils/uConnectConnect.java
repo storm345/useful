@@ -3,12 +3,14 @@ package com.useful.useful.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.DropboxAPI.DropboxInputStream;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
@@ -31,7 +33,7 @@ public class uConnectConnect {
     private static final String APP_SECRET = "nfni1r28rvapbhi";
     private static DropboxAPI<WebAuthSession> mDBApi = null;
     private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER; 
-    	public static Boolean uploadFile(final File file, final String path, final String uuid){
+    	public static Boolean uploadYaml(final YamlConfiguration yaml, final String path, final String uuid){
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
@@ -41,9 +43,14 @@ public class uConnectConnect {
 						WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
 						AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
 						session.setAccessTokenPair(tokens);
+						File dir = new File(useful.plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "Data cache");
+						dir.mkdirs();
+						File file = File.createTempFile(uuid, ".yml", dir);
+						yaml.save(file);
 						FileInputStream in = new FileInputStream(file);
 						mDBApi = new DropboxAPI<WebAuthSession>(session);
 						mDBApi.putFileOverwrite(path, in, file.length(), null);
+						file.deleteOnExit();
 						/* setup again if i delete from dropbox
 						WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
 						WebAuthInfo authInfo = session.getAuthInfo();
@@ -81,13 +88,14 @@ public class uConnectConnect {
 					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
 					useful.plugin.getServer().getPluginManager().callEvent(event);
 					*/
+					
 					useful.plugin.uconnect.tasks.remove(uuid);
 				}});
     		
         return true;
     	}
     	
-    	public static File getFile(final String path, final File save, final String uuid, final UConnectDataRequest request){
+    	public static void getFile(final String path, final String uuid, final UConnectDataRequest request){
     		useful.plugin.uconnect.tasks.put(uuid, false);
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
@@ -119,35 +127,28 @@ public class uConnectConnect {
     	    			System.out.println("Secret token: " + tokens.secret);
     	    			*/
     	    			//ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
-    	    			FileOutputStream os;
-						try {
-							os = new FileOutputStream(save);
-							mDBApi.getFile(path, null, os, null);
-							os.close();
-							useful.plugin.uconnect.tasks.put(uuid, true);
-						} catch (Exception e) {
-							useful.plugin.uconnect.tasks.put(uuid, true);
-						}
+    	    			InputStream stream = mDBApi.getFileStream(path, null);
+    	    			useful.plugin.uconnect.tasks.put(uuid, true);
+    					YamlConfiguration result = new YamlConfiguration();
+    					try {
+    						result.load(stream);
+    					} catch (Exception e) {
+    						request.setType("error");
+    						result.set("error.msg", "Error connecting to uConnect!");
+    						request.setData(result);
+    					}
+    					request.setData(result);
+    					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
+    					useful.plugin.getServer().getPluginManager().callEvent(event);
+    					useful.plugin.uconnect.tasks.remove(uuid);
     		} catch (Exception e) {
     			e.printStackTrace();
     			useful.plugin.uconnect.tasks.put(uuid, true);
     		}
-					useful.plugin.uconnect.tasks.put(uuid, true);
-					YamlConfiguration result = new YamlConfiguration();
-					try {
-						result.load(save);
-					} catch (Exception e) {
-						request.setType("error");
-						result.set("error.msg", "Error connecting to uConnect!");
-						request.setData(result);
-					}
-					request.setData(result);
-					UConnectDataAvailableEvent event = new UConnectDataAvailableEvent(request, request.getSender());
-					useful.plugin.getServer().getPluginManager().callEvent(event);
-					useful.plugin.uconnect.tasks.remove(uuid);
+					
 				}});
             
-            return save;
+            return;
         	}
     	public static void deleteFile(final String path, final String uuid){
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){

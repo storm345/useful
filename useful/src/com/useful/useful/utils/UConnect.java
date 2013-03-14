@@ -49,7 +49,7 @@ public void load(UConnectDataRequest request){
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	uConnectConnect.getFile("/main.yml", this.cache, uuid, request);
+	uConnectConnect.getFile("/main.yml", uuid, request);
 	/*
 	this.tasks.remove(uuid);
 	if(checkFile == null){
@@ -83,7 +83,7 @@ public void save(){
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	uConnectConnect.uploadFile(this.cache, "/main.yml", uuid);
+	uConnectConnect.uploadYaml(this.main, "/main.yml", uuid);
 	return;
 }
 public void message(UConnectProfile to, UConnectProfile from, String msg, CommandSender sender){
@@ -177,7 +177,7 @@ public void loadProfiles(UConnectDataRequest request){
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	uConnectConnect.getFile("/profiles.yml", this.cache, uuid, request);
+	uConnectConnect.getFile("/profiles.yml", uuid, request);
 	/*
 	if(!profiles.contains("uconnect.create")){
 		profiles.set("uconnect.create", true);
@@ -202,7 +202,7 @@ public void saveProfiles(){
 	}
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	uConnectConnect.uploadFile(this.cache, "/profiles.yml", uuid);
+	uConnectConnect.uploadYaml(this.profiles, "/profiles.yml", uuid);
 	return;
 }
 public void updateProfiles(CommandSender sender){

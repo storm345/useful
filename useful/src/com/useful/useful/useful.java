@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import lib.PatPeter.SQLibrary.SQLite;
 
@@ -52,6 +56,7 @@ import com.useful.useful.utils.ColoredLogger;
 import com.useful.useful.utils.Colors;
 import com.useful.useful.utils.Copier;
 import com.useful.useful.utils.CustomRecipes;
+import com.useful.useful.utils.Encrpyter;
 import com.useful.useful.utils.GetStringFromUrl;
 import com.useful.useful.utils.JarUtils;
 import com.useful.useful.utils.ListStore;
@@ -74,6 +79,7 @@ public class useful extends JavaPlugin {
 	public uPerms permManager = null;
 	public int number;
 	public int numberorig;
+	public Encrpyter encrypter = null;
 	public static HashMap<String, ArrayList<String>> jailed = new HashMap<String, ArrayList<String>>();
 	public static HashMap<String, ArrayList<String>> mail = new HashMap<String, ArrayList<String>>();
 	public static HashMap<String, SerializableLocation> warps = new HashMap<String, SerializableLocation>();
@@ -1638,6 +1644,12 @@ public void jailsConverter(){
  			   permManager.refreshPerms(player[i]);
  		   }
  	   }
+ 	  try {
+		SecretKey key = KeyGenerator.getInstance("DES").generateKey();
+		   encrypter = new Encrpyter(key);
+	} catch (Exception e2) {
+		e2.printStackTrace();
+	}
        String discmds = config.getString("general.blocked_commands(separated_by_commas_)");
         	   String[] cmds = discmds.split(",");
         	   for(int x=0 ; x<cmds.length ; x++) {
