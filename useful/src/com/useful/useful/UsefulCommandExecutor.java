@@ -641,12 +641,37 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				else if(program.equalsIgnoreCase("friends")){
 					   //TODO A FRIENDLY THINGY!!
 					   // /uc friends: add, view, remove, list, overview/over
+					if(!(sender instanceof Player)){
+						sender.sendMessage(plugin.colors.getError() + "This part of uconnect is for players!");
+					}
 					String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Add <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Remove <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"View <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"List (Page)", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Overview/Over (Page)"};
 					if(args.length < 2){
 						for(String msg:msgUsage){
 							sender.sendMessage(msg);
 						}
 						return true;
+					}
+					String action = args[1];
+					//TODO
+					if(action.equalsIgnoreCase("add")){
+						
+					}
+					else if(action.equalsIgnoreCase("view")){
+						
+					}
+					else if(action.equalsIgnoreCase("remove")){
+						
+					}
+					else if(action.equalsIgnoreCase("list")){
+						
+					}
+					else if(action.equalsIgnoreCase("over")||action.equalsIgnoreCase("overview")){
+						
+					}
+					else{
+						for(String msg:msgUsage){
+							sender.sendMessage(msg);
+						}
 					}
 					   return true;
 				   }
