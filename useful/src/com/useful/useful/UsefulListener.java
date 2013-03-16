@@ -814,6 +814,145 @@ public class UsefulListener implements Listener{
 			}
         	return;
         }
+        //TODO uc friends
+        else if(key.equalsIgnoreCase("addFriend")){
+        	String name = (String) args[0];
+        	if(name.equals(sender.getName())){
+        		sender.sendMessage(plugin.colors.getError() + "You cannot friend yourself!");
+        		return;
+        	}
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	if(!data.contains("profile."+name+".online")){
+        		sender.sendMessage(plugin.colors.getError() + name+" hasn't got a uconnect account! (Player names are cAsE SeSiTiVe)");
+        		return;
+        	}
+        	if(friends.contains(name)){
+                sender.sendMessage(plugin.colors.getError() + name+" is already on your friends list!");
+        		return;
+        	}
+        	friends.add(name);
+        	data.set("profile."+sender.getName()+".friends", friends);
+        	int count = 0;
+        	if(data.contains("profile."+name+".friendCount")){
+        		count = data.getInt("profile."+name+".friendCount");
+        	}
+        	if(count < 0){
+        		count = 0;
+        	}
+        	count += 1;
+        	data.set("profile."+name+".friendCount", count);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	sender.sendMessage(plugin.colors.getSuccess() + name+" is now on your friend list!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("viewFriend")){
+        	String pname = (String) args[0];
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	if(!friends.contains(pname)){
+                sender.sendMessage(plugin.colors.getError() + pname+" is not on your friends list!");
+        		return;
+        	}
+        	ConfigurationSection profiles = data.getConfigurationSection("profile");
+        	Set<String> names = profiles.getKeys(false);
+        	Boolean contains = false;
+        	for(String name:names){
+        		if(name.equals(pname)){
+        			contains = true;
+        		}
+        	}
+        	UConnectProfile profile = new UConnectProfile(pname);
+        	Boolean hasFriended = false;
+        	int hisFriends = 0;
+        	if(contains){
+        	if(data.contains("profile." + pname + ".online")){
+        		profile.setOnline(data.getBoolean("profile."+pname+".online"));
+        	}
+        	if(data.contains("profile." + pname + ".contact")){
+        		profile.setContactInfo(data.getString("profile."+pname+".contact"));
+        	}
+        	if(data.contains("profile." + pname + ".about")){
+        		profile.setAbout(data.getString("profile."+pname+".about"));
+        	}
+        	if(data.contains("profile." + pname + ".favserver")){
+        		profile.setFavServer(data.getString("profile."+pname+".favserver"));
+        	}
+        	if(data.contains("profile." + pname + ".friendCount")){
+        		profile.setFriendCount(data.getInt("profile."+pname+".friendCount"));
+        	}
+        	if(data.contains("profile." + pname + ".friends")){
+        		List<String> theirfriends = data.getStringList("profile."+pname+".friends");
+        		if(theirfriends.contains(sender.getName())){
+        			hasFriended = true;
+        		}
+        		hisFriends = theirfriends.size();
+        	}
+        	}
+        	else{
+        	}
+			sender.sendMessage(plugin.colors.getTitle() + "Online: " + plugin.colors.getInfo() + profile.isOnline());
+			sender.sendMessage(plugin.colors.getTitle() + "Rank: " + plugin.colors.getInfo() + profile.getRank().toString().toLowerCase());
+			sender.sendMessage(plugin.colors.getTitle() + "Favourite server: " + plugin.colors.getInfo() + useful.colorise(profile.getFavServer()));
+			sender.sendMessage(plugin.colors.getTitle() + "About: " + plugin.colors.getInfo() + useful.colorise(profile.getAbout()));
+			sender.sendMessage(plugin.colors.getTitle() + "Friended by: " + plugin.colors.getInfo() + useful.colorise(profile.getFriendCount() + " people"));
+			sender.sendMessage(plugin.colors.getTitle() + "Has friended: " + plugin.colors.getInfo() + hisFriends + " people");
+			sender.sendMessage(plugin.colors.getTitle() + "Has friended you: " + plugin.colors.getInfo() + hasFriended);
+			return;
+        }
+        else if(key.equalsIgnoreCase("removeFriend")){
+        	String name = (String) args[0];
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	if(!friends.contains(name)){
+        		sender.sendMessage(plugin.colors.getError() + name + " is not on your friends list!");
+        		return;
+        	}
+        	friends.remove(name);
+        	data.set("profile."+sender.getName()+".friends", friends);
+        	int count = 0;
+        	if(data.contains("profile."+name+".friendCount")){
+        		count = data.getInt("profile."+name+".friendCount");
+        	}
+        	count -= 1;
+        	if(count < 0){
+        		count = 0;
+        	}
+        	data.set("profile."+name+".friendCount", count);
+        	plugin.uconnect.profiles = data;
+        	plugin.uconnect.saveProfiles();
+        	sender.sendMessage(plugin.colors.getSuccess() + name+" is no longer on your friend list!");
+        	return;
+        }
+        else if(key.equalsIgnoreCase("listFriend")){
+        	int page = (int) args[0];
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	String friendList = plugin.colors.getInfo()+"";
+        	for(String friend:friends){
+        		friendList = friendList + plugin.colors.getInfo() + friend + ",  ";
+        	}
+        	ChatPage cpage = ChatPaginator.paginate(friendList, page);
+        	sender.sendMessage(plugin.colors.getTitle() + "Your friends: ("+friends.size()+") Page: ["+cpage.getPageNumber() + "/"+cpage.getTotalPages()+"]");
+        	String[] lines = cpage.getLines();
+        	for(String line:lines){
+        		sender.sendMessage(plugin.colors.getInfo() + line);
+        	}
+        	return;
+        }
+        else if(key.equalsIgnoreCase("overviewFriend")){
+        	int page = (int) args[0];
+        	return;
+        }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
         	sender.sendMessage(plugin.colors.getError() + msg);

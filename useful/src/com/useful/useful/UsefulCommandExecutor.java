@@ -647,6 +647,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					   // /uc friends: add, view, remove, list, overview/over
 					if(!(sender instanceof Player)){
 						sender.sendMessage(plugin.colors.getError() + "This part of uconnect is for players!");
+					    return true;
 					}
 					String[] msgUsage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Add <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Remove <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"View <Name>", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"List (Page)", ChatColor.DARK_RED + "/"+cmdname+" Friends "+ChatColor.YELLOW+"Overview/Over (Page)"};
 					if(args.length < 2){
@@ -658,19 +659,77 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					String action = args[1];
 					//TODO
 					if(action.equalsIgnoreCase("add")){
-						
+						if(args.length < 3){
+							sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" friends"+ChatColor.YELLOW + " add <Name>");
+							return true;
+						}
+						String name = args[2];
+						List<Object> uargs = new ArrayList<Object>();
+						uargs.add(name);
+						UConnectDataRequest request = new UConnectDataRequest("addFriend", uargs.toArray(), sender);
+					    plugin.uconnect.loadProfiles(request);
+					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    return true;
 					}
 					else if(action.equalsIgnoreCase("view")){
-						
+						if(args.length < 3){
+							sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" friends"+ChatColor.YELLOW + " view <Name>");
+							return true;
+						}
+						String name = args[2];
+						List<Object> uargs = new ArrayList<Object>();
+						uargs.add(name);
+						UConnectDataRequest request = new UConnectDataRequest("viewFriend", uargs.toArray(), sender);
+					    plugin.uconnect.loadProfiles(request);
+					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    return true;
 					}
 					else if(action.equalsIgnoreCase("remove")){
-						
+						if(args.length < 3){
+							sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" friends"+ChatColor.YELLOW + " remove <Name>");
+							return true;
+						}
+						String name = args[2];
+						List<Object> uargs = new ArrayList<Object>();
+						uargs.add(name);
+						UConnectDataRequest request = new UConnectDataRequest("removeFriend", uargs.toArray(), sender);
+					    plugin.uconnect.loadProfiles(request);
+					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    return true;
 					}
 					else if(action.equalsIgnoreCase("list")){
-						
+						int page = 1;
+						if(args.length > 2){
+							try {
+								page = Integer.parseInt(args[2]);
+							} catch (NumberFormatException e) {
+								sender.sendMessage(plugin.colors.getError() + "Invalid page number!");
+								return true;
+							}
+						}
+						List<Object> uargs = new ArrayList<Object>();
+						uargs.add(page);
+						UConnectDataRequest request = new UConnectDataRequest("listFriend", uargs.toArray(), sender);
+					    plugin.uconnect.loadProfiles(request);
+					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    return true;
 					}
 					else if(action.equalsIgnoreCase("over")||action.equalsIgnoreCase("overview")){
-						
+						int page = 1;
+						if(args.length > 2){
+							try {
+								page = Integer.parseInt(args[2]);
+							} catch (NumberFormatException e) {
+								sender.sendMessage(plugin.colors.getError() + "Invalid page number!");
+								return true;
+							}
+						}
+						List<Object> uargs = new ArrayList<Object>();
+						uargs.add(page);
+						UConnectDataRequest request = new UConnectDataRequest("overviewFriend", uargs.toArray(), sender);
+					    plugin.uconnect.loadProfiles(request);
+					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    return true;
 					}
 					else{
 						for(String msg:msgUsage){

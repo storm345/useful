@@ -8,6 +8,7 @@ public class UConnectProfile {
 	private String about = "&cNot set";
 	private String contact = "&eNot available";
 	private String favserver = "&cNot set";
+	private int friends = 0;
 	private UConnectRank rank = UConnectRank.USER;
 	public UConnectProfile(String playername){
 		this.name = playername;
@@ -29,6 +30,13 @@ public class UConnectProfile {
 	}
 	public void setOnline(Boolean isOnline){
 		this.online = isOnline;
+		return;
+	}
+	public int getFriendCount(){
+		return this.friends;
+	}
+	public void setFriendCount(int friends){
+		this.friends = friends;
 		return;
 	}
 	public void save(){
