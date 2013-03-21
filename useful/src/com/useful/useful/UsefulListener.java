@@ -951,7 +951,29 @@ public class UsefulListener implements Listener{
         }
         else if(key.equalsIgnoreCase("overviewFriend")){
         	int page = (int) args[0];
-        	return;
+        	//TODO
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	double totalpagesRaw = friends.size() / 3d;
+        	NumberFormat fmt = NumberFormat.getNumberInstance();
+			fmt.setMaximumFractionDigits(0);
+			fmt.setRoundingMode(RoundingMode.UP);
+			String value = fmt.format(totalpagesRaw);
+			int totalpages = Integer.parseInt(value);
+			if(page > totalpages){
+				page = totalpages;
+			}
+			sender.sendMessage(plugin.colors.getTitle()+"Friend overview:  Page["+page+"/"+totalpages);
+        	page -= 1;
+        	int iterator = page * 3;
+        	int displaed = 0;
+        	for(int i=iterator;i<friends.size() && displaed <3;i++){
+        		//TODO
+        		displaed++;
+        	}
+			return;
         }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
@@ -963,7 +985,6 @@ public class UsefulListener implements Listener{
         }
 		return;
 	}
-	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void customQuitMsg(PlayerQuitEvent event){
 		if(useful.authed.containsKey(event.getPlayer().getName())){

@@ -1280,7 +1280,10 @@ public void jailsConverter(){
 	            		String path = new File(".").getAbsolutePath();
 	            		for(int i=0;i<theWorlds.length; i++){
 	            			World w = (World) theWorlds[i];
-	            			w.save();
+	            			try {
+								w.save();
+							} catch (Exception e1) {
+							}
 	            			String wNam = w.getName();
 	            		File srcFolder = new File(path + File.separator + wNam);
 	            		File destFolder = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "World Backups" + File.separator + date + File.separator + wNam);

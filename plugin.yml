@@ -1,0 +1,687 @@
+name: useful
+main: com.useful.useful.useful
+version: 2.6
+softdepend: [uCars]
+commands:
+   test:
+      description: This tests the plugin is working.
+      usage: /<command>
+      permission: useful.test
+      permission-message: You don't have <permission> permission
+      default: true
+   uconnect:
+      description: This is the access to the uconnect system.
+      usage: /<command> - Do /uconnect to view the full usage.
+      aliases: [uc, ucon]
+      permission: useful.uconnect
+      permission-message: You don't have <permission> permission
+      default: true
+   craft:
+      description: This drops a workbench in front of the player.
+      usage: /<command>
+      permission: useful.craft
+      permission-message: You don't have <permission> permission
+      default: op
+   kick:
+      description: This kicks somebody.
+      usage: /<command> [Name] [Reason]
+      permission: useful.kick
+      permission-message: You don't have <permission> permission
+      default: op
+   back:
+      description: This teleports you back to your previous location.
+      usage: /<command>
+      permission: useful.back
+      permission-message: You don't have <permission> permission
+      default: op
+   enchant:
+      description: This enchants the item in hand accordingly.
+      usage: /<command> [Enchantment] [Level]
+      permission: useful.enchant
+      permission-message: You don't have <permission> permission
+      default: op
+   shelter:
+      description: This makes an instant shelter at the location.
+      usage: /<command> [Size (1/2)]
+      permission: useful.shelter
+      permission-message: You don't have <permission> permission
+      default: op
+   rules:
+      description: This lists all server rules.
+      usage: /<command>
+      permission: useful.rules
+      permission-message: You don't have <permission> permission
+      default: true
+   spawnmob:
+      description: This spawns a mob.
+      usage: /<command> [Type] [Amount]
+      permission: useful.spawnmob
+      permission-message: You don't have <permission> permission
+      default: op
+   backup:
+      description: This backs up worlds.
+      usage: /<command>
+      permission: useful.backup
+      permission-message: You don't have <permission> permission. If you believe this is an error contact a member of server staff.
+      default: op
+   ucommands:
+      description: This shows all plugin commands.
+      usage: /<command> (page)
+      permission: useful.ucommands
+      permission-message: You don't have <permission> permission
+      default: true
+   ucommand:
+      description: This shows information on the given command.
+      usage: /<command> [Command]
+      permission: useful.ucommand
+      permission-message: You don't have <permission> permission
+      default: true
+   smite:
+      description: This smites somebody.
+      usage: /<command> [Name]
+      permission: useful.smite
+      permission-message: You don't have <permission> permission
+      default: op
+   mail:
+      description: This messages somebody.
+      usage: /<command> [send/read/clear/clearall] (message)
+      permission: useful.mail
+      permission-message: You don't have <permission> permission
+      default: op
+   mobset:
+      description: This sets the mob type of a spawner you are looking at.
+      usage: /<command> [Type]
+      permission: useful.mobset
+      permission-message: You don't have <permission> permission
+      default: op
+   mobtypes:
+      description: This lists the available mob types.
+      usage: /<command>
+      permission: useful.mobs
+      permission-message: You don't have <permission> permission
+      default: true
+   ban:
+      description: This bans somebody.
+      usage: /<command> [Name] [Reason]
+      permission: useful.ban
+      permission-message: You don't have <permission> permission
+      default: op
+   unban:
+      description: This unbans somebody.
+      usage: /<command> [Name]
+      permission: useful.unban
+      permission-message: You don't have <permission> permission
+      default: op
+   needauth:
+      description: This puts [Name] on the authentication list with password [Password].
+      usage: /<command> [Name(CaSe SeNsItIvE)] [Password]
+      permission: useful.needauth
+      permission-message: You don't have <permission> permission
+      default: op
+   notneedauth:
+      description: This puts [Name] on the authentication list with password [Password].
+      usage: /<command> [Name(CaSe SeNsItIvE)] [Password]
+      permission: useful.needauth
+      permission-message: You don't have <permission> permission
+      default: op
+   login:
+      description: This logs you in if you are on authentication list.
+      usage: /<command> [Password]
+      permission: useful.login
+      permission-message: You don't have <permission> permission
+      default: true
+   gm:
+      description: This sets the player in the opposite gamemode.
+      usage: /<command> (name)
+      aliases: [game-mode, player-mode]
+      permission: useful.gamemode
+      permission-message: You don't have <permission> permission
+      default: op
+   firework:
+      description: This gives the player a firework of the desired specification.
+      usage: /<command> [Height (1/2/3)] [Color 1] [Color 2] [Fade color 1] [Fade color 2] [Type] [Twinkle (true/false)] [Trail (true/false)] [Amount]
+      permission: useful.firework
+      permission-message: You don't have <permission> permission
+      default: op
+   potion:
+      description: This gives the player a potion of the desired specification.
+      usage: /<command> [Type] [Level] [Splash (true/false)] [Amount] (duration extended (true/false) - only if valid)
+      permission: useful.potion
+      permission-message: You don't have <permission> permission
+      default: op
+   information:
+      description: This lists all server info.
+      usage: /<command>
+      aliases: [inf, info, information, details, about
+      ]
+      permission: useful.info
+      permission-message: You don't have <permission> permission
+      default: true
+   creative:
+      description: This sets the player in creative.
+      usage: /<command> (name)
+      aliases: [cr]
+      permission: useful.creative
+      permission-message: You don't have <permission> permission
+      default: op
+   survival:
+      description: This sets the player in survival.
+      usage: /<command> (name)
+      aliases: [su, sr, sv]
+      permission: useful.survival
+      permission-message: You don't have <permission> permission
+      default: op
+   adventure:
+      description: This sets the player in adventure mode.
+      usage: /<command> (name)
+      aliases: [ad, av]
+      permission: useful.adventure
+      permission-message: You don't have <permission> permission
+      default: op
+   time:
+      description: This changes the time.
+      usage: /<command> [day/night/early/late/set/add] (if set/add[Number])
+      aliases: [time, timeset, server-time, servertime]
+      permission: useful.time
+      permission-message: You don't have <permission> permission
+      default: op
+   uhost:
+      description: Server hosting tool.
+      usage: /<command> [performance, stats, memory, gc, system, properties, logger, dplugin (name), config, perms]
+      permission: useful.uhost
+      permission-message: You don't have <permission> permission
+      default: op
+   timeget:
+      description: This tells you the time as if on a 24hr clock.
+      usage: /<command>
+      aliases: [get-time, show-time, time-show]
+      permission: useful.showtime
+      permission-message: You don't have <permission> permission
+      default: true
+   canfly:
+      description: This toggles the ability to fly.
+      usage: /<command>
+      permission: useful.canfly
+      permission-message: You don't have <permission> permission
+      default: op
+   head:
+      description: This gives you a head textured like that of [Name].
+      usage: /<command> [Name]
+      permission: useful.head
+      permission-message: You don't have <permission> permission
+      default: op
+   rename:
+      description: This renames an item.
+      usage: /<command> [Name]
+      permission: useful.rename
+      permission-message: You don't have <permission> permission
+      default: op
+   jail:
+      description: This jails the person.
+      usage: /<command> [Jailname] [Name] [Time(minutes)] [Reason]
+      permission: useful.jail
+      permission-message: You don't have <permission> permission
+      default: op
+   jails:
+      description: This lists all jails.
+      usage: /<command>
+      permission: useful.jails
+      permission-message: You don't have <permission> permission
+      default: op
+   jailed:
+      description: This lists all jailed players.
+      usage: /<command>
+      permission: useful.jailed
+      permission-message: You don't have <permission> permission
+      default: op
+   unjail:
+      description: This unjails the specified player.
+      usage: /<command> [Player]
+      permission: useful.unjail
+      permission-message: You don't have <permission> permission
+      default: op
+   jailtime:
+      description: This finds your jail sentence remaining if you are jailed.
+      usage: /<command>
+      permission: useful.jailtime
+      permission-message: You don't have <permission> permission
+      default: true
+   setjail:
+      description: This sets a jail.
+      usage: /<command> [Name]
+      permission: useful.setjail
+      permission-message: You don't have <permission> permission
+      default: op
+   setwarp:
+      description: This sets a warp.
+      usage: /<command> [Name]
+      permission: useful.setwarp
+      permission-message: You don't have <permission> permission
+      default: op
+   setspawn:
+      description: This sets the location of the world spawn.
+      usage: /<command>
+      permission: useful.setspawn
+      permission-message: You don't have <permission> permission
+      default: op
+   spawn:
+      description: This teleports you to the world spawn.
+      usage: /<command>
+      aliases: [world-spawn, uspawn, sp]
+      permission: useful.spawn
+      permission-message: You don't have <permission> permission
+      default: op
+   world:
+      description: Teleports you to world [World].
+      usage: /<command> [World]
+      aliases: [worldtp, wd, wdgo]
+      permission: useful.world
+      permission-message: You don't have <permission> permission
+      default: op
+   worlds:
+      description: Lists the worlds on the server.
+      usage: /<command>
+      aliases: [world-list, worldlist, listworlds]
+      permission: useful.worldlist
+      permission-message: You don't have <permission> permission
+      default: true
+   delwarp:
+      description: This deletes a warp.
+      usage: /<command> [Name]
+      permission: useful.delwarp
+      permission-message: You don't have <permission> permission
+      default: op
+   warps:
+      description: This lists all warps.
+      usage: /<command> (Page number)
+      permission: useful.warplist
+      permission-message: You don't have <permission> permission
+      default: true
+   warp:
+      description: This warps the player to a location.
+      usage: /<command> [WarpName]
+      permission: useful.warp
+      permission-message: You don't have <permission> permission
+      default: op
+   deljail:
+      description: This unsets a jail.
+      usage: /<command> [Name]
+      permission: useful.deljail
+      permission-message: You don't have <permission> permission
+      default: op
+   killmobs:
+      description: This kills all monsters in the world or in a specified radius.
+      aliases: [butcher -all]
+      usage: /<command> (Radius)
+      permission: useful.killmobs
+      permission-message: You don't have <permission> permission
+      default: op
+   tp:
+      description: This teleports the player.
+      aliases: [tpme, to, tp_me]
+      usage: /<command> [Name]
+      permission: useful.tp
+      permission-message: You don't have <permission> permission
+      default: op
+   tpa:
+      description: This sends a teleport request to the specified player.
+      usage: /<command> [Name]
+      permission: useful.tpa
+      permission-message: You don't have <permission> permission
+      default: op
+   tpahere:
+      description: This sends a teleport request to the specified player to teleport to you.
+      usage: /<command> [Name]
+      permission: useful.tpahere
+      permission-message: You don't have <permission> permission
+      default: op
+   tpaccept:
+      description: This accepts an inbound teleport request.
+      usage: /<command>
+      permission: useful.tpaccept
+      permission-message: You don't have <permission> permission
+      default: op
+   tphere:
+      description: This teleports the other player to you.
+      aliases: [tptome, to_me, tp_me]
+      usage: /<command> [Name]
+      permission: useful.tphere
+      permission-message: You don't have <permission> permission
+      default: op
+   hat:
+      description: Puts the current block in hand as your hat or takes off your current hat.
+      usage: /<command> (off)
+      permission: useful.hat
+      permission-message: You don't have <permission> permission
+      default: op
+   hero:
+      description: This sets the player to hero mode.
+      aliases: [god, egod]
+      usage: /<command>
+      permission: useful.hero
+      permission-message: You don't have <permission> permission
+      default: op
+   useful:
+      description: This is a command to check the plugin is working or reload the config.
+      usage: /<command> (reload/changelog)
+      permission: useful.test
+      permission-message: You don't have <permission> permission
+      default: true
+   count:
+      description: This command counts up or down to/from the given number.
+      aliases: [timer]
+      usage: /<command> [up/down] [number]
+      permission: useful.count
+      permission-message: You don't have <permission> permission
+      default: op
+   murder:
+      description: This murders the player specified.
+      aliases: [slay]
+      usage: /<command> [Player]
+      permission: useful.murder
+      permission-message: You don't have <permission> permission
+      default: op
+   genocide:
+      description: This murders everyone on the server.
+      aliases: [killall]
+      usage: /<command>
+      permission: useful.genocide
+      permission-message: You don't have <permission> permission
+      default: op
+   eat:
+      description: This feeds the player.
+      aliases: [feed, feedme]
+      usage: /<command> ([Player])
+      permission: useful.eat
+      permission-message: You don't have <permission> permission
+      default: op
+   feast:
+      description: This feeds everyone on the server.
+      usage: /<command>
+      permission: useful.feast
+      permission-message: You don't have <permission> permission
+      default: op
+   
+   levelup:
+      description: This levels up the player.
+      usage: /<command>
+      permission: useful.levelup
+      permission-message: You don't have <permission> permission
+      default: op
+   setlevel:
+      description: This sets the level of the player.
+      aliases: [level]
+      usage: /<command> [level]
+      permission: useful.setlevel
+      permission-message: You don't have <permission> permission
+      default: op
+   getid:
+      description: This gets the id and name of the item in hand.
+      aliases: [iteminfo]
+      usage: /<command>
+      permission: useful.getid
+      permission-message: You don't have <permission> permission
+      default: true
+   look:
+      description: This gets the id and name of the block you are looking at.
+      aliases: [lookatid, id]
+      usage: /<command>
+      permission: useful.getid
+      permission-message: You don't have <permission> permission
+      default: true
+   burn:
+      description: This sets a player on fire.
+      usage: /<command> [Player]
+      permission: useful.burn
+      permission-message: You don't have <permission> permission
+      default: op
+   message:
+      description: This sends a private message.
+      aliases: [msg]
+      usage: /<command> [Player] [Message]
+      permission: useful.message
+      permission-message: You don't have <permission> permission
+      default: true
+   warn:
+      description: This warns a player.
+      aliases: [warning]
+      usage: /<command> [Player] [Message]
+      permission: useful.warn
+      permission-message: You don't have <permission> permission
+      default: op
+   magicmessage:
+      description: This sends a scrambled message in the server chat.
+      aliases: [m_message]
+      usage: /<command> [Message]
+      permission: useful.magicmessage
+      permission-message: You don't have <permission> permission
+      default: true
+   listplayers:
+      description: This lists all players that have been on the server.
+      aliases: [allplayers]
+      usage: /<command>
+      permission: useful.listplayers
+      permission-message: You don't have <permission> permission
+      default: true
+   delete-warns:
+      description: This delete's a players warning's.
+      aliases: [cwarns, c-warns, dwarns, d-warns]
+      usage: /<command> [Player]
+      permission: useful.delwarns
+      permission-message: You don't have <permission> permission
+      default: op
+   view-warns:
+      description: This views's a players warning's.
+      aliases: [warns]
+      usage: /<command> [Player]
+      permission: useful.viewwarns
+      permission-message: You don't have <permission> permission
+      default: op
+   warnslog:
+      description: This shows the server's warning's log.
+      aliases: [warnings, warningslog, warns-log]
+      usage: /<command> (clear)
+      permission: useful.warnslog
+      permission-message: You don't have <permission> permission
+      default: op
+   ci:
+      description: This clears the inventory of the player or a targeted player.
+      usage: /<command> (Player)
+      permission: useful.ci
+      permission-message: You don't have <permission> permission
+      default: op
+   worldgm:
+      description: This sets the default gamemode of the world.
+      usage: /<command> [creative/survival/adventure/none]
+      permission: useful.worldgm
+      permission-message: You don't have <permission> permission
+      default: op
+   invsee:
+      description: This shows the inventory of somebody.
+      aliases: [seeinv, inventory, inventorysee, seeinventory]
+      usage: /<command> [Name]
+      permission: useful.invsee
+      permission-message: You don't have <permission> permission
+      default: op
+   compass:
+      description: This shows the direction you are looking at.
+      aliases: [direction, dir]
+      usage: /<command>
+      permission: useful.compass
+      permission-message: You don't have <permission> permission
+      default: true
+      
+permissions:
+    useful.mob.*:
+        description: Gives access to all useful commands
+        children:
+            useful.mob.cow: true
+            useful.mob.chicken: true
+            useful.mob.blaze: true
+            useful.mob.cavespider: true
+            useful.mob.creeper: true
+            useful.mob.enderdragon: true
+            useful.mob.enderman: true
+            useful.mob.xp: true
+            useful.mob.ghast: true
+            useful.mob.giant: true
+            useful.mob.irongolem: true
+            useful.mob.magmacube: true
+            useful.mob.mushroomcow: true
+            useful.mob.ocelot: true
+            useful.mob.pig: true
+            useful.mob.pigzombie: true
+            useful.mob.silverfish: true
+            useful.mob.sheep: true
+            useful.mob.skeleton: true
+            useful.mob.slime: true
+            useful.mob.snowman: true
+            useful.mob.spider: true
+            useful.mob.squid: true
+            useful.mob.villager: true
+            useful.mob.wolf: true
+            useful.mob.zombie: true
+            useful.mob.bat: true
+            useful.mob.witch: true
+            useful.mob.wither: true
+            useful.mob.witherskull: true
+    useful.basic:
+        description: All useful 'basic' commands
+        children:
+            useful.test: true
+            useful.getid: true
+            useful.listplayers: true
+            useful.showtime: true
+            useful.mail: true
+            useful.mobs: true
+            useful.spawn: true
+            useful.worlds: true
+        default: true
+    useful.member:
+        description: All useful 'member' commands
+        children:
+            useful.test: true
+            useful.getid: true
+            useful.listplayers: true
+            useful.showtime: true
+            useful.mail: true
+            useful.mobs: true
+            useful.spawn: true
+            useful.worlds: true
+            useful.eat: true
+            useful.levelup: true
+            useful.world: true
+            useful.setlevel: true
+            useful.message: true
+            useful.magicmessage: true
+            useful.count: true
+            useful.hero: true
+            useful.hat: true
+            useful.tp: true
+            useful.tphere: true
+            useful.time: true
+            useful.mobset: true
+            useful.mob.skeleton: true
+            useful.mob.creeper: true
+            useful.mob.zombie: true
+            useful.mob.ocelot: true
+            useful.mob.wolf: true
+            useful.mob.xp: true
+            useful.mob.squid: true
+            useful.mob.cow: true
+            useful.mob.chicken: true
+            useful.mob.cavespider: true
+            useful.mob.enderman: true
+            useful.mob.mushroomcow: true
+            useful.mob.pig: true
+            useful.mob.sheep: true
+            useful.mob.spider: true
+            useful.mob.villager: true
+            useful.mob.bat: true
+            useful.mob.witch: true
+            useful.gamemode: true
+            useful.time: true
+            useful.setwarp: true
+            useful.warp: true
+            useful.tp: true
+            useful.tphere: true
+        default: false
+    useful.trusted:
+        description: All useful 'trusted' commands
+        children:
+            useful.test: true
+            useful.getid: true
+            useful.listplayers: true
+            useful.showtime: true
+            useful.mail: true
+            useful.mobs: true
+            useful.spawn: true
+            useful.worlds: true
+            useful.eat: true
+            useful.levelup: true
+            useful.world: true
+            useful.setlevel: true
+            useful.message: true
+            useful.magicmessage: true
+            useful.count: true
+            useful.hero: true
+            useful.hat: true
+            useful.tp: true
+            useful.tphere: true
+            useful.time: true
+            useful.mobset: true
+            useful.mob.cow: true
+            useful.mob.chicken: true
+            useful.mob.blaze: true
+            useful.mob.cavespider: true
+            useful.mob.creeper: true
+            useful.mob.enderdragon: true
+            useful.mob.enderman: true
+            useful.mob.xp: true
+            useful.mob.ghast: true
+            useful.mob.giant: true
+            useful.mob.irongolem: true
+            useful.mob.magmacube: true
+            useful.mob.mushroomcow: true
+            useful.mob.ocelot: true
+            useful.mob.pig: true
+            useful.mob.pigzombie: true
+            useful.mob.silverfish: true
+            useful.mob.sheep: true
+            useful.mob.skeleton: true
+            useful.mob.slime: true
+            useful.mob.snowman: true
+            useful.mob.spider: true
+            useful.mob.squid: true
+            useful.mob.villager: true
+            useful.mob.wolf: true
+            useful.mob.zombie: true
+            useful.mob.bat: true
+            useful.mob.witch: true
+            useful.mob.witherskull: true
+            useful.gamemode: true
+            useful.time: true
+            useful.setwarp: true
+            useful.warp: true
+            useful.tp: true
+            useful.tphere: true
+            useful.delwarp: true
+            useful.setspawn: true
+            useful.burn: true
+            useful.warning: true
+            useful.delwarns: true
+            useful.viewwarns: true
+            useful.warnslog: true
+            useful.killmobs: true
+            useful.jail: true
+            useful.jails: true
+            useful.unjail: true
+            useful.jailtime: true
+            useful.setjail: true
+            useful.deljail: true
+            useful.smite: true
+            useful.mail.clearall: true
+            useful.kick: true
+            useful.ban: true
+            useful.gamemode.others: true
+        default: false

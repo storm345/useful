@@ -7,6 +7,16 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/Barty/Desktop/minecraft/craftbukkit.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore.jar"/>
+	<classpathentry kind="lib" path="lib/httpmime.jar"/>
+	<classpathentry kind="lib" path="lib/json_simple.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="lib/dropbox.jar"/>
+	<classpathentry kind="lib" path="lib/4j.jar"/>
+	<classpathentry kind="lib" path="lib/avalon.jar"/>
+	<classpathentry kind="lib" path="lib/kit.jar"/>
+	<classpathentry kind="lib" path="lib/servelet.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/SQLibrary.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
