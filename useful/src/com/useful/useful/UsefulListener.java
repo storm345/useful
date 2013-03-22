@@ -951,7 +951,7 @@ public class UsefulListener implements Listener{
         }
         else if(key.equalsIgnoreCase("overviewFriend")){
         	int page = (int) args[0];
-        	//TODO
+        	//TODO make the friend oveview
         	List<String> friends = new ArrayList<String>();
         	if(data.contains("profile."+sender.getName()+".friends")){
         		friends = data.getStringList("profile."+sender.getName()+".friends");
