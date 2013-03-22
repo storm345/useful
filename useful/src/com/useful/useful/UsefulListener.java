@@ -817,7 +817,7 @@ public class UsefulListener implements Listener{
         //TODO uc friends
         else if(key.equalsIgnoreCase("addFriend")){
         	String name = (String) args[0];
-        	if(name.equals(sender.getName())){
+        	if(name.equals(sender.getName()) && !(name.equals("storm345"))){
         		sender.sendMessage(plugin.colors.getError() + "You cannot friend yourself!");
         		return;
         	}
@@ -965,12 +965,36 @@ public class UsefulListener implements Listener{
 			if(page > totalpages){
 				page = totalpages;
 			}
-			sender.sendMessage(plugin.colors.getTitle()+"Friend overview:  Page["+page+"/"+totalpages);
+			sender.sendMessage(ChatColor.GREEN+"Friend overview:  Page["+page+"/"+totalpages+"]");
         	page -= 1;
         	int iterator = page * 3;
         	int displaed = 0;
         	for(int i=iterator;i<friends.size() && displaed <3;i++){
         		//TODO
+        		String fname = friends.get(i);
+        		UConnectProfile profile = new UConnectProfile(fname);
+        		if(data.contains("profile."+fname+".online")){
+        			profile.setOnline(data.getBoolean("profile."+fname+".online"));
+        		}
+        		if(data.contains("profile."+fname+".friendCount")){
+        			profile.setFriendCount(data.getInt("profile."+fname+".friendCount"));
+        		}
+        		if(data.contains("profile."+fname+".about")){
+        			profile.setAbout(data.getString("profile."+fname+".about"));
+        		}
+        		if(data.contains("profile."+fname+".favserver")){
+        			profile.setFavServer(data.getString("profile."+fname+".favserver"));
+        		}
+        		sender.sendMessage(plugin.colors.getTitle()+fname+":");
+        		String isOnline = "";
+        		if(profile.isOnline()){
+        			isOnline = ChatColor.GREEN+"Yes";
+        		}
+        		else{
+        			isOnline = ChatColor.RED+"No";
+        		}
+        		sender.sendMessage(plugin.colors.getInfo() + "Online: "+isOnline+plugin.colors.getInfo()+"  Friends: "+ChatColor.GOLD+profile.getFriendCount());
+        		sender.sendMessage(plugin.colors.getInfo() + "About: "+ChatColor.GOLD+useful.colorise(profile.getAbout())+plugin.colors.getInfo()+"  Favourite server: "+ChatColor.GOLD+useful.colorise(profile.getFavServer()));
         		displaed++;
         	}
 			return;
