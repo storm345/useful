@@ -103,9 +103,7 @@ public class UsefulListener implements Listener{
 		this.plugin = useful.plugin;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean carBoost(String playerName, final double power, final long lengthMillis, double defaultSpeed){
-		//TODO
 		final String p = playerName;
 		final double defMult = defaultSpeed;
 		if(!useful.carBoosts.containsKey(p)){
@@ -349,7 +347,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void uConnectDataHandling(UConnectDataAvailableEvent event){
-		//TODO uconnectdatarequesthandling
 		UConnectDataRequest request = event.getRequest();
 		Object[] args = request.getArgs();
         CommandSender sender = event.getRequester();
@@ -778,7 +775,6 @@ public class UsefulListener implements Listener{
             		servers.add(ChatColor.DARK_RED + "[" +i+"] "+ ChatColor.DARK_GREEN + ChatColor.stripColor(useful.colorise(ip)).replaceAll(">", ".") + ChatColor.DARK_AQUA + " -"+useful.colorise(about));
         		}
         	}
-        	//TODO paginate and send, etc...
             double total = ips.size();
             total = total /8;
             int totalpages = 1;
@@ -814,7 +810,6 @@ public class UsefulListener implements Listener{
 			}
         	return;
         }
-        //TODO uc friends
         else if(key.equalsIgnoreCase("addFriend")){
         	String name = (String) args[0];
         	if(name.equals(sender.getName()) && !(name.equals("storm345"))){
@@ -951,7 +946,6 @@ public class UsefulListener implements Listener{
         }
         else if(key.equalsIgnoreCase("overviewFriend")){
         	int page = (int) args[0];
-        	//TODO make the friend oveview
         	List<String> friends = new ArrayList<String>();
         	if(data.contains("profile."+sender.getName()+".friends")){
         		friends = data.getStringList("profile."+sender.getName()+".friends");
@@ -970,7 +964,6 @@ public class UsefulListener implements Listener{
         	int iterator = page * 3;
         	int displaed = 0;
         	for(int i=iterator;i<friends.size() && displaed <3;i++){
-        		//TODO
         		String fname = friends.get(i);
         		UConnectProfile profile = new UConnectProfile(fname);
         		if(data.contains("profile."+fname+".online")){
@@ -1059,7 +1052,6 @@ public class UsefulListener implements Listener{
 	
 	@EventHandler
 	public void wirelessRedstoneRemover(BlockBreakEvent event){
-		//TODO
 		Block block = event.getBlock();
 		if(!(block.getState() instanceof Sign)){
 			return;
@@ -1093,7 +1085,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	public void wirelessRedstoneRemoverMKII(BlockPhysicsEvent event){
-		//TODO
 		
 		
 		Block block = event.getBlock();
@@ -1430,7 +1421,6 @@ public class UsefulListener implements Listener{
 				return;
 				}
 			 //player.teleport(jail);
-				//TODO a better jail blocking method
 				Location loc = event.getTo();
 				double x = loc.getX();
 				double y = loc.getY();
@@ -1666,7 +1656,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	void backSaver(PlayerTeleportEvent event){
-		//TODO make a way of saving players previous locations.
 		Player player = event.getPlayer();
 		String pname = player.getName();
 		Location prev = event.getFrom();
@@ -1702,7 +1691,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	void backSaver(PlayerDeathEvent event){
-		//TODO make a way of saving players previous locations.
 		Player player = event.getEntity();
 		String pname = player.getName();
 		Location prev = player.getLocation();

@@ -63,7 +63,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.ChatPaginator;
 import org.bukkit.util.ChatPaginator.ChatPage;
 
@@ -126,7 +125,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				sender.sendMessage(plugin.colors.getError() + "This command is for players!");
 				return true;
 			}
-			//TODO drop a craft bench in front of them
 			BlockFace face = ClosestFace.getClosestFace(player.getLocation().getYaw());
 			Block toPlaceAt = player.getLocation().getBlock().getRelative(face);
 			boolean changed = false;
@@ -336,7 +334,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("uconnect")){
-			//TODO the uconnect inta-server system!
 			String[] usage = {ChatColor.GREEN + "" + ChatColor.BOLD + "UConnect help:",ChatColor.DARK_AQUA + "Sections:", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" msg", ChatColor.DARK_RED + "/"+cmdname+ChatColor.YELLOW+" profile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" setprofile", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" news (page)", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" createnews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" deletenews", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" servers", ChatColor.DARK_RED+"/"+cmdname+ChatColor.YELLOW+" friends"};
 			if(args.length <1){
 				for(String line:usage){
@@ -418,7 +415,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				else if(action.equalsIgnoreCase("blocked")){
-					//TODO
 					String page = "1";
 					if(args.length > 2){
 						page = args[2];
@@ -643,7 +639,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				   }
 				}
 				else if(program.equalsIgnoreCase("friends")){
-					   //TODO A FRIENDLY THINGY!!
 					   // /uc friends: add, view, remove, list, overview/over
 					if(!(sender instanceof Player)){
 						sender.sendMessage(plugin.colors.getError() + "This part of uconnect is for players!");
@@ -657,7 +652,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						return true;
 					}
 					String action = args[1];
-					//TODO
 					if(action.equalsIgnoreCase("add")){
 						if(args.length < 3){
 							sender.sendMessage(ChatColor.GREEN+"Usage: "+ChatColor.DARK_RED+"/"+cmdname+" friends"+ChatColor.YELLOW + " add <Name>");
@@ -758,7 +752,6 @@ public class UsefulCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("notneedauth")){
-			//TODO
 			if(args.length < 1){
 				return false;
 			}
@@ -1541,7 +1534,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("head")){
-			//TODO bartys /head command
 		    if(args.length < 1){ //If they didnt mention a name
 		    	return false; //Show them the usage
 		    }
@@ -4438,7 +4430,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			return true;
 		}
 		else if(cmd.getName().equalsIgnoreCase("enchant")){
-			//TODO /enchant
 			if(!(sender instanceof Player)){
 				sender.sendMessage(plugin.colors.getError() + "Not a player");
 				return true;
@@ -4479,7 +4470,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 			return true;
 		}
 		else if (cmd.getName().equalsIgnoreCase("uhost")){ // If the player typed /setlevel then do the following...
-			//TODO uhost
 			if (args.length < 1){
 				//do summin
 				return false;
@@ -4852,7 +4842,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					}
 				}
 				else if(action.equalsIgnoreCase("view")){
-					//TODO
 					String pname = args[2];
 					Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
 					boolean found = false;
@@ -4885,7 +4874,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 					sender.sendMessage(plugin.colors.getError() + "Uperms is not enabled in the config!");
 					return true;
 				}
-				//TODO ingame perms
 				if(args.length < 2){
 					sender.sendMessage("Usage: /" + cmdname + " perms [Group/Player/Reload]");
 				    return true;	
@@ -5049,7 +5037,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 				}
 				else if(args[1].equalsIgnoreCase("player")){
 					boolean valid = true;
-					//TODO player perms management
 					String usage = "Usage: /" + cmdname + " <Perms> <Player> [<Setgroups> <Player> <Groups>], [<Setperm> <Player> <Node> <value>], [<Unsetperm> <Player> <Node>], [<View> <Player>], [<viewPersonalPerms> <Player> (Page)], [<ViewAllPerms> <Player> (Page)]";
 					if(args.length < 3){
 						sender.sendMessage(usage);
@@ -5146,7 +5133,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 								pname = play.getName();
 							}
 						}
-						//TODO
 						if(plugin.permManager.getConfig().contains("users/"+pname+"/groups")){
 						List<String> list = plugin.permManager.getConfig().getStringList("users/"+pname+"/groups");
 						if(list.size() < 1){
@@ -5214,7 +5200,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 							}
 					    	permsToSend = permsToSend + key + " : " + value + ", ";
 					    }
-					    //TODO
 					    ChatPage toSend = ChatPaginator.paginate(permsToSend, page);
 					    int total = toSend.getTotalPages();
 					    sender.sendMessage(plugin.colors.getTp() + "Page: ["+toSend.getPageNumber()+"/"+total+"]");
@@ -5281,7 +5266,6 @@ else if(cmd.getName().equalsIgnoreCase("rename")){
 							}
 					    	permsToSend = plugin.colors.getInfo() + permsToSend + plugin.colors.getInfo() + key + " : " + value + ", ";
 					    }
-					    //TODO
 					    ChatPage toSend = ChatPaginator.paginate(permsToSend, page);
 					    int total = toSend.getTotalPages();
 					    sender.sendMessage(plugin.colors.getTp() + "Page: ["+toSend.getPageNumber()+"/"+total+"]");

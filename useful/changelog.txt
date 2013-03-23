@@ -1,3 +1,5 @@
 * uConnect
 * Updated SQLibrary
 * Improved the UCars hook to auto run alongside without manual reconfiguring (disabling) of useful's BASIC UCars pack.
+* Added infinite droppers
+* Improved autoupdater
