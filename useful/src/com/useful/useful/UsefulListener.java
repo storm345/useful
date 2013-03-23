@@ -22,6 +22,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -57,6 +58,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -64,6 +66,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -244,7 +247,6 @@ public class UsefulListener implements Listener{
         }
         return;
     }
-	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player playerJoined = event.getPlayer();
@@ -468,13 +470,16 @@ public class UsefulListener implements Listener{
         		size =  0;
         	}	
         	if(size > 0){
-				sender.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + size + plugin.colors.getInfo() + " unread messages!");
+				sender.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + size + plugin.colors.getInfo() + " unread messages! Do /uc msg read to view them!");
 			}
         	return;
         }
         else if(key.equalsIgnoreCase("setOnline")){
         	Boolean online = (Boolean) args[0];
         	String name = (String) args[1];
+        	if(!data.contains("profile."+name+".online")){
+        		sender.sendMessage(plugin.colors.getInfo() + "Welcome to uconnect - inter server utilites (msgs, etc...)! To get started do /uconnect or /uc!");
+        	}
             data.set("profile."+name+".online", online);
         	plugin.uconnect.profiles = data;
         	plugin.uconnect.saveProfiles();
