@@ -2079,12 +2079,18 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void unRegisterQuitPerms(PlayerQuitEvent event){
+		if(!(useful.config.getBoolean("uperms.enable"))){
+			return;
+		}
 		String name = event.getPlayer().getName();
 		plugin.permManager.unLoadPerms(name);
 	return;
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void unRegisterKickPerms(PlayerKickEvent event){
+		if(!(useful.config.getBoolean("uperms.enable"))){
+			return;
+		}
 		String name = event.getPlayer().getName();
 		plugin.permManager.unLoadPerms(name);
 	return;
