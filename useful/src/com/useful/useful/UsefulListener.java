@@ -2686,7 +2686,7 @@ public class UsefulListener implements Listener{
 				return;
 			}
 		}
-		}
+		}//end if ucars enabled
 			BlockState state = block.getState();
 			if (state instanceof Sign) {
 			    Sign sign = (Sign)state;
