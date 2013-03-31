@@ -8,10 +8,12 @@ public class UConnectDataRequest {
 	private Object[] args = null;
 	private CommandSender sender = null;
 	private YamlConfiguration data = new YamlConfiguration();
-	public UConnectDataRequest(String requestKey, Object[] args, CommandSender sender){
+	private String pluginAuth = "";
+	public UConnectDataRequest(String requestKey, Object[] args, CommandSender sender, String pluginAuth){
 		this.type = requestKey;
 		this.args = args;
 		this.sender = sender;
+		this.pluginAuth = pluginAuth;
 	}
 	public String getRequestKey(){
 		return this.type;
@@ -36,5 +38,8 @@ public class UConnectDataRequest {
     public void setType(String type){
     	this.type = type;
     	return;
+    }
+    public String getAuth(){
+    	return this.pluginAuth;
     }
 }

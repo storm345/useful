@@ -39,8 +39,8 @@ public class UConnectProfile {
 		this.friends = friends;
 		return;
 	}
-	public void save(){
-		useful.plugin.uconnect.saveProfile(this, null);
+	public void save(String pluginAuthentication){
+		useful.plugin.uconnect.saveProfile(this, null, pluginAuthentication);
 		return;
 	}
 	public void setAbout(String about){

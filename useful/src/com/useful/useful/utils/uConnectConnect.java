@@ -19,21 +19,29 @@ import com.useful.useful.useful;
 
 public class uConnectConnect {
 	private boolean loaded = false;
-	private static SortedMap<String, String> oauth = new TreeMap<String, String>();
-	public uConnectConnect(){
+	private SortedMap<String, String> oauth = new TreeMap<String, String>();
+	private String pluginAuth = "";
+	private uConnectConnect instance = null;
+	public uConnectConnect(String pluginAuth){
 		this.loaded = true;
 		this.oauth.put("oauth_consumer_key", "27y91t6ni72mhva");
 		this.oauth.put("oauth_signature_method", "HMAZ-SHA1");
 		this.oauth.put("oauth_version", "1.0");
 		this.oauth.put("oauth_token", "l4yln3msdyua24o");
+		this.pluginAuth = pluginAuth;
+		this.instance = this;
 		//this.oauth.put("oauth_token_secret", "jf23d653v9cryms");
 	}
-
+    private final String pluginAuthKey = pluginAuth;
 	private static final String APP_KEY = "27y91t6ni72mhva";
     private static final String APP_SECRET = "nfni1r28rvapbhi";
     private static DropboxAPI<WebAuthSession> mDBApi = null;
     private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER; 
-    	public static Boolean uploadYaml(final YamlConfiguration yaml, final String path, final String uuid){
+    private final uConnectConnect ucInstance = instance;
+    	public Boolean uploadYaml(final YamlConfiguration yaml, final String path, final String uuid, final String pluginAuth){
+    		if(!pluginAuth.equals(this.pluginAuthKey)){
+    			return false;
+    		}
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
@@ -96,8 +104,12 @@ public class uConnectConnect {
         return true;
     	}
     	
-    	public static void getFile(final String path, final String uuid, final UConnectDataRequest request){
+    	public void getFile(final String path, final String uuid, final UConnectDataRequest request, final String pluginAuthentication){
     		useful.plugin.uconnect.tasks.put(uuid, false);
+    		if(!pluginAuthentication.equals(this.pluginAuthKey)){
+    			request.getSender().sendMessage(useful.plugin.colors.getError() + "ILLEGAL uconnect request!");
+    			return;
+    		}
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
@@ -139,7 +151,10 @@ public class uConnectConnect {
 							newFile.set("uconnect.create", true);
 							String uuid = UniqueString.generate();
 							useful.plugin.uconnect.tasks.put(uuid, false);
-							uConnectConnect.uploadYaml(newFile, "/main.yml", uuid);
+							Boolean success = ucInstance.uploadYaml(newFile, "/main.yml", uuid, pluginAuthentication);
+							if(!success){
+								request.getSender().sendMessage(useful.plugin.colors.getError()+"ILLEGAL Uconnect access!");
+							}
 							return;
 						}
     	    			useful.plugin.uconnect.tasks.put(uuid, true);
@@ -165,7 +180,10 @@ public class uConnectConnect {
             
             return;
         	}
-    	public static void deleteFile(final String path, final String uuid){
+    	public void deleteFile(final String path, final String uuid, final String pluginAuthentication){
+    		if(!pluginAuthentication.equals(this.pluginAuthKey)){
+    			return;
+    		}
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
@@ -189,7 +207,10 @@ public class uConnectConnect {
     		
     		return;
     	}
-    	public static DropboxAPI<WebAuthSession> getApi(){
+    	public DropboxAPI<WebAuthSession> getApi(final String pluginAuthentication){
+    		if(!pluginAuthentication.equals(this.pluginAuthKey)){
+    			return null;
+    		}
     		try {
     			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
     			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
