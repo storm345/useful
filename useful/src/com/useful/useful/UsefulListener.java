@@ -2630,6 +2630,7 @@ public class UsefulListener implements Listener{
 				event.getPlayer().getInventory().removeItem(new ItemStack(328));
 			}
 		}
+		if(useful.config.getBoolean("general.cars.enable")){
 		int LowBoostId = useful.config.getInt("general.cars.lowBoost");
 		int MedBoostId = useful.config.getInt("general.cars.medBoost");
 		int HighBoostId = useful.config.getInt("general.cars.highBoost");
@@ -2684,6 +2685,7 @@ public class UsefulListener implements Listener{
 				}
 				return;
 			}
+		}
 		}
 			BlockState state = block.getState();
 			if (state instanceof Sign) {
