@@ -18,14 +18,19 @@ public final HashMap<String, Boolean> tasks = new HashMap<String, Boolean>();
 private useful plugin = useful.plugin;
 private String pluginAuth = "";
 private uConnectConnect connecter = null;
-public UConnect(String pluginAuth){
-	this.pluginAuth = pluginAuth;
-	connecter = plugin.uconnectconnect;
+public UConnect(String pluginAuthen){
+	this.pluginAuth = pluginAuthen;
+	connecter = new uConnectConnect(pluginAuthen);
 }
 public void load(UConnectDataRequest request){
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	connecter.getFile("/main.yml", uuid, request, request.getAuth());
+	try {
+		connecter.getFile("/main.yml", uuid, request, request.getAuth());
+	} catch (Exception e) {
+		plugin.colLogger.info("(UConnect error:):");
+		e.printStackTrace();
+	}
 	/*
 	this.tasks.remove(uuid);
 	if(checkFile == null){
@@ -60,7 +65,7 @@ public void message(UConnectProfile to, UConnectProfile from, String msg, Comman
 	args.add(msg);
 	UConnectDataRequest request = new UConnectDataRequest("msg", args.toArray(), sender, pluginAuthentication);
 	@SuppressWarnings("unused")
-	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5, pluginAuthentication);
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
 	//this.load(request);
 	//messaging.toname
 	/*
@@ -81,7 +86,7 @@ public void clearMessages(UConnectProfile player, CommandSender sender, String p
 	args.add(name);
 	UConnectDataRequest request = new UConnectDataRequest("clearMsg", args.toArray(), sender, pluginAuthentication);
 	@SuppressWarnings("unused")
-	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5, pluginAuthentication);
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
 	//this.load(request);
 	/*
 	if(this.main.contains("messaging." + name)){
@@ -98,7 +103,7 @@ public void getMessages(UConnectProfile player, String page, CommandSender sende
 	args.add(page);
 	UConnectDataRequest request = new UConnectDataRequest("getMsg", args.toArray(), sender, pluginAuthentication);
 	@SuppressWarnings("unused")
-	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5, pluginAuthentication);
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
 	//this.load(request);
 	/*
 	if(this.main.contains("messaging." + name)){
@@ -119,7 +124,12 @@ public void update(CommandSender sender, String pluginAuthentication){
 public void loadProfiles(UConnectDataRequest request, String pluginAuthentication){
 	String uuid = UniqueString.generate();
 	this.tasks.put(uuid, false);
-	connecter.getFile("/profiles.yml", uuid, request, pluginAuthentication);
+	try {
+		connecter.getFile("/profiles.yml", uuid, request, pluginAuthentication);
+	} catch (Exception e) {
+		plugin.colLogger.info("(UConnect error):");
+		e.printStackTrace();
+	}
 	/*
 	if(!profiles.contains("uconnect.create")){
 		profiles.set("uconnect.create", true);
@@ -147,7 +157,7 @@ public void saveProfile(UConnectProfile profile, CommandSender sender, String pl
 	args.add(profile);
 	UConnectDataRequest request = new UConnectDataRequest("saveProfile", args.toArray(), sender, pluginAuthentication);
 	@SuppressWarnings("unused")
-	UConnectRequestScheduler exec = new UConnectRequestScheduler("profiles", request, 5000, 5, pluginAuthentication);
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("profiles", request, 5000, 5);
 	//loadProfiles(request);
 	/*
 	this.profiles.set("profiles." + name + ".online", profile.isOnline());
@@ -188,7 +198,7 @@ public void MessageCount(String pname, CommandSender sender, String pluginAuthen
 	args.add(pname);
 	UConnectDataRequest request = new UConnectDataRequest("alertMsg", args.toArray(), sender, pluginAuthentication);
 	@SuppressWarnings("unused")
-	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5, pluginAuthentication);
+	UConnectRequestScheduler exec = new UConnectRequestScheduler("main", request, 5000, 5);
 	//this.load(request);
 	/*
 	if(this.main.contains("messaging."+pname)){

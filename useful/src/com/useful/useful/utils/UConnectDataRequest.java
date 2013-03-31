@@ -9,11 +9,11 @@ public class UConnectDataRequest {
 	private CommandSender sender = null;
 	private YamlConfiguration data = new YamlConfiguration();
 	private String pluginAuth = "";
-	public UConnectDataRequest(String requestKey, Object[] args, CommandSender sender, String pluginAuth){
+	public UConnectDataRequest(String requestKey, Object[] args, CommandSender sender, String pluginAuthen){
 		this.type = requestKey;
 		this.args = args;
 		this.sender = sender;
-		this.pluginAuth = pluginAuth;
+		this.pluginAuth = pluginAuthen;
 	}
 	public String getRequestKey(){
 		return this.type;

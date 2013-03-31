@@ -101,8 +101,7 @@ public class useful extends JavaPlugin {
 	public Colors colors = null;
 	public double pluginVersion = 0;
 	public UConnect uconnect = null;
-	public uConnectConnect uconnectconnect = null;
-	private String pluginAuth = UniqueString.generate();
+	private String pluginAuth = null;
 	static File ranksFile;
 	static FileConfiguration ranks;
 	static File upermsFile;
@@ -469,6 +468,7 @@ public void jailsConverter(){
 	//updated eclipse to juno!
 	public void onEnable(){
 		plugin = this;
+		pluginAuth = UniqueString.generate();
 		colLogger = new ColoredLogger(this);
 		try{
 			colLogger.info(ChatColor.GREEN + "Loading useful...");
@@ -1211,7 +1211,6 @@ public void jailsConverter(){
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect(pluginAuth);
-			uconnectconnect = new uConnectConnect(pluginAuth);
 			plugin.colLogger.info("uConnect loaded!");
 			}
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {

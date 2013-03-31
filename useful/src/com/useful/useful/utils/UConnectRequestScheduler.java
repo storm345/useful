@@ -10,14 +10,12 @@ public class UConnectRequestScheduler {
 	private UConnectDataRequest request = null;
 	private long delay = 0;
 	private int tries = 0;
-	private String pluginAuth;
-	public UConnectRequestScheduler(String yaml, UConnectDataRequest request, long delay, int tries, String pluginAuthentication){
+	public UConnectRequestScheduler(String yaml, UConnectDataRequest request, long delay, int tries){
 		this.yaml = yaml;
 		this.request = request;
 		this.delay = delay;
 		this.tries = tries;
 		this.start();
-		this.pluginAuth = pluginAuthentication;
 	}
 	public void start(){
 		final String tyaml = this.yaml;
@@ -56,7 +54,7 @@ public class UConnectRequestScheduler {
 									//tries = 0;
 									}
 									else if(tyaml.equalsIgnoreCase("profiles")){
-										useful.plugin.uconnect.loadProfiles(trequest, pluginAuth);
+										useful.plugin.uconnect.loadProfiles(trequest, trequest.getAuth());
 										run = false;
 										//tries = 0;
 									}
