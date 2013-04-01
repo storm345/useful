@@ -30,7 +30,6 @@ public UConnect(String pluginAuthen){
 	two = unlock.substring(15, 30);
 	three = unlock.substring(30, 45);
 	four = unlock.substring(45, 60);
-	//connecter = new uConnectConnect(pluginAuthen, "27y91t6ni72mhva", "nfni1r28rvapbhi", "l4yln3msdyua24o", "jf23d653v9cryms");
 	connecter = new uConnectConnect(pluginAuthen, one, two, three, four);
 }
 public void load(UConnectDataRequest request){
