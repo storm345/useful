@@ -20,7 +20,7 @@ private String pluginAuth = "";
 private uConnectConnect connecter = null;
 public UConnect(String pluginAuthen){
 	this.pluginAuth = pluginAuthen;
-	connecter = new uConnectConnect(pluginAuthen);
+	connecter = new uConnectConnect(pluginAuthen, "27y91t6ni72mhva", "nfni1r28rvapbhi", "l4yln3msdyua24o", "jf23d653v9cryms");
 }
 public void load(UConnectDataRequest request){
 	String uuid = UniqueString.generate();
