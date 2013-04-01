@@ -449,7 +449,11 @@ public class UsefulListener implements Listener{
 		    	return;
 		    }
 			for(int i=it;i<inbox.size() && displayed<=displayable;i++){
-		    	sender.sendMessage(plugin.colors.getInfo() + useful.colorise(plugin.encrypter.decryptStr(inbox.get(i))));
+		    	try {
+					sender.sendMessage(plugin.colors.getInfo() + useful.colorise(plugin.encrypter.decryptStr(inbox.get(i))));
+				} catch (Exception e) {
+					sender.sendMessage(plugin.colors.getError()+"Msg error occured! Please do /uc msg clear! (Or try again)");
+				}
 		    	displayed++;
 		    }
 			sender.sendMessage(plugin.colors.getInfo() + "To mark messages as read (And delete) do /(uconnect/uc) msg clear");
