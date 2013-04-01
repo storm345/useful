@@ -17,10 +17,21 @@ public YamlConfiguration profiles = new YamlConfiguration();
 public final HashMap<String, Boolean> tasks = new HashMap<String, Boolean>();
 private useful plugin = useful.plugin;
 private String pluginAuth = "";
+private String unlock = "hasdhasjkdhajksdhajskdhajsdhajksdhajksdhajksdhA7e";
+private String one = "";
+private String two = "";
+private String three = "";
+private String four = "";
 private uConnectConnect connecter = null;
 public UConnect(String pluginAuthen){
 	this.pluginAuth = pluginAuthen;
-	connecter = new uConnectConnect(pluginAuthen, "27y91t6ni72mhva", "nfni1r28rvapbhi", "l4yln3msdyua24o", "jf23d653v9cryms");
+	unlock = UniqueString.key();
+	one = unlock.substring(0, 15);
+	two = unlock.substring(15, 30);
+	three = unlock.substring(30, 45);
+	four = unlock.substring(45, 60);
+	//connecter = new uConnectConnect(pluginAuthen, "27y91t6ni72mhva", "nfni1r28rvapbhi", "l4yln3msdyua24o", "jf23d653v9cryms");
+	connecter = new uConnectConnect(pluginAuthen, one, two, three, four);
 }
 public void load(UConnectDataRequest request){
 	String uuid = UniqueString.generate();
