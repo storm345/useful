@@ -1215,6 +1215,8 @@ public void jailsConverter(){
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
+			 Boolean serverOnline = getServer().getOnlineMode();
+			 if(serverOnline){
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect(pluginAuth);
@@ -1230,6 +1232,12 @@ public void jailsConverter(){
 				 toSave.delete();
 			plugin.colLogger.info("uConnect loaded!");
 			}
+			 }
+			 else{
+				 config.set("uConnect.enable", false);
+				 plugin.colLogger.info("UConnect not allowed on secured servers with online-mode set to false. To use uconnect please enable online-mode in your server.properties file!");
+			     saveConfig();
+			 }
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
 	            @Override
 	            public void run() {
