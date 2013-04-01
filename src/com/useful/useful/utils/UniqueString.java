@@ -20,7 +20,4 @@ public static String generate(){
 	string = string + rand + time + rand2;
 	return string;
 }
-public static String key(){
-	return "27y91t6ni72mhvanfni1r28rvapbhil4yln3msdyua24ojf23d653v9cryms";
-}
 }

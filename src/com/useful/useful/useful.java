@@ -1209,6 +1209,12 @@ public void jailsConverter(){
 			this.commandViewers.load();
 			this.heros = new ListStore(new File(pluginFolder + File.separator + "heros.dat"));
 			this.heros.load();
+			 try {
+					SecretKey key = KeyGenerator.getInstance("DES").generateKey();
+					   encrypter = new Encrpyter(key, pluginAuth);
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect(pluginAuth);
@@ -1662,12 +1668,6 @@ public void jailsConverter(){
  			   permManager.refreshPerms(player[i]);
  		   }
  	   }
- 	  try {
-		SecretKey key = KeyGenerator.getInstance("DES").generateKey();
-		   encrypter = new Encrpyter(key);
-	} catch (Exception e2) {
-		e2.printStackTrace();
-	}
        String discmds = config.getString("general.blocked_commands(separated_by_commas_)");
         	   String[] cmds = discmds.split(",");
         	   for(int x=0 ; x<cmds.length ; x++) {

@@ -25,7 +25,7 @@ private String four = "";
 private uConnectConnect connecter = null;
 public UConnect(String pluginAuthen){
 	this.pluginAuth = pluginAuthen;
-	unlock = UniqueString.key();
+	unlock = useful.plugin.encrypter.key(this.pluginAuth);
 	one = unlock.substring(0, 15);
 	two = unlock.substring(15, 30);
 	three = unlock.substring(30, 45);
