@@ -1235,7 +1235,7 @@ public void jailsConverter(){
 			 }
 			 else{
 				 config.set("uConnect.enable", false);
-				 plugin.colLogger.info("UConnect not allowed on secured servers with online-mode set to false. To use uconnect please enable online-mode in your server.properties file!");
+				 plugin.colLogger.info("UConnect not allowed on unsecured servers with online-mode set to false. To use uconnect please enable online-mode in your server.properties file!");
 			     saveConfig();
 			 }
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
