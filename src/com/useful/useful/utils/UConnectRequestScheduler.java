@@ -54,7 +54,7 @@ public class UConnectRequestScheduler {
 									//tries = 0;
 									}
 									else if(tyaml.equalsIgnoreCase("profiles")){
-										useful.plugin.uconnect.loadProfiles(trequest);
+										useful.plugin.uconnect.loadProfiles(trequest, trequest.getAuth());
 										run = false;
 										//tries = 0;
 									}

@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.dropbox.client2.DropboxAPI;
-import com.dropbox.client2.DropboxAPI.DropboxInputStream;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.Session.AccessType;
@@ -19,35 +18,56 @@ import com.useful.useful.useful;
 
 public class uConnectConnect {
 	private boolean loaded = false;
-	private static SortedMap<String, String> oauth = new TreeMap<String, String>();
-	public uConnectConnect(){
+	private SortedMap<String, String> oauth = new TreeMap<String, String>();
+	private String pluginAuth = "";
+	private uConnectConnect instance = null;
+	private static String APPKEY = "";
+    private static String APPSECRET = "";
+	public uConnectConnect(String pluginAuth, String appkey, String appsecret, String token, String secret){
 		this.loaded = true;
-		this.oauth.put("oauth_consumer_key", "27y91t6ni72mhva");
+		this.oauth.put("oauth_consumer_key", appkey);
 		this.oauth.put("oauth_signature_method", "HMAZ-SHA1");
 		this.oauth.put("oauth_version", "1.0");
-		this.oauth.put("oauth_token", "l4yln3msdyua24o");
-		//this.oauth.put("oauth_token_secret", "jf23d653v9cryms");
+		this.oauth.put("oauth_token", token);
+		this.oauth.put("oauth_token_secret", secret);
+		this.pluginAuth = pluginAuth;
+		this.instance = this;
+		APPKEY = appkey;
+		APPSECRET = appsecret;
 	}
-
-	private static final String APP_KEY = "27y91t6ni72mhva";
-    private static final String APP_SECRET = "nfni1r28rvapbhi";
     private static DropboxAPI<WebAuthSession> mDBApi = null;
     private static final AccessType ACCESS_TYPE = AccessType.APP_FOLDER; 
-    	public static Boolean uploadYaml(final YamlConfiguration yaml, final String path, final String uuid){
+    private final uConnectConnect ucInstance = instance;
+    	public Boolean uploadYaml(final YamlConfiguration yaml, final String path, final String uuid, final String pluginAuth){
+    		if(!pluginAuth.equals(this.pluginAuth)){
+    			return false;
+    		}
+    		final String token = this.oauth.get("oauth_token");
+    		final String secret = this.oauth.get("oauth_token_secret");
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
 					try {
-			        	AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+			        	AppKeyPair appKeys = new AppKeyPair(APPKEY, APPSECRET);
 						WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
-						AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+						AccessTokenPair tokens = new AccessTokenPair(token, secret);
 						session.setAccessTokenPair(tokens);
+						//FileInputStream in = new FileInputStream(yaml.saveToString());
+						
 						File dir = new File(useful.plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "Data cache");
 						dir.mkdirs();
+						
 						final File file = File.createTempFile(uuid, ".yml", dir);
 						yaml.save(file);
+						file.setReadOnly();
 						FileInputStream in = new FileInputStream(file);
+						
+												//TODO open yaml as instream wivout file  (V not working?)
+						/*
+						FileInputStream in = new FileInputStream(yaml.saveToString());
+						
+						*/
 						mDBApi = new DropboxAPI<WebAuthSession>(session);
 						mDBApi.putFileOverwrite(path, in, file.length(), null);
 						in.close();
@@ -96,16 +116,25 @@ public class uConnectConnect {
         return true;
     	}
     	
-    	public static void getFile(final String path, final String uuid, final UConnectDataRequest request){
+    	public void getFile(final String path, final String uuid, final UConnectDataRequest request, final String pluginAuthentication){
     		useful.plugin.uconnect.tasks.put(uuid, false);
+    		if(!pluginAuthentication.equals(this.pluginAuth)){
+    			if(request.getSender() == null){
+    				return;
+    			}
+    			request.getSender().sendMessage(useful.plugin.colors.getError() + "ILLEGAL uconnect request!");
+    			return;
+    		}
+    		final String token = this.oauth.get("oauth_token");
+    		final String secret = this.oauth.get("oauth_token_secret");
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
 					try {
-    					AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+    					AppKeyPair appKeys = new AppKeyPair(APPKEY, APPSECRET);
     	    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
-    	    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+    	    			AccessTokenPair tokens = new AccessTokenPair(token, secret);
     	    			session.setAccessTokenPair(tokens);
     	    			mDBApi = new DropboxAPI<WebAuthSession>(session);
     	    			/* setup again if i delete from dropbox
@@ -139,7 +168,13 @@ public class uConnectConnect {
 							newFile.set("uconnect.create", true);
 							String uuid = UniqueString.generate();
 							useful.plugin.uconnect.tasks.put(uuid, false);
-							uConnectConnect.uploadYaml(newFile, "/main.yml", uuid);
+							Boolean success = ucInstance.uploadYaml(newFile, "/main.yml", uuid, pluginAuthentication);
+							if(!success){
+								if(request.getSender() == null){
+				    				return;
+				    			}
+								request.getSender().sendMessage(useful.plugin.colors.getError()+"ILLEGAL Uconnect access!");
+							}
 							return;
 						}
     	    			useful.plugin.uconnect.tasks.put(uuid, true);
@@ -165,15 +200,20 @@ public class uConnectConnect {
             
             return;
         	}
-    	public static void deleteFile(final String path, final String uuid){
+    	public void deleteFile(final String path, final String uuid, final String pluginAuthentication){
+    		if(!pluginAuthentication.equals(this.pluginAuth)){
+    			return;
+    		}
+    		final String token = this.oauth.get("oauth_token");
+    		final String secret = this.oauth.get("oauth_token_secret");
     		useful.plugin.getServer().getScheduler().runTaskAsynchronously(useful.plugin, new Runnable(){
 
 				@Override
 				public void run() {
 					try {
-		    			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+		    			AppKeyPair appKeys = new AppKeyPair(APPKEY, APPSECRET);
 		    			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
-		    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+		    			AccessTokenPair tokens = new AccessTokenPair(token, secret);
 		    			session.setAccessTokenPair(tokens);
 		    			mDBApi = new DropboxAPI<WebAuthSession>(session);
 		    			mDBApi.delete(path);
@@ -188,12 +228,17 @@ public class uConnectConnect {
 				}});
     		
     		return;
-    	}
-    	public static DropboxAPI<WebAuthSession> getApi(){
+    	}//UCONNECT WORK
+    	public DropboxAPI<WebAuthSession> getApi(final String pluginAuthentication){
+    		if(!pluginAuthentication.equals(this.pluginAuth)){
+    			return null;
+    		}
+    		final String token = this.oauth.get("oauth_token");
+    		final String secret = this.oauth.get("oauth_token_secret");
     		try {
-    			AppKeyPair appKeys = new AppKeyPair(APP_KEY, APP_SECRET);
+    			AppKeyPair appKeys = new AppKeyPair(APPKEY, APPSECRET);
     			WebAuthSession session = new WebAuthSession(appKeys, ACCESS_TYPE);
-    			AccessTokenPair tokens = new AccessTokenPair("l4yln3msdyua24o", "jf23d653v9cryms");
+    			AccessTokenPair tokens = new AccessTokenPair(token, secret);
     			session.setAccessTokenPair(tokens);
     			mDBApi = new DropboxAPI<WebAuthSession>(session);
                 return mDBApi;

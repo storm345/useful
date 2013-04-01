@@ -64,6 +64,8 @@ import com.useful.useful.utils.Performance;
 import com.useful.useful.utils.SerializableLocation;
 import com.useful.useful.utils.UConnect;
 import com.useful.useful.utils.UConnectDataRequest;
+import com.useful.useful.utils.UniqueString;
+import com.useful.useful.utils.uConnectConnect;
  
 public class useful extends JavaPlugin {
 	public static String pluginFolder;
@@ -99,6 +101,7 @@ public class useful extends JavaPlugin {
 	public Colors colors = null;
 	public double pluginVersion = 0;
 	public UConnect uconnect = null;
+	private String pluginAuth = null;
 	static File ranksFile;
 	static FileConfiguration ranks;
 	static File upermsFile;
@@ -465,6 +468,7 @@ public void jailsConverter(){
 	//updated eclipse to juno!
 	public void onEnable(){
 		plugin = this;
+		pluginAuth = UniqueString.generate();
 		colLogger = new ColoredLogger(this);
 		try{
 			colLogger.info(ChatColor.GREEN + "Loading useful...");
@@ -1206,7 +1210,7 @@ public void jailsConverter(){
 			this.heros.load();
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
-			uconnect = new UConnect();
+			uconnect = new UConnect(pluginAuth);
 			plugin.colLogger.info("uConnect loaded!");
 			}
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
@@ -1280,7 +1284,10 @@ public void jailsConverter(){
 	            		String path = new File(".").getAbsolutePath();
 	            		for(int i=0;i<theWorlds.length; i++){
 	            			World w = (World) theWorlds[i];
-	            			w.save();
+	            			try {
+								w.save();
+							} catch (Exception e1) {
+							}
 	            			String wNam = w.getName();
 	            		File srcFolder = new File(path + File.separator + wNam);
 	            		File destFolder = new File(plugin.getDataFolder().getAbsolutePath() + File.separator + "World Backups" + File.separator + date + File.separator + wNam);
@@ -1313,7 +1320,7 @@ public void jailsConverter(){
 				@Override
 				public void run() {
 					if(useful.config.getBoolean("uConnect.enable")){
-					plugin.uconnect.load(new UConnectDataRequest("reloadMain", null, null));
+					plugin.uconnect.load(new UConnectDataRequest("reloadMain", null, null, pluginAuth));
 					}
 				}}, 18000, 18000);
 			}
@@ -1518,7 +1525,7 @@ public void jailsConverter(){
 		e1.printStackTrace();
 		}
 		
-		getServer().getPluginManager().registerEvents(new UsefulListener(this), this);
+		getServer().getPluginManager().registerEvents(new UsefulListener(this, pluginAuth), this);
 		Set<String> ver = warps.keySet();
         for (String v : ver) {
         	if (v.toLowerCase() != v){
@@ -1537,7 +1544,7 @@ public void jailsConverter(){
         Set<String> keys = commands.keySet();
         for(String k : keys){
         	try {
-				getCommand(k).setExecutor(new UsefulCommandExecutor(this));
+				getCommand(k).setExecutor(new UsefulCommandExecutor(this, pluginAuth));
 			} catch (Exception e) {
 				getLogger().log(Level.SEVERE, "Error registering command " + k.toString());
 				e.printStackTrace();

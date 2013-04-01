@@ -16,7 +16,8 @@ public static String generate(){
 	else{
 		string = "FD9F87D9";
 	}
-	string = string + rand + time;
+	int rand2 = 1 + (int)(Math.random() * ((999999 - 1) + 1));
+	string = string + rand + time + rand2;
 	return string;
 }
 }

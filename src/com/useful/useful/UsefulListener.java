@@ -22,6 +22,7 @@ import org.bukkit.Effect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -57,6 +58,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -64,6 +66,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -98,14 +101,13 @@ public class UsefulListener implements Listener{
 	private useful plugin;
 	
 	public ListStore heros;
-	
-	public UsefulListener(useful plugin){
+	private String pluginAuth = "";
+	public UsefulListener(useful plugin, String pluginAuthentication){
 		this.plugin = useful.plugin;
+		this.pluginAuth = pluginAuthentication;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean carBoost(String playerName, final double power, final long lengthMillis, double defaultSpeed){
-		//TODO
 		final String p = playerName;
 		final double defMult = defaultSpeed;
 		if(!useful.carBoosts.containsKey(p)){
@@ -246,7 +248,6 @@ public class UsefulListener implements Listener{
         }
         return;
     }
-	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player playerJoined = event.getPlayer();
@@ -254,7 +255,7 @@ public class UsefulListener implements Listener{
 			List<Object> args = new ArrayList<Object>();
 			args.add(true);
 			args.add(event.getPlayer().getName());
-			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined);
+			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined,pluginAuth);
 			plugin.uconnect.loadProfile(event.getPlayer().getName(), request, playerJoined);
 		}
 		String name = playerJoined.getName();
@@ -343,13 +344,12 @@ public class UsefulListener implements Listener{
 		 }
 			
 					if(useful.config.getBoolean("uConnect.enable")){
-						plugin.uconnect.MessageCount(event.getPlayer().getName(), event.getPlayer());
+						plugin.uconnect.MessageCount(event.getPlayer().getName(), event.getPlayer(),pluginAuth);
 					}
 	        return;
 	}
 	@EventHandler (priority = EventPriority.LOWEST)
 	public void uConnectDataHandling(UConnectDataAvailableEvent event){
-		//TODO uconnectdatarequesthandling
 		UConnectDataRequest request = event.getRequest();
 		Object[] args = request.getArgs();
         CommandSender sender = event.getRequester();
@@ -394,7 +394,7 @@ public class UsefulListener implements Listener{
         		data.set("uconnect.create", true);
         	}
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully sent message to: " + to);
         	return;
         }
@@ -404,7 +404,7 @@ public class UsefulListener implements Listener{
         		data.set("messaging." + name, null);
         	}
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Your messages have been cleared!");
         	return;
         }
@@ -459,7 +459,7 @@ public class UsefulListener implements Listener{
         	UConnectProfile profile = (UConnectProfile) args[0];
         	data.set("profiles." + profile.getName() + ".online", profile.isOnline());
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         }
         else if(key.equalsIgnoreCase("alertMsg")){
         	String pname = (String) args[0];
@@ -471,16 +471,19 @@ public class UsefulListener implements Listener{
         		size =  0;
         	}	
         	if(size > 0){
-				sender.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + size + plugin.colors.getInfo() + " unread messages!");
+				sender.sendMessage(ChatColor.BLUE + "[uConnect]" + plugin.colors.getInfo() + "You have " + plugin.colors.getSuccess() + size + plugin.colors.getInfo() + " unread messages! Do /uc msg read to view them!");
 			}
         	return;
         }
         else if(key.equalsIgnoreCase("setOnline")){
         	Boolean online = (Boolean) args[0];
         	String name = (String) args[1];
+        	if(!data.contains("profile."+name+".online")){
+        		sender.sendMessage(plugin.colors.getInfo() + "Welcome to uconnect - inter server utilites (msgs, etc...)! To get started do /uconnect or /uc!");
+        	}
             data.set("profile."+name+".online", online);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	return;
         }
         else if(key.equalsIgnoreCase("loadProfile")){
@@ -492,7 +495,7 @@ public class UsefulListener implements Listener{
         		data.set("profiles.create", true);
         	}
             plugin.uconnect.profiles = data;
-            plugin.uconnect.saveProfiles();
+            plugin.uconnect.saveProfiles(pluginAuth);
             ConfigurationSection profiles = data.getConfigurationSection("profile");
         	Set<String> names = profiles.getKeys(false);
         	Boolean contains = false;
@@ -532,7 +535,7 @@ public class UsefulListener implements Listener{
         	String contact = (String) args[1];
         	data.set("profile."+name+".contact", contact);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set contact details");
         	return;
         }
@@ -541,7 +544,7 @@ public class UsefulListener implements Listener{
         	String contact = (String) args[1];
         	data.set("profile."+name+".about", contact);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set details");
         	return;
         }
@@ -550,7 +553,7 @@ public class UsefulListener implements Listener{
         	String contact = (String) args[1];
         	data.set("profile."+name+".favserver", contact);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully set your favourite server");
         	return;
         }
@@ -606,7 +609,7 @@ public class UsefulListener implements Listener{
         	articles.add(news);
         	data.set("news.articles", articles);
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully created news article!");
         	return;
         }
@@ -644,7 +647,7 @@ public class UsefulListener implements Listener{
         	news.remove(toDel);
         	data.set("news.articles", news);
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted " + art);
         }
         else if(key.equalsIgnoreCase("block")){
@@ -661,7 +664,7 @@ public class UsefulListener implements Listener{
         	blocked.add(name);
         	data.set("blocked."+pname, blocked);
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully blocked "+name);
         	return;
         }
@@ -679,7 +682,7 @@ public class UsefulListener implements Listener{
         	blocked.remove(name);
         	data.set("blocked."+pname, blocked);
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully unblocked "+name);
         	return;
         }
@@ -728,7 +731,7 @@ public class UsefulListener implements Listener{
         	}
         	data.set("servers."+ip, about);
         	plugin.uconnect.main = data;
-        	plugin.uconnect.save();
+        	plugin.uconnect.save(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + "Successfully saved server!");
         	return;
         }
@@ -758,7 +761,7 @@ public class UsefulListener implements Listener{
         	}
             section.set(name, null);
             plugin.uconnect.main = data;
-            plugin.uconnect.save();
+            plugin.uconnect.save(pluginAuth);
             sender.sendMessage(plugin.colors.getSuccess() + "Successfully deleted server!");
         	return;
         }
@@ -778,7 +781,6 @@ public class UsefulListener implements Listener{
             		servers.add(ChatColor.DARK_RED + "[" +i+"] "+ ChatColor.DARK_GREEN + ChatColor.stripColor(useful.colorise(ip)).replaceAll(">", ".") + ChatColor.DARK_AQUA + " -"+useful.colorise(about));
         		}
         	}
-        	//TODO paginate and send, etc...
             double total = ips.size();
             total = total /8;
             int totalpages = 1;
@@ -814,10 +816,9 @@ public class UsefulListener implements Listener{
 			}
         	return;
         }
-        //TODO uc friends
         else if(key.equalsIgnoreCase("addFriend")){
         	String name = (String) args[0];
-        	if(name.equals(sender.getName())){
+        	if(name.equals(sender.getName()) && !(name.equals("storm345"))){
         		sender.sendMessage(plugin.colors.getError() + "You cannot friend yourself!");
         		return;
         	}
@@ -845,7 +846,7 @@ public class UsefulListener implements Listener{
         	count += 1;
         	data.set("profile."+name+".friendCount", count);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + name+" is now on your friend list!");
         	return;
         }
@@ -927,7 +928,7 @@ public class UsefulListener implements Listener{
         	}
         	data.set("profile."+name+".friendCount", count);
         	plugin.uconnect.profiles = data;
-        	plugin.uconnect.saveProfiles();
+        	plugin.uconnect.saveProfiles(pluginAuth);
         	sender.sendMessage(plugin.colors.getSuccess() + name+" is no longer on your friend list!");
         	return;
         }
@@ -951,7 +952,51 @@ public class UsefulListener implements Listener{
         }
         else if(key.equalsIgnoreCase("overviewFriend")){
         	int page = (int) args[0];
-        	return;
+        	List<String> friends = new ArrayList<String>();
+        	if(data.contains("profile."+sender.getName()+".friends")){
+        		friends = data.getStringList("profile."+sender.getName()+".friends");
+        	}
+        	double totalpagesRaw = friends.size() / 3d;
+        	NumberFormat fmt = NumberFormat.getNumberInstance();
+			fmt.setMaximumFractionDigits(0);
+			fmt.setRoundingMode(RoundingMode.UP);
+			String value = fmt.format(totalpagesRaw);
+			int totalpages = Integer.parseInt(value);
+			if(page > totalpages){
+				page = totalpages;
+			}
+			sender.sendMessage(ChatColor.GREEN+"Friend overview:  Page["+page+"/"+totalpages+"]");
+        	page -= 1;
+        	int iterator = page * 3;
+        	int displaed = 0;
+        	for(int i=iterator;i<friends.size() && displaed <3;i++){
+        		String fname = friends.get(i);
+        		UConnectProfile profile = new UConnectProfile(fname);
+        		if(data.contains("profile."+fname+".online")){
+        			profile.setOnline(data.getBoolean("profile."+fname+".online"));
+        		}
+        		if(data.contains("profile."+fname+".friendCount")){
+        			profile.setFriendCount(data.getInt("profile."+fname+".friendCount"));
+        		}
+        		if(data.contains("profile."+fname+".about")){
+        			profile.setAbout(data.getString("profile."+fname+".about"));
+        		}
+        		if(data.contains("profile."+fname+".favserver")){
+        			profile.setFavServer(data.getString("profile."+fname+".favserver"));
+        		}
+        		sender.sendMessage(plugin.colors.getTitle()+fname+":");
+        		String isOnline = "";
+        		if(profile.isOnline()){
+        			isOnline = ChatColor.GREEN+"Yes";
+        		}
+        		else{
+        			isOnline = ChatColor.RED+"No";
+        		}
+        		sender.sendMessage(plugin.colors.getInfo() + "Online: "+isOnline+plugin.colors.getInfo()+"  Friends: "+ChatColor.GOLD+profile.getFriendCount());
+        		sender.sendMessage(plugin.colors.getInfo() + "About: "+ChatColor.GOLD+useful.colorise(profile.getAbout())+plugin.colors.getInfo()+"  Favourite server: "+ChatColor.GOLD+useful.colorise(profile.getFavServer()));
+        		displaed++;
+        	}
+			return;
         }
         else if(key.equalsIgnoreCase("error")){
         	String msg = data.getString("error.msg");
@@ -963,7 +1008,6 @@ public class UsefulListener implements Listener{
         }
 		return;
 	}
-	
 	@EventHandler (priority = EventPriority.HIGHEST)
 	public void customQuitMsg(PlayerQuitEvent event){
 		if(useful.authed.containsKey(event.getPlayer().getName())){
@@ -975,7 +1019,7 @@ public class UsefulListener implements Listener{
 		List<Object> args = new ArrayList<Object>();
 		args.add(false);
 		args.add(name);
-		UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined);
+		UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), playerJoined,pluginAuth);
 		plugin.uconnect.loadProfile(name, request, playerJoined);
 		}
 		String msg = useful.config.getString("general.quitmessage");
@@ -993,7 +1037,7 @@ public class UsefulListener implements Listener{
 			List<Object> args = new ArrayList<Object>();
 			args.add(false);
 			args.add(name);
-			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), event.getPlayer());
+			UConnectDataRequest request = new UConnectDataRequest("setOnline", args.toArray(), event.getPlayer(),pluginAuth);
 			plugin.uconnect.loadProfile(name, request, event.getPlayer());
 		}
 		return;
@@ -1014,7 +1058,6 @@ public class UsefulListener implements Listener{
 	
 	@EventHandler
 	public void wirelessRedstoneRemover(BlockBreakEvent event){
-		//TODO
 		Block block = event.getBlock();
 		if(!(block.getState() instanceof Sign)){
 			return;
@@ -1048,7 +1091,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	public void wirelessRedstoneRemoverMKII(BlockPhysicsEvent event){
-		//TODO
 		
 		
 		Block block = event.getBlock();
@@ -1385,7 +1427,6 @@ public class UsefulListener implements Listener{
 				return;
 				}
 			 //player.teleport(jail);
-				//TODO a better jail blocking method
 				Location loc = event.getTo();
 				double x = loc.getX();
 				double y = loc.getY();
@@ -1621,7 +1662,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	void backSaver(PlayerTeleportEvent event){
-		//TODO make a way of saving players previous locations.
 		Player player = event.getPlayer();
 		String pname = player.getName();
 		Location prev = event.getFrom();
@@ -1657,7 +1697,6 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler
 	void backSaver(PlayerDeathEvent event){
-		//TODO make a way of saving players previous locations.
 		Player player = event.getEntity();
 		String pname = player.getName();
 		Location prev = player.getLocation();
@@ -2041,12 +2080,18 @@ public class UsefulListener implements Listener{
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void unRegisterQuitPerms(PlayerQuitEvent event){
+		if(!(useful.config.getBoolean("uperms.enable"))){
+			return;
+		}
 		String name = event.getPlayer().getName();
 		plugin.permManager.unLoadPerms(name);
 	return;
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void unRegisterKickPerms(PlayerKickEvent event){
+		if(!(useful.config.getBoolean("uperms.enable"))){
+			return;
+		}
 		String name = event.getPlayer().getName();
 		plugin.permManager.unLoadPerms(name);
 	return;
@@ -2586,6 +2631,7 @@ public class UsefulListener implements Listener{
 				event.getPlayer().getInventory().removeItem(new ItemStack(328));
 			}
 		}
+		if(useful.config.getBoolean("general.cars.enable")){
 		int LowBoostId = useful.config.getInt("general.cars.lowBoost");
 		int MedBoostId = useful.config.getInt("general.cars.medBoost");
 		int HighBoostId = useful.config.getInt("general.cars.highBoost");
@@ -2641,6 +2687,7 @@ public class UsefulListener implements Listener{
 				return;
 			}
 		}
+		}//end if ucars enabled for passing of car management
 			BlockState state = block.getState();
 			if (state instanceof Sign) {
 			    Sign sign = (Sign)state;
