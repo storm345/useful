@@ -58,7 +58,7 @@ public class uConnectConnect {
 						File dir = new File(useful.plugin.getDataFolder().getAbsolutePath() + File.separator + "uConnect" + File.separator + "Data cache");
 						dir.mkdirs();
 						
-						final File file = File.createTempFile(uuid, ".yml", dir);
+						final File file = File.createTempFile(uuid, ".uc", dir);
 						yaml.save(file);
 						file.setReadOnly();
 						FileInputStream in = new FileInputStream(file);

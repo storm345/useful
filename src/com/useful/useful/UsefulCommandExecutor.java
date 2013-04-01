@@ -95,6 +95,21 @@ public class UsefulCommandExecutor implements CommandExecutor {
 		plugin = useful.plugin;
 		this.pluginAuth = pluginAuthentication;
 	}
+	public void showAd(CommandSender sender){
+		try {
+			sender.sendMessage(ChatColor.DARK_GREEN+""+ChatColor.BOLD+"[Advertisement:]");
+			List<String> ads = plugin.uconnectAds.values;
+			int size = ads.size();
+			int index = 0 + (int)(Math.random() * (((size-1) - 0) + 1));
+			String advert = useful.colorise(ads.get(index));
+			String[] lines = advert.split("%n");
+			for(String line:lines){
+				sender.sendMessage(ChatColor.GOLD+line);
+			}
+		} catch (Exception e) {
+		}
+		return;
+	}
 	@Override
 	public boolean onCommand(final CommandSender sender, Command cmd, String commandLabel, String[] args){
 		String disabledmessage = useful.config.getString("general.disabledmessage");
@@ -364,12 +379,14 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						page = args[2];
 					}
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					plugin.uconnect.getMessages(profile,page,sender,pluginAuth);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("clear")){
 					UConnectProfile profile = new UConnectProfile(player.getName());
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					plugin.uconnect.clearMessages(profile, sender,pluginAuth);
 					return true;
 				}
@@ -385,6 +402,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						message = message + " " + args[i];
 					}
 				    sender.sendMessage(ChatColor.GRAY + "Loading...");
+				    showAd(sender);
 				    plugin.uconnect.message(new UConnectProfile(playerName), new UConnectProfile(player.getName()), message, sender,pluginAuth);
 				    return true;
 				}
@@ -399,6 +417,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					uargs.add(name);
 					UConnectDataRequest request = new UConnectDataRequest("block", uargs.toArray(), player,pluginAuth);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					plugin.uconnect.load(request);
 					return true;
 				}
@@ -413,6 +432,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					uargs.add(name);
 					UConnectDataRequest request = new UConnectDataRequest("unblock", uargs.toArray(), player,pluginAuth);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					plugin.uconnect.load(request);
 					return true;
 				}
@@ -425,6 +445,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					uargs.add(page);
 					UConnectDataRequest request = new UConnectDataRequest("blocked", uargs.toArray(), player,pluginAuth);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					plugin.uconnect.load(request);
 					return true;
 				}
@@ -445,6 +466,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 				uargs.add(pName);
 				UConnectDataRequest request = new UConnectDataRequest("loadProfile", uargs.toArray(), sender,pluginAuth);
 				sender.sendMessage(ChatColor.GRAY + "Loading...");
+				showAd(sender);
 				plugin.uconnect.loadProfile(pName, request, sender);
 				return true;
 			}
@@ -472,6 +494,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("setProfileContact", uargs.toArray(), sender,pluginAuth);
 					plugin.uconnect.loadProfile(player.getName(), request, sender);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("about")){
@@ -485,6 +508,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("setProfileAbout", uargs.toArray(), sender,pluginAuth);
 					plugin.uconnect.loadProfile(player.getName(), request, sender);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				}
 				else if(action.equalsIgnoreCase("favserver")){
@@ -498,6 +522,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("setProfileFavServer", uargs.toArray(), sender,pluginAuth);
 					plugin.uconnect.loadProfile(player.getName(), request, sender);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				}
 				else{
@@ -526,6 +551,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("showNews", uargs, sender,pluginAuth);
 					plugin.uconnect.load(request);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				}
 				else if(program.equalsIgnoreCase("createnews")){
@@ -549,6 +575,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("createNews", uargs.toArray(), sender,pluginAuth);
 					plugin.uconnect.load(request);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				}
 				else if(program.equalsIgnoreCase("deleteNews")){
@@ -567,6 +594,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					UConnectDataRequest request = new UConnectDataRequest("deleteNews", uargs.toArray(), sender,pluginAuth);
 					plugin.uconnect.load(request);
 					sender.sendMessage(ChatColor.GRAY + "Loading...");
+					showAd(sender);
 					return true;
 				
 			}
@@ -595,6 +623,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					   UConnectDataRequest request = new UConnectDataRequest("addServer", uargs.toArray(), sender,pluginAuth);
 					   plugin.uconnect.load(request);
 						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						showAd(sender);
 						return true;
 				   }
 				   else if(action.equalsIgnoreCase("delete")){
@@ -608,6 +637,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					   UConnectDataRequest request = new UConnectDataRequest("deleteServer", uargs.toArray(), sender,pluginAuth);
 					   plugin.uconnect.load(request);
 						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						showAd(sender);
 						return true;
 				   }
 				   else if(action.equalsIgnoreCase("list")){
@@ -629,6 +659,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 					   UConnectDataRequest request = new UConnectDataRequest("listServer", uargs.toArray(), sender,pluginAuth);
 					   plugin.uconnect.load(request);
 						sender.sendMessage(ChatColor.GRAY + "Loading...");
+						showAd(sender);
 						return true;
 				   }
 				   else{
@@ -665,6 +696,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						UConnectDataRequest request = new UConnectDataRequest("addFriend", uargs.toArray(), sender,pluginAuth);
 					    plugin.uconnect.loadProfiles(request,pluginAuth);
 					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    showAd(sender);
 					    return true;
 					}
 					else if(action.equalsIgnoreCase("view")){
@@ -678,6 +710,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						UConnectDataRequest request = new UConnectDataRequest("viewFriend", uargs.toArray(), sender,pluginAuth);
 					    plugin.uconnect.loadProfiles(request,pluginAuth);
 					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    showAd(sender);
 					    return true;
 					}
 					else if(action.equalsIgnoreCase("remove")){
@@ -691,6 +724,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						UConnectDataRequest request = new UConnectDataRequest("removeFriend", uargs.toArray(), sender,pluginAuth);
 					    plugin.uconnect.loadProfiles(request,pluginAuth);
 					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    showAd(sender);
 					    return true;
 					}
 					else if(action.equalsIgnoreCase("list")){
@@ -708,6 +742,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						UConnectDataRequest request = new UConnectDataRequest("listFriend", uargs.toArray(), sender,pluginAuth);
 					    plugin.uconnect.loadProfiles(request,pluginAuth);
 					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    showAd(sender);
 					    return true;
 					}
 					else if(action.equalsIgnoreCase("over")||action.equalsIgnoreCase("overview")){
@@ -725,6 +760,7 @@ public class UsefulCommandExecutor implements CommandExecutor {
 						UConnectDataRequest request = new UConnectDataRequest("overviewFriend", uargs.toArray(), sender,pluginAuth);
 					    plugin.uconnect.loadProfiles(request,pluginAuth);
 					    sender.sendMessage(ChatColor.GRAY + "Loading...");
+					    showAd(sender);
 					    return true;
 					}
 					else{

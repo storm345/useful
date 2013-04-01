@@ -78,6 +78,7 @@ public class useful extends JavaPlugin {
 	public ListStore warnsplayer;
 	public ListStore auths;
 	public ListStore changelog;
+	public ListStore uconnectAds;
 	public uPerms permManager = null;
 	public int number;
 	public int numberorig;
@@ -1211,6 +1212,16 @@ public void jailsConverter(){
 			if(config.getBoolean("uConnect.enable")){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect(pluginAuth);
+			// url for ads: http://dl.dropbox.com/u/147363358/ads.txt
+			URL ads = new URL("http://dl.dropbox.com/u/147363358/ads.txt");
+				 InputStream adsStream = ads.openStream();
+				 File dir = new File(pluginFolder+File.separator+"uConnect"+File.separator+"Data cache"+File.separator+"Ads cache");
+				 dir.mkdirs();
+				 File toSave = new File(dir + File.separator + "ads.uc");
+				 this.uconnectAds = new ListStore(toSave);
+				 uconnectAds.loadFromInputStream(adsStream);
+				 uconnectAds.save();
+				 toSave.delete();
 			plugin.colLogger.info("uConnect loaded!");
 			}
 			this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {

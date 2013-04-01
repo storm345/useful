@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
@@ -46,7 +47,23 @@ public void load() {
 	}
 	
 }
-
+public void loadFromInputStream(InputStream input) {
+	try{
+		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		
+		String line;
+		
+		while((line = reader.readLine()) != null){
+			this.values.add(line);
+		}
+		
+		reader.close();
+		input.close();
+	}catch (Exception e){
+		e.printStackTrace();
+	}
+	
+}
 public void save() {
 	
 	try {
