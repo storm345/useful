@@ -1078,9 +1078,18 @@ public class UsefulListener implements Listener{
 			if(useful.wirelessRedstone.containsKey(tworld.getName())){
 				worldWir = useful.wirelessRedstone.get(tworld.getName());
 			}
+			List<SerializableLocation> locs = new ArrayList<SerializableLocation>();
 			if(worldWir.containsKey(number)){
-				worldWir.remove(number);
+				locs = worldWir.get(number);
 			}
+			for(int i=0;i<locs.size();i++){
+				SerializableLocation sloc = locs.get(i);
+				Location slloc = sloc.getLocation(plugin.getServer());
+				if(slloc.getX() == loc.getX() && slloc.getY() == loc.getY() && slloc.getZ() == loc.getZ()){
+					locs.remove(sloc);
+				}
+			}
+			worldWir.put(number, locs);
 			useful.wirelessRedstone.put(tworld.getName(), worldWir);
 			try {
 				//start saving wir
@@ -1129,9 +1138,18 @@ public class UsefulListener implements Listener{
 				if(useful.wirelessRedstone.containsKey(tworld.getName())){
 					worldWir = useful.wirelessRedstone.get(tworld.getName());
 				}
+				List<SerializableLocation> locs = new ArrayList<SerializableLocation>();
 				if(worldWir.containsKey(number)){
-					worldWir.remove(number);
+					locs = worldWir.get(number);
 				}
+				for(int i=0;i<locs.size();i++){
+					SerializableLocation sloc = locs.get(i);
+					Location slloc = sloc.getLocation(plugin.getServer());
+					if(slloc.getX() == loc.getX() && slloc.getY() == loc.getY() && slloc.getZ() == loc.getZ()){
+						locs.remove(sloc);
+					}
+				}
+				worldWir.put(number, locs);
 				useful.wirelessRedstone.put(tworld.getName(), worldWir);
 					try {
 						//start saving wir
