@@ -89,6 +89,7 @@ import com.useful.useful.utils.ClosestFace;
 import com.useful.useful.utils.JailInfo;
 import com.useful.useful.utils.ListStore;
 import com.useful.useful.utils.PermSafeBlockPlaceEvent;
+import com.useful.useful.utils.SerializableLocation;
 import com.useful.useful.utils.TpaEvent;
 import com.useful.useful.utils.UConnectDataAvailableEvent;
 import com.useful.useful.utils.UConnectDataRequest;
@@ -1071,19 +1072,29 @@ public class UsefulListener implements Listener{
 		if(sign.getLine(1).equalsIgnoreCase("[wir]")){
 			String number = sign.getLine(0);
 			Location loc = sign.getLocation();
-			String world;
-			double x;
-			double y;
-			double z;
-		world = loc.getWorld().getName();
-		x = loc.getX();
-		y = loc.getY();
-		z = loc.getZ();
-			String query = "DELETE FROM wir WHERE signNo='"+number+"' AND locWorld='"+world+"' AND locX='"+x+"' AND locY='"+y+"' AND locZ='"+z+"'";
-			
+			World tworld;
+		tworld = loc.getWorld();
+		    HashMap<String, List<SerializableLocation>> worldWir = new HashMap<String, List<SerializableLocation>>();
+			if(useful.wirelessRedstone.containsKey(tworld.getName())){
+				worldWir = useful.wirelessRedstone.get(tworld.getName());
+			}
+			if(worldWir.containsKey(number)){
+				worldWir.remove(number);
+			}
+			useful.wirelessRedstone.put(tworld.getName(), worldWir);
 			try {
-				ResultSet rs = plugin.sqlite.query(query);
-				rs.close();
+				//start saving wir
+		        List<World> worlds = plugin.getServer().getWorlds();
+				for(World world:worlds){
+					File container = plugin.getServer().getWorldContainer();
+					container.mkdirs();
+					File worldDir = new File(container + File.separator + world.getName());
+					worldDir.mkdirs();
+					if(useful.wirelessRedstone.containsKey(world.getName())){
+						plugin.saveHashMapSLoc(useful.wirelessRedstone.get(world.getName()), new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+					}
+				}
+				//stop saving wir
 				event.getPlayer().sendMessage(plugin.colors.getSuccess() + "Successfully unregistered wireless reciever");
 			} catch (Exception e) {
 				event.getPlayer().sendMessage(plugin.colors.getError() + "Failed to unregister wireless reciever");
@@ -1112,19 +1123,29 @@ public class UsefulListener implements Listener{
 				if (attachedBlock.getTypeId() == 0) {
 					String number = sign.getLine(0);
 					Location loc = sign.getLocation();
-					String world;
-					double x;
-					double y;
-					double z;
-				world = loc.getWorld().getName();
-				x = loc.getX();
-				y = loc.getY();
-				z = loc.getZ();
-					String query = "DELETE FROM wir WHERE signNo='"+number+"' AND locWorld='"+world+"' AND locX='"+x+"' AND locY='"+y+"' AND locZ='"+z+"'";
-					
+					World tworld;
+				tworld = loc.getWorld();
+				HashMap<String, List<SerializableLocation>> worldWir = new HashMap<String, List<SerializableLocation>>();
+				if(useful.wirelessRedstone.containsKey(tworld.getName())){
+					worldWir = useful.wirelessRedstone.get(tworld.getName());
+				}
+				if(worldWir.containsKey(number)){
+					worldWir.remove(number);
+				}
+				useful.wirelessRedstone.put(tworld.getName(), worldWir);
 					try {
-						ResultSet rs = plugin.sqlite.query(query);
-						rs.close();
+						//start saving wir
+				        List<World> worlds = plugin.getServer().getWorlds();
+						for(World world:worlds){
+							File container = plugin.getServer().getWorldContainer();
+							container.mkdirs();
+							File worldDir = new File(container + File.separator + world.getName());
+							worldDir.mkdirs();
+							if(useful.wirelessRedstone.containsKey(world.getName())){
+								plugin.saveHashMapSLoc(useful.wirelessRedstone.get(world.getName()), new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+							}
+						}
+						//stop saving wir
 					} catch (Exception e) {
 						e.printStackTrace();
 						return;
@@ -1900,30 +1921,48 @@ public class UsefulListener implements Listener{
 		}
 		if(ChatColor.stripColor(lines[1]).equalsIgnoreCase("[Wir]")){
 			lines[0] = ChatColor.stripColor(lines[0]);
+			String channel = ChatColor.stripColor(lines[0]);
 			lines[1] = "[Wir]";
 			lines[2] = ChatColor.ITALIC + "Wireless";
 			lines[3] = ChatColor.ITALIC + "reciever";
 			Location loc = event.getBlock().getLocation();
-			String world;
+			World tworld;
 			double x;
 			double y;
 			double z;
-			double yaw;
-			double pitch;
-		world = loc.getWorld().getName();
+		tworld = loc.getWorld();
 		x = loc.getX();
 		y = loc.getY();
 		z = loc.getZ();
-		yaw = loc.getYaw();
-		pitch = loc.getPitch();
-		//We now have all the location details set!
-		String theData = "INSERT INTO wir VALUES('"+lines[0]+"', '"+world+"', "+x+", "+y+", "+z+", "+yaw+", "+pitch+");";
-		
+		Location newloc = new Location(tworld, x, y, z);
+		SerializableLocation toSave = new SerializableLocation(newloc);
+		HashMap<String, List<SerializableLocation>> worldWir = new HashMap<String, List<SerializableLocation>>();
+		if(useful.wirelessRedstone.containsKey(tworld.getName())){
+			worldWir = useful.wirelessRedstone.get(tworld.getName());
+		}
+		List<SerializableLocation> locs = new ArrayList<SerializableLocation>();
+		if(worldWir.containsKey(channel)){
+			locs = worldWir.get(channel);
+		}
+		locs.add(toSave);
+		worldWir.put(channel, locs);
+		useful.wirelessRedstone.put(tworld.getName(), worldWir);
 		try {
-			ResultSet rsi = plugin.sqlite.query(theData);
-			rsi.close();
+			
+			//start saving wir
+	        List<World> worlds = plugin.getServer().getWorlds();
+			for(World world:worlds){
+				File container = plugin.getServer().getWorldContainer();
+				container.mkdirs();
+				File worldDir = new File(container + File.separator + world.getName());
+				worldDir.mkdirs();
+				if(useful.wirelessRedstone.containsKey(world.getName())){
+					plugin.saveHashMapSLoc(useful.wirelessRedstone.get(world.getName()), new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+				}
+			}
+			//stop saving wir
 			event.getPlayer().sendMessage(plugin.colors.getSuccess() + "Successfully registered wireless reciever channel: " + lines[0]);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
@@ -2298,7 +2337,7 @@ public class UsefulListener implements Listener{
 	
 	@EventHandler
 	void wirelessRedstone(BlockRedstoneEvent event){
-		int num = 0;
+		String num = "0";
 		if(!(useful.config.getBoolean("general.wirelessRedstone.enable"))){
 			return;
 		}
@@ -2311,70 +2350,77 @@ public class UsefulListener implements Listener{
 			BlockState signState = powered.getRelative(BlockFace.NORTH).getState();
 			Sign sign = (Sign) signState;
 			if(sign.getLine(1).equalsIgnoreCase("[wis]")){
-				num = 0;
+				num = "0";
 				try {
-					num = Integer.parseInt(sign.getLine(0));
+					num = ChatColor.stripColor(sign.getLine(0));
 				} catch (Exception e) {
 					return;
 				}
-				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
  			   
  			   try {
- 				  ResultSet rs = plugin.sqlite.query(query);
- 				   while(rs.next()){
- 					  String locWorld = rs.getString("locWorld");
-						double locX = Double.parseDouble(rs.getString("locX"));
-						double locY = Double.parseDouble(rs.getString("locY"));
-						double locZ = Double.parseDouble(rs.getString("locZ"));
-						Location wir = new Location(plugin.getServer().getWorld(locWorld), locX, locY, locZ);
-						BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.WEST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.EAST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						
+ 				   HashMap<String, List<SerializableLocation>> worldWirs = new HashMap<String, List<SerializableLocation>>();
+ 				   Set<String> worlds = useful.wirelessRedstone.keySet();
+ 				   for(String wname:worlds){
+ 					   worldWirs = useful.wirelessRedstone.get(wname);
+ 					   Set<String> channels = worldWirs.keySet();
+ 					   for(String channel:channels){
+ 						   if(channel.equalsIgnoreCase(num)){
+ 							   //Activate it
+ 							   List<SerializableLocation> wirs = worldWirs.get(channel);
+ 							   for(SerializableLocation twir:wirs){
+ 								   Location wir = twir.getLocation(plugin.getServer());
+ 								  BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.WEST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.EAST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 							   }
+ 						   }
+ 					   }
  				   }
-					rs.close();
-				} catch (SQLException e1) {
+						
+						
+ 				   
+				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
 				}
@@ -2385,69 +2431,77 @@ public class UsefulListener implements Listener{
 			BlockState signState = powered.getRelative(BlockFace.EAST).getState();
 			Sign sign = (Sign) signState;
 			if(sign.getLine(1).equalsIgnoreCase("[wis]")){
-				num = 0;
+				num = "0";
 				try {
-					num = Integer.parseInt(sign.getLine(0));
+					num = ChatColor.stripColor(sign.getLine(0));
 				} catch (Exception e) {
 					return;
 				}
-				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			  
+ 			   
  			   try {
- 				  ResultSet rs = plugin.sqlite.query(query);
- 				   while(rs.next()){
- 					  String locWorld = rs.getString("locWorld");
-						double locX = Double.parseDouble(rs.getString("locX"));
-						double locY = Double.parseDouble(rs.getString("locY"));
-						double locZ = Double.parseDouble(rs.getString("locZ"));
-						Location wir = new Location(plugin.getServer().getWorld(locWorld), locX, locY, locZ);
-						BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.WEST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.EAST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
+ 				   HashMap<String, List<SerializableLocation>> worldWirs = new HashMap<String, List<SerializableLocation>>();
+ 				   Set<String> worlds = useful.wirelessRedstone.keySet();
+ 				   for(String wname:worlds){
+ 					   worldWirs = useful.wirelessRedstone.get(wname);
+ 					   Set<String> channels = worldWirs.keySet();
+ 					   for(String channel:channels){
+ 						   if(channel.equalsIgnoreCase(num)){
+ 							   //Activate it
+ 							   List<SerializableLocation> wirs = worldWirs.get(channel);
+ 							   for(SerializableLocation twir:wirs){
+ 								   Location wir = twir.getLocation(plugin.getServer());
+ 								  BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.WEST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.EAST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 							   }
+ 						   }
+ 					   }
  				   }
-					rs.close();
-				} catch (SQLException e1) {
+						
+						
+ 				   
+				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
 				}
@@ -2458,71 +2512,77 @@ public class UsefulListener implements Listener{
 			BlockState signState = powered.getRelative(BlockFace.SOUTH).getState();
 			Sign sign = (Sign) signState;
 			if(sign.getLine(1).equalsIgnoreCase("[wis]")){
-			    num = 0;
+				num = "0";
 				try {
-					num = Integer.parseInt(sign.getLine(0));
+					num = ChatColor.stripColor(sign.getLine(0));
 				} catch (Exception e) {
 					return;
 				}
-				
-				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
- 			  
+ 			   
  			   try {
- 				  ResultSet rs = plugin.sqlite.query(query);
- 				   while(rs.next()){
- 					  String locWorld = rs.getString("locWorld");
-						double locX = Double.parseDouble(rs.getString("locX"));
-						double locY = Double.parseDouble(rs.getString("locY"));
-						double locZ = Double.parseDouble(rs.getString("locZ"));
-						Location wir = new Location(plugin.getServer().getWorld(locWorld), locX, locY, locZ);
-						BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.WEST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.EAST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						
+ 				   HashMap<String, List<SerializableLocation>> worldWirs = new HashMap<String, List<SerializableLocation>>();
+ 				   Set<String> worlds = useful.wirelessRedstone.keySet();
+ 				   for(String wname:worlds){
+ 					   worldWirs = useful.wirelessRedstone.get(wname);
+ 					   Set<String> channels = worldWirs.keySet();
+ 					   for(String channel:channels){
+ 						   if(channel.equalsIgnoreCase(num)){
+ 							   //Activate it
+ 							   List<SerializableLocation> wirs = worldWirs.get(channel);
+ 							   for(SerializableLocation twir:wirs){
+ 								   Location wir = twir.getLocation(plugin.getServer());
+ 								  BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.WEST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.EAST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 							   }
+ 						   }
+ 					   }
  				   }
-					rs.close();
-				} catch (SQLException e1) {
+						
+						
+ 				   
+				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
 				}
@@ -2533,75 +2593,81 @@ public class UsefulListener implements Listener{
 			BlockState signState = powered.getRelative(BlockFace.WEST).getState();
 			Sign sign = (Sign) signState;
 			if(sign.getLine(1).equalsIgnoreCase("[wis]")){
-				
-				num = 0;
+				num = "0";
 				try {
-					num = Integer.parseInt(sign.getLine(0));
+					num = ChatColor.stripColor(sign.getLine(0));
 				} catch (Exception e) {
 					return;
 				}
-				
-				String query = "SELECT * FROM wir WHERE signNo='"+num+"'";
  			   
  			   try {
- 				  ResultSet rs = plugin.sqlite.query(query);
- 				   while(rs.next()){
- 					  String locWorld = rs.getString("locWorld");
-						double locX = Double.parseDouble(rs.getString("locX"));
-						double locY = Double.parseDouble(rs.getString("locY"));
-						double locZ = Double.parseDouble(rs.getString("locZ"));
-						Location wir = new Location(plugin.getServer().getWorld(locWorld), locX, locY, locZ);
-						BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.WEST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						state = wir.getBlock().getRelative(BlockFace.EAST).getState();
-						if(state.getType() == Material.LEVER){
-							int data = state.getBlock().getData();
-							if(toPower){
-								data = data | 0x8; // on	
-							}
-							else{
-								data = data & ~0x8; // off
-							}
-							state.getBlock().setData((byte)data);
-						}
-						
+ 				   HashMap<String, List<SerializableLocation>> worldWirs = new HashMap<String, List<SerializableLocation>>();
+ 				   Set<String> worlds = useful.wirelessRedstone.keySet();
+ 				   for(String wname:worlds){
+ 					   worldWirs = useful.wirelessRedstone.get(wname);
+ 					   Set<String> channels = worldWirs.keySet();
+ 					   for(String channel:channels){
+ 						   if(channel.equalsIgnoreCase(num)){
+ 							   //Activate it
+ 							   List<SerializableLocation> wirs = worldWirs.get(channel);
+ 							   for(SerializableLocation twir:wirs){
+ 								   Location wir = twir.getLocation(plugin.getServer());
+ 								  BlockState state = wir.getBlock().getRelative(BlockFace.NORTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.WEST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.SOUTH).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 									state = wir.getBlock().getRelative(BlockFace.EAST).getState();
+ 									if(state.getType() == Material.LEVER){
+ 										int data = state.getBlock().getData();
+ 										if(toPower){
+ 											data = data | 0x8; // on	
+ 										}
+ 										else{
+ 											data = data & ~0x8; // off
+ 										}
+ 										state.getBlock().setData((byte)data);
+ 									}
+ 							   }
+ 						   }
+ 					   }
  				   }
-					rs.close();
-				} catch (SQLException e1) {
+						
+						
+ 				   
+				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
 				}
+				
 			}
 		}
 		return;

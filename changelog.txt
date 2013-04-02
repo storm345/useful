@@ -2,3 +2,4 @@
 * Updated SQLibrary
 * Improved the UCars hook to auto run alongside without manual reconfiguring (disabling) of useful's BASIC UCars pack.
 * Added infinite droppers officially although they were already supported in 1.4.7 builds.
+* Save wirelessRedstone to the world so it can now be shared! :)

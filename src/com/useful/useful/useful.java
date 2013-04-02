@@ -20,6 +20,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -87,6 +88,7 @@ public class useful extends JavaPlugin {
 	public static HashMap<String, ArrayList<String>> mail = new HashMap<String, ArrayList<String>>();
 	public static HashMap<String, SerializableLocation> warps = new HashMap<String, SerializableLocation>();
 	public static HashMap<String, String> warpowners = new HashMap<String, String>();
+	public static HashMap<String, HashMap<String, List<SerializableLocation>>> wirelessRedstone = new HashMap<String, HashMap<String, List<SerializableLocation>>>();
 	public static ArrayList<String> invsee = new ArrayList<String>();
 	public static ArrayList<String> blockedCmds = new ArrayList<String>();
 	public static HashMap<String, Boolean> uhost_settings = new HashMap<String, Boolean>();
@@ -178,6 +180,23 @@ public class useful extends JavaPlugin {
 			ois.close();
 			//you can feel free to cast result to HashMap<String, Integer> if you know there's that HashMap in the file
 			return (HashMap<String, String>) result;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	public HashMap<String, List<SerializableLocation>> loadHashMapSLoc(String path)
+	{
+		try
+		{
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
+			Object result = ois.readObject();
+			ois.close();
+			//you can feel free to cast result to HashMap<String, Integer> if you know there's that HashMap in the file
+			return (HashMap<String, List<SerializableLocation>>) result;
 		}
 		catch(Exception e)
 		{
@@ -352,14 +371,53 @@ public void sqlTableCheck() {
     	        //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
     	    }
     if(sqlite.checkTable("wir")){
-  	    }else{
-  	  try {
-		sqlite.query("CREATE TABLE wir (signNo VARCHAR(50), locWorld VARCHAR(50), locX VARCHAR(50), locY VARCHAR(50), locZ VARCHAR(50), locYaw VARCHAR(50), locPitch VARCHAR(50));");
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-  	 
-  	        //example way to save it:  sqlite.query("INSERT INTO warps VALUES('storm345', 'mywarp', 'world', 5, 5, 5, 5, 5);"); //This is optional. You can do this later if you want.
+    	getLogger().info("Running conversion of wireless redstone to a new format...");
+    	String query = "SELECT * FROM wir";
+    	try {
+    		ResultSet rs = plugin.sqlite.query(query); 
+    		while(rs.next()){
+    			String locWorld = rs.getString("locWorld");
+    			String channel = rs.getString("signNo");
+				double locX = Double.parseDouble(rs.getString("locX"));
+				double locY = Double.parseDouble(rs.getString("locY"));
+				double locZ = Double.parseDouble(rs.getString("locZ"));
+				Location wir = new Location(plugin.getServer().getWorld(locWorld), locX, locY, locZ);
+				SerializableLocation newLoc = new SerializableLocation(wir);
+				HashMap<String, List<SerializableLocation>> world = new HashMap<String, List<SerializableLocation>>();
+				if(wirelessRedstone.containsKey(locWorld)){
+					world = wirelessRedstone.get(locWorld);
+				}
+				List<SerializableLocation> locs = new ArrayList<SerializableLocation>();
+				if(world.containsKey(channel)){
+					locs = world.get(channel);
+				}
+				locs.add(newLoc);
+				world.put(channel, locs);
+				wirelessRedstone.put(locWorld, world);
+    		}
+    		rs.close();
+		} catch (Exception e) {
+			getLogger().info("wir conversion error!");
+		}
+    	String query2 = "DROP TABLE wir";
+    	try {
+			ResultSet rs = plugin.sqlite.query(query2);
+			rs.close();
+		} catch (Exception e) {
+			getLogger().info("wir conversion error!");
+		}
+    	//start saving wir
+        List<World> worlds = getServer().getWorlds();
+		for(World world:worlds){
+			File container = getServer().getWorldContainer();
+			container.mkdirs();
+			File worldDir = new File(container + File.separator + world.getName());
+			worldDir.mkdirs();
+			if(wirelessRedstone.containsKey(world.getName())){
+				saveHashMapSLoc(wirelessRedstone.get(world.getName()), new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+			}
+		}
+		//stop saving wir
   	    }
     if(sqlite.checkTable("worldgm")){
 	    }else{
@@ -512,6 +570,35 @@ public void jailsConverter(){
 			if(new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml").exists() == false){
 				copy(getResource("config.yml"), new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml"));
 			}
+			//TODO load wir from worlds and also save to worlds
+			//start loading wir
+			List<World> worlds = getServer().getWorlds();
+			for(World world:worlds){
+				File container = getServer().getWorldContainer();
+				container.mkdirs();
+				File worldDir = new File(container + File.separator + world.getName());
+				worldDir.mkdirs();
+				File[] files = worldDir.listFiles();
+				Boolean contains = false;
+				for(File file:files){
+					if(file.getName().equalsIgnoreCase("wirelessRedstone.bin")){
+						contains = true;
+					}
+				}
+				if(contains){
+					HashMap<String, List<SerializableLocation>> orig = new HashMap<String, List<SerializableLocation>>();
+					if(wirelessRedstone.containsKey(world.getName())){
+						orig = wirelessRedstone.get(world.getName());
+					}
+				HashMap<String, List<SerializableLocation>> worldWir = loadHashMapSLoc(new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+				Set<String> keys = orig.keySet();
+				for(String key:keys){
+					worldWir.put(key, orig.get(key));
+				}
+				wirelessRedstone.put(world.getName(), worldWir);
+				}
+			}
+			//stop loading wir
 			pluginFolder = this.getDataFolder().getAbsolutePath();
 			(new File(pluginFolder)).mkdirs();
 			config = getConfig();
@@ -1942,7 +2029,18 @@ public void jailsConverter(){
 		this.getServer().getScheduler().cancelTasks(getServer().getPluginManager().getPlugin("useful"));
         sqlite.close();
         authed.clear();
-        System.gc();
+      //start saving wir
+        List<World> worlds = getServer().getWorlds();
+		for(World world:worlds){
+			File container = getServer().getWorldContainer();
+			container.mkdirs();
+			File worldDir = new File(container + File.separator + world.getName());
+			worldDir.mkdirs();
+			if(wirelessRedstone.containsKey(world.getName())){
+				saveHashMapSLoc(wirelessRedstone.get(world.getName()), new File(worldDir + File.separator + "wirelessRedstone.bin").getAbsolutePath());
+			}
+		}
+		//stop saving wir
         System.gc();
         colLogger.info(ChatColor.GREEN + "useful plugin v"+pluginVersion+" has been disabled.");
 		getLogger().info("useful plugin v"+pluginVersion+" has been disabled.");
@@ -1950,6 +2048,21 @@ public void jailsConverter(){
 	
 	
 	public void saveHashMap(HashMap<String, ArrayList<String>> map, String path)
+	{
+		try
+		{
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
+			oos.writeObject(map);
+			oos.flush();
+			oos.close();
+			//Handle I/O exceptions
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	public void saveHashMapSLoc(HashMap<String, List<SerializableLocation>> map, String path)
 	{
 		try
 		{
