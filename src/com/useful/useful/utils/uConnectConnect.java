@@ -180,7 +180,7 @@ public class uConnectConnect {
 								if(request.getSender() == null){
 									return;
 								}
-								request.getSender().sendMessage(useful.plugin.colors.getError()+"Can't connect!!"); //:(
+								request.getSender().sendMessage(useful.plugin.colors.getError()+"Euston we've got a problem! It appears the uconnect service is temporarily unavailble! This could be an error or perhaps the server isn't connected to the web... Or the web disappeared?"); //:(
 							}
 							return;
 						}
