@@ -1309,14 +1309,25 @@ public void jailsConverter(){
 			uconnect = new UConnect(pluginAuth);
 			// url for ads: http://dl.dropbox.com/u/147363358/ads.txt
 			URL ads = new URL("http://dl.dropbox.com/u/147363358/ads.txt");
-				 InputStream adsStream = ads.openStream();
-				 File dir = new File(pluginFolder+File.separator+"uConnect"+File.separator+"Data cache"+File.separator+"Ads cache");
-				 dir.mkdirs();
-				 File toSave = new File(dir + File.separator + "ads.uc");
-				 this.uconnectAds = new ListStore(toSave);
-				 uconnectAds.loadFromInputStream(adsStream);
-				 uconnectAds.save();
-				 toSave.delete();
+				 try {
+					InputStream adsStream = ads.openStream();
+					 File dir = new File(pluginFolder+File.separator+"uConnect"+File.separator+"Data cache"+File.separator+"Ads cache");
+					 dir.mkdirs();
+					 File toSave = new File(dir + File.separator + "ads.uc");
+					 this.uconnectAds = new ListStore(toSave);
+					 uconnectAds.loadFromInputStream(adsStream);
+					 uconnectAds.save();
+					 toSave.delete();
+				} catch (Exception e) {
+					plugin.colLogger.warning("Unable to connect to uConnect!");
+					 File dir = new File(pluginFolder+File.separator+"uConnect"+File.separator+"Data cache"+File.separator+"Ads cache");
+					 dir.mkdirs();
+					 File toSave = new File(dir + File.separator + "ads.uc");
+					 this.uconnectAds = new ListStore(toSave);
+					 uconnectAds.add("&cAds were unable to load!");
+					 uconnectAds.save();
+					 toSave.delete();
+				}
 			plugin.colLogger.info("uConnect loaded!");
 			}
 			 }
@@ -1793,7 +1804,7 @@ public void jailsConverter(){
    			try {
 				in = new BufferedInputStream(url.openStream());
 			} catch (Exception e1) {
-				
+				plugin.colLogger.warning("Unable to connect to the useful updater service! - Latest version info unavailable.");
 			}
    			try{
    				BufferedReader reader = new BufferedReader(new InputStreamReader(in));   				
@@ -1944,7 +1955,7 @@ public void jailsConverter(){
    				}
    				in.close();
    			}catch (Exception e){
-   				e.printStackTrace();
+   				plugin.colLogger.warning("Unable to connect to the useful updater service! - Process failed");
    			}
    			/*
    			ByteArrayOutputStream out = new ByteArrayOutputStream();

@@ -168,12 +168,19 @@ public class uConnectConnect {
 							newFile.set("uconnect.create", true);
 							String uuid = UniqueString.generate();
 							useful.plugin.uconnect.tasks.put(uuid, false);
-							Boolean success = ucInstance.uploadYaml(newFile, "/main.yml", uuid, pluginAuthentication);
-							if(!success){
+							try {
+								Boolean success = ucInstance.uploadYaml(newFile, "/main.yml", uuid, pluginAuthentication);
+								if(!success){
+									if(request.getSender() == null){
+										return;
+									}
+									request.getSender().sendMessage(useful.plugin.colors.getError()+"ILLEGAL Uconnect access!");
+								}
+							} catch (Exception e) {
 								if(request.getSender() == null){
-				    				return;
-				    			}
-								request.getSender().sendMessage(useful.plugin.colors.getError()+"ILLEGAL Uconnect access!");
+									return;
+								}
+								request.getSender().sendMessage(useful.plugin.colors.getError()+"Can't connect!!");
 							}
 							return;
 						}
