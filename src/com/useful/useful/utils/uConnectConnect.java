@@ -180,7 +180,7 @@ public class uConnectConnect {
 								if(request.getSender() == null){
 									return;
 								}
-								request.getSender().sendMessage(useful.plugin.colors.getError()+"Can't connect!!");
+								request.getSender().sendMessage(useful.plugin.colors.getError()+"Can't connect!!"); //:(
 							}
 							return;
 						}

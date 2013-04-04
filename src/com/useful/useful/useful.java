@@ -1324,7 +1324,7 @@ public void jailsConverter(){
 					 dir.mkdirs();
 					 File toSave = new File(dir + File.separator + "ads.uc");
 					 this.uconnectAds = new ListStore(toSave);
-					 uconnectAds.add("&cAds were unable to load!");
+					 uconnectAds.add("&cAds were unable to load!"); //:(
 					 uconnectAds.save();
 					 toSave.delete();
 				}
