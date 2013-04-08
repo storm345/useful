@@ -2854,8 +2854,8 @@ public class UsefulListener implements Listener{
 			    		   }
 			    		   warps.close();
 					} catch (SQLException e) {
-						event.getPlayer().sendMessage(plugin.colors.getError() + "Errow listing warps from stored data!");
-						plugin.colLogger.log(Level.SEVERE, "Errow listing warps from stored data!", e);
+						event.getPlayer().sendMessage(plugin.colors.getError() + "Error listing warps from stored data!");
+						plugin.colLogger.log(Level.SEVERE, "Error listing warps from stored data!", e);
 					}
 			    	   
 			    	   Object[] ver = warpnames.toArray();
@@ -2912,8 +2912,8 @@ public class UsefulListener implements Listener{
 			    		   }
 			    		   jails.close();
 					} catch (SQLException e) {
-						event.getPlayer().sendMessage(plugin.colors.getError() + "Errow listing jails from stored data!");
-						plugin.colLogger.log(Level.SEVERE, "Errow listing jails from stored data!", e);
+						event.getPlayer().sendMessage(plugin.colors.getError() + "Error listing jails from stored data!");
+						plugin.colLogger.log(Level.SEVERE, "Error listing jails from stored data!", e);
 					}
 			    	   
 			    	   Object[] ver = jailnames.toArray();
