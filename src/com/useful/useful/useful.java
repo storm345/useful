@@ -1308,7 +1308,7 @@ public void jailsConverter(){
 			plugin.colLogger.info("Loading uConnect...");
 			uconnect = new UConnect(pluginAuth);
 			// url for ads: http://dl.dropbox.com/u/147363358/ads.txt
-			URL ads = new URL("http://dl.dropbox.com/u/147363358/ads.txt");
+			URL ads = new URL("https://dl.dropboxusercontent.com/u/147363358/ads.txt");
 				 try {
 					InputStream adsStream = ads.openStream();
 					 File dir = new File(pluginFolder+File.separator+"uConnect"+File.separator+"Data cache"+File.separator+"Ads cache");
@@ -1486,7 +1486,7 @@ public void jailsConverter(){
 	           			URL url = null;
 	           			InputStream in = null;
 	        			try {
-	        				url = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/version.txt");
+	        				url = new URL("https://dl.dropboxusercontent.com/u/50672767/usefulplugin/version.txt");
 	        			} catch (MalformedURLException e1) {
 	        			}
 	           			try {
@@ -1798,7 +1798,7 @@ public void jailsConverter(){
    			URL url = null;
    			InputStream in = null;
 			try {
-				url = new URL("https://dl.dropbox.com/u/50672767/usefulplugin/version.txt");
+				url = new URL("https://dl.dropboxusercontent.com/u/50672767/usefulplugin/version.txt");
 			} catch (MalformedURLException e1) {
 			}
    			try {
@@ -1869,8 +1869,8 @@ public void jailsConverter(){
    					      debugFile.save();
    					      }
    					      //<liclass="user-actionuser-action-download"><ahref="/server-mods/useful/files/21-useful-v2-4/">Download</a></li>
-   					      String startPoint = GetStringFromUrl.get("https://dl.dropbox.com/u/50672767/usefulplugin/updaterStartpoint.txt");      
-   					      String endPoint = GetStringFromUrl.get("https://dl.dropbox.com/u/50672767/usefulplugin/updaterEndpoint.txt");
+   					      String startPoint = GetStringFromUrl.get("https://dl.dropboxusercontent.com/u/50672767/usefulplugin/updaterStartpoint.txt");      
+   					      String endPoint = GetStringFromUrl.get("https://dl.dropboxusercontent.com/u/50672767/usefulplugin/updaterEndpoint.txt");
    					      if(startPoint == null || endPoint == null){
    					    	  plugin.colLogger.info("Error fetching points!");
    					    	  break;
