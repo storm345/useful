@@ -169,7 +169,7 @@ public class uConnectConnect {
 							String uuid = UniqueString.generate();
 							useful.plugin.uconnect.tasks.put(uuid, false);
 							try {
-								Boolean success = ucInstance.uploadYaml(newFile, "/main.yml", uuid, pluginAuthentication);
+								Boolean success = ucInstance.uploadYaml(newFile, path, uuid, pluginAuthentication);
 								if(!success){
 									if(request.getSender() == null){
 										return;
@@ -181,6 +181,7 @@ public class uConnectConnect {
 									return;
 								}
 								request.getSender().sendMessage(useful.plugin.colors.getError()+"Euston we've got a problem! It appears the uconnect service is temporarily unavailble! This could be an error or perhaps the server isn't connected to the web... Or the web disappeared?"); //:(
+							    uploadYaml(newFile, path, uuid, pluginAuth);
 							}
 							return;
 						}
