@@ -1,0 +1,12 @@
+Uses:
+SQLibrary.jar - Data storage
+dropbox.jar - Dropbox api for uconnect
+4j.jar - Dropbox api
+avalon.jar - Dropbox api
+commons-logging.jar - Dropbox api
+apache httpclient, core and mime - Dropbox api
+json_simple - Apache/dropbox api
+kit.jar - dropbox api
+servelet.jar - apache/dropbox api
+
+Sources available online.
