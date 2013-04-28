@@ -568,7 +568,7 @@ public void jailsConverter(){
 	        sqlTableCheck();
 	        copy(getResource("changelog.txt"), new File(getDataFolder().getAbsolutePath() + File.separator + "changelog.txt"));
 			if(new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml").exists() == false){
-				copy(getResource("config.yml"), new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml"));
+				copy(getResource("usefulconfig.yml"), new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml"));
 			}
 			//TODO load wir from worlds and also save to worlds
 			//start loading wir
@@ -854,6 +854,15 @@ public void jailsConverter(){
 				}
 			if(!config.contains("general.mail.enable")) {
 				config.set("general.mail.enable", true);
+				}
+			if(!config.contains("general.regionaltextures.# description")) {
+				config.set("general.regionaltextures.# description", "If enabled this will allow changing the players texture pack depending where they are.");
+				}
+			if(!config.contains("general.regionaltextures.enable")) {
+				config.set("general.regionaltextures.enable", true);
+				}
+			if(!config.contains("general.regionaltextures.global")) {
+				config.set("general.regionaltextures.global", "https://dl.dropboxusercontent.com/u/50672767/upload/minecraft-default.zip");
 				}
 			if(!config.contains("general.smite.# description")) {
 				config.set("general.smite.# description", "If enabled this allows for /smite and damage: allows for it to strike real fire if true or fake fire if false");
@@ -1748,6 +1757,9 @@ public void jailsConverter(){
         checkRegister("general.head.enable", "head");
         checkRegister("general.craft.enable", "craft");
         checkRegister("uConnect.enable", "uconnect");
+        checkRegister("general.regionaltextures.enable", "setTexturePack");
+        checkRegister("general.regionaltextures.enable", "unsetTexturePack");
+        checkRegister("general.regionaltextures.enable", "viewTexturePackAreas");
         if(new File(getDataFolder() + File.separator + "warps.bin").exists() || new File(getDataFolder() + File.separator + "warpowners.bin").exists() && new File(getDataFolder() + File.separator + "warps.bin") != null && new File(getDataFolder() + File.separator + "warps.bin").length() > 0){
  	       //getLogger().info("Old warp data found, converting now...");
  	       getServer().getConsoleSender().sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "[useful] " + ChatColor.RESET + "" + ChatColor.YELLOW + "Found old warp data, converting now...");

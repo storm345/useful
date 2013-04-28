@@ -1,6 +1,6 @@
 name: useful
 main: com.useful.useful.useful
-version: 2.6
+version: 2.7
 softdepend: [uCars]
 commands:
    test:
@@ -16,6 +16,24 @@ commands:
       permission: useful.uconnect
       permission-message: You don't have <permission> permission
       default: true
+   setTexturePack:
+      description: This sets the texture pack of the current area.
+      usage: /<command> <AreaName> <Radius> <y min> <y max> <URL/"none">
+      permission: useful.setTexturePack
+      permission-message: You don't have <permission> permission
+      default: op
+   unsetTexturePack:
+      description: This unsets the texture pack of the given area.
+      usage: /<command> <AreaName>
+      permission: useful.setTexturePack
+      permission-message: You don't have <permission> permission
+      default: op
+   viewTexturePackAreas:
+      description: This lists the texture pack areas.
+      usage: /<command> <Page>
+      permission: useful.viewTexturePackAreas
+      permission-message: You don't have <permission> permission
+      default: op
    craft:
       description: This drops a workbench in front of the player.
       usage: /<command>
