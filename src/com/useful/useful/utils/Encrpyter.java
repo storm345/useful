@@ -67,6 +67,7 @@ public class Encrpyter {
 			}
 			  return true;
 		  }
+		@SuppressWarnings("restriction")
 		public String encryptStr(String str) {
 		        try {
 		            // Encode the string into bytes using utf-8
@@ -88,7 +89,8 @@ public class Encrpyter {
 		    public String decryptStr(String str) {
 		        try {
 		            // Decode base64 to get bytes
-		            byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
+		            @SuppressWarnings("restriction")
+					byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(str);
 
 		            // Decrypt
 		            byte[] utf8 = dcipher.doFinal(dec);
