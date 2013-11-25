@@ -43,7 +43,7 @@ public class UConnectRequestScheduler {
 									} catch (InterruptedException e) {
 										run = false;
 										//tries = 0;
-									}
+									}return;
 									
 							}
 							else{
